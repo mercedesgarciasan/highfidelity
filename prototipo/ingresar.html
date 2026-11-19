@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ingresar · Calma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- variables → MARCA → base → composition → components -->
+<link rel="stylesheet" href="/vendor/embassy/css/variables.css">
+<link rel="stylesheet" href="/brand/calma.css">
+<link rel="stylesheet" href="/vendor/embassy/css/base.css">
+<link rel="stylesheet" href="/vendor/embassy/css/composition.css">
+<link rel="stylesheet" href="/vendor/embassy/css/components.css">
+<style>
+  /* Ingreso: un solo campo y una acción, centrado en la columna de formulario. Solo tokens. */
+  .login { min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; }
+  .login-title { font-family: var(--font-heading); font-weight: var(--font-weight-regular); font-size: var(--font-size-display); line-height: var(--line-height-display); margin: 0; }
+  .login-lead { color: var(--on-surface-variant); margin: var(--space-3) 0 var(--space-8); }
+  .login form .btn-primary { width: 100%; }
+  .login [hidden] { display: none; }
+  .login .alert { margin-bottom: var(--space-5); }
+  .login-sent h2 { font-family: var(--font-heading); font-weight: var(--font-weight-regular); font-size: var(--font-size-heading-lg); line-height: var(--line-height-heading-lg); margin: 0; }
+  .login-sent p { color: var(--on-surface-variant); margin: var(--space-3) 0 var(--space-6); }
+</style>
+</head>
+<body>
+<main data-ds-screen data-density="comfortable" class="column column-form section login">
+  <p class="overline">Calma</p>
+  <h1 class="login-title">Hola de nuevo</h1>
+  <p class="login-lead measure">Escribí el mail con el que te dio de alta el estudio. Te mandamos un link para entrar, sin contraseña.</p>
+
+  <div data-ds-dominant>
+    <form id="login-form" novalidate data-redirect="./" data-not-invited="Ese mail no tiene una invitación del estudio. Revisá que esté bien escrito o pedile al estudio que te dé de alta.">
+      <div class="alert alert-error" role="alert" id="login-error" hidden>
+        <div class="alert-body"><div class="alert-description"></div></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="login-email">Email</label>
+        <input class="field-input" id="login-email" aria-describedby="login-email-error" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="nombre@mail.com">
+        <div class="field-supporting"><span class="field-error-msg" id="login-email-error" hidden>Revisá el mail: tiene que ser como nombre@mail.com.</span></div>
+      </div>
+      <button type="submit" class="btn-primary btn-lg">Mandarme el link</button>
+    </form>
+
+    <section class="login-sent" id="login-sent" hidden aria-live="polite">
+      <h2 tabindex="-1">Revisá tu mail</h2>
+      <p>Te mandamos un link a <strong id="login-sent-to"></strong>. Abrilo desde este mismo teléfono para entrar.</p>
+      <button type="button" class="btn-text" id="login-retry">Usar otro mail</button>
+    </section>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/auth.js"></script>
+<script src="/shared/login.js"></script>
+</body>
+</html>

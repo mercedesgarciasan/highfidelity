@@ -1,3 +1,10 @@
+<!-- Login: hasta que haya sesión la página no se muestra. Sin Supabase configurado, se ve igual que antes. -->
+<style>.hf-auth-pending body { visibility: hidden; }</style>
+<script>document.documentElement.classList.add('hf-auth-pending');</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/auth.js"></script>
+<script>hfAuth.requireSession('ingresar.html');</script>
 <title>Proto High Fidelity</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">

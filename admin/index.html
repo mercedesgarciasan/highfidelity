@@ -1,3 +1,10 @@
+<!-- Login: hasta que haya sesión la página no se muestra. Sin Supabase configurado, se ve igual que antes. -->
+<style>.hf-auth-pending body { visibility: hidden; }</style>
+<script>document.documentElement.classList.add('hf-auth-pending');</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/auth.js"></script>
+<script>hfAuth.requireSession('ingresar.html');</script>
 <title>Estudio Núcleo Admin</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -230,6 +237,8 @@ fieldset.field.invalid > .error { display: block; }
 .field .error { font-size: 13px; color: var(--danger); display: none; }
 .field.invalid input { border-color: var(--danger); }
 .field.invalid .error { display: block; }
+.form-error { margin: 0; padding: 10px 12px; border-radius: 6px; background: var(--danger-bg); color: var(--danger); font-size: 14px; }
+.form-error[hidden] { display: none; }
 .field input, .field select { width: 100%; }
 .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
 .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -304,6 +313,7 @@ fieldset.field.invalid > .error { display: block; }
       <button data-view="rules">Reglas</button>
     </nav>
     <div class="user-chip"><span class="avatar">VR</span><div>Vicky Romero<small>Dueña · Coach</small></div></div>
+    <button class="btn small" id="sign-out" type="button">Salir</button>
   </div>
 </header>
 
@@ -850,6 +860,7 @@ function openNewMember() {
       <div class="field"><label for="nm-plan">Cantidad de clases</label>
         <select id="nm-plan">${plans}</select>
         <span class="hint">Define cuántos horarios fijos puede elegir en la app.</span></div>
+      <p class="form-error" id="nm-error" role="alert" hidden></p>
       <div class="form-actions">
         <button type="button" class="btn" id="close-drawer-2">Cancelar</button>
         <button type="submit" class="btn primary">Dar de alta</button>
@@ -866,7 +877,7 @@ function openNewMember() {
     $('#nm-to').value = d.toISOString().slice(0, 10);
   });
   form.addEventListener('input', e => (e.target.closest('fieldset') || e.target.closest('.field')).classList.remove('invalid'));
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const v = id => $(id).value.trim();
     const checks = [
@@ -883,6 +894,28 @@ function openNewMember() {
     const m = { id: Math.max(...members.map(x => x.id)) + 1, name: v('#nm-name'), slot: '—',
       birth: v('#nm-birth'), dni: v('#nm-dni').replace(/\./g, ''), email: v('#nm-email'), paidFrom: v('#nm-from'), paidTo: v('#nm-to'), plan,
       att: null, miss: 0, changes: 0, points: 0, status: 'ok', isNew: true };
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const formError = $('#nm-error');
+    formError.hidden = true;
+    if (hfAuth.configured) {
+      submitBtn.disabled = true; submitBtn.setAttribute('aria-busy', 'true'); submitBtn.textContent = 'Mandando invitación…';
+      let result;
+      try {
+        const res = await fetch('/api/invite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await hfAuth.accessToken()}` },
+          body: JSON.stringify({ name: m.name, email: m.email, birth: m.birth, dni: m.dni, paidFrom: m.paidFrom, paidTo: m.paidTo, plan }),
+        });
+        result = { ok: res.ok, status: res.status, ...(await res.json().catch(() => ({}))) };
+      } catch { result = { ok: false, error: 'No pudimos conectarnos. Revisá tu conexión y probá de nuevo.' }; }
+      submitBtn.disabled = false; submitBtn.removeAttribute('aria-busy'); submitBtn.textContent = 'Dar de alta';
+      if (!result.ok) {
+        formError.textContent = result.error || 'No pudimos dar de alta al socio. Probá de nuevo.';
+        formError.hidden = false;
+        if (result.status === 409) $('#nm-email').focus();
+        return;
+      }
+    }
     members.unshift(m);
     closeDrawer();
     $('#member-search').value = '';
@@ -891,6 +924,7 @@ function openNewMember() {
   });
 }
 $('#new-member').addEventListener('click', openNewMember);
+$('#sign-out').addEventListener('click', () => hfAuth.signOut('ingresar.html'));
 function closeDrawer() { $('#drawer').classList.remove('open'); $('#backdrop').classList.remove('open'); }
 $('#backdrop').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
