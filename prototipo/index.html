@@ -368,7 +368,7 @@ const FLOWS = [
 const fresh = () => ({
   screen: 'login', clock: 'far', slots: [], next: null, changesUsed: 0, noShows: 0,
   monthAttended: 5, bonusOk: true, bonusLostAt: null, calendar: null,
-  lostSlot: false, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, justFrom: null, lastFault: null,
+  lostSlot: false, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, waitlist: [], waitJoined: null, justFrom: null, lastFault: null,
   reminders: true, confirmAsk: true, push: false, sheet: null, changeMode: 'once',
   changeDay: 0, picked: null, lateCancel: false, toast: null, brand: S?.brand ?? 0,
   persona: 'socia',
@@ -448,6 +448,10 @@ const A = {
   seekBetter: () => set({ screen: 'change', changeMode: 'fixed', picked: null, changeDay: byId(S.next.id).day }),
   changeDay: d => set({ changeDay: +d }),
   pick: id => set({ picked: id }),
+  joinWait: () => {
+    if (!S.picked) return;
+    set({ waitlist: [...S.waitlist, S.picked], waitJoined: S.picked, picked: null, screen: 'waitJoined' });
+  },
   confirmChange: () => {
     if (!S.picked) return;
     if (S.changeMode === 'once') {
@@ -548,7 +552,7 @@ const A = {
     S.circ.taken = 'Lu';
     S.circ.events.push(['20:16', 'Lu tomó el lugar desde la lista de espera. La clase vuelve a estar llena.']);
     S.circ.boardSeen = false;
-    toast('Listo, reservaste Pilates del Lun 08:00 con Vicky.');
+    toast('Listo, reservaste Pilates del lunes 23 a las 08:00 con Vicky.');
   },
   declineSpot: () => {
     S.circ.taken = 'Mati';
@@ -766,9 +770,15 @@ const V = {
     const cur = byId(S.next.id);
     const fixed = S.changeMode === 'fixed';
     const tabs = DAYS.map((d, i) => `<button class="day ${S.changeDay === i ? 'on' : ''}" data-act="changeDay" data-arg="${i}">${d}</button>`).join('');
-    const list = CLASSES.filter(c => c.day === S.changeDay && c.id !== cur.id && !S.slots.includes(c.id)).map(c => `
-      <button class="slot ${S.picked === c.id ? 'on' : ''}" data-act="pick" data-arg="${c.id}" ${c.left === 0 ? 'disabled' : ''}>
-        <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${c.left === 0 ? 'Completa' : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`}</small></span><span class="check">${S.picked === c.id ? '✓' : ''}</span></button>`).join('') || '<p class="a-p">No hay otros horarios este día.</p>';
+    /* The waitlist exists only when changing the fixed schedule: a full class can be picked to join its list. */
+    const list = CLASSES.filter(c => c.day === S.changeDay && c.id !== cur.id && !S.slots.includes(c.id)).map(c => {
+      const full0 = c.left === 0;
+      const waiting = S.waitlist.includes(c.id);
+      const note = waiting ? 'Estás en la lista de espera' : full0 ? (fixed ? 'Completa · podés sumarte a la lista de espera' : 'Completa') : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`;
+      return `<button class="slot ${S.picked === c.id ? 'on' : ''}" data-act="pick" data-arg="${c.id}" ${full0 && (!fixed || waiting) ? 'disabled' : ''}>
+        <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${note}</small></span><span class="check">${S.picked === c.id ? '✓' : ''}</span></button>`;
+    }).join('') || '<p class="a-p">No hay otros horarios este día.</p>';
+    const pickedFull = S.picked && byId(S.picked).left === 0;
     return `<div class="scr">
       <button class="back" data-act="home">← Volver</button>
       <div>${fixed ? '<span class="a-label">Cambiar tu horario fijo</span>' : `<span class="a-label">Te quedan ${changesLeft()} de ${RULES.max} cambios</span>`}
@@ -777,7 +787,9 @@ const V = {
       <div class="days">${tabs}</div>
       <div class="slots">${list}</div>
       <div class="spacer"></div>
-      <button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>
+      ${pickedFull
+        ? `<button class="btn primary" data-act="joinWait">Sumarme a la lista de espera<small>Te avisamos si se libera un lugar en ${short(byId(S.picked))}</small></button>`
+        : `<button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>`}
       ${fixed ? '' : '<button class="link" data-act="reason">Tengo un motivo (enfermedad o viaje)</button>'}
     </div>`;
   },
@@ -959,27 +971,31 @@ const V = {
     const t = S.circ.taken;
     let card;
     if (t === 'Lu') {
-      card = `<div class="card next-card"><div class="next-title"><span class="a-label">Tu próxima clase</span><span class="pill good">Reservada</span></div>
+      card = `<div class="card next-card"><div class="next-title"><span class="a-label">Clase suelta</span><span class="pill good">Reservada</span></div>
         <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
-        <p class="a-p">Entraste desde la lista de espera. Vicky ya sabe que vas.</p></div>`;
+        <p class="a-p">Entraste desde la lista de espera, solo por el lunes 23. Vicky ya sabe que vas. Seguís en la lista para pasar tu horario fijo a esta clase.</p></div>`;
     } else if (t === 'Mati') {
       card = `<div class="card"><span class="a-label">Lista de espera</span><div class="a-h3">Le pasamos el lugar a la siguiente persona</div>
         <p class="a-p">Seguís en la lista de ${c.name} del ${short(c)}. Te avisamos si se libera otro lugar.</p></div>`;
     } else if (S.circ.released) {
       card = `<div class="card next-card"><div class="next-title"><span class="a-label">Lista de espera</span><span class="pill brand">Se liberó un lugar</span></div>
         <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
-        <p class="a-p">Sos la primera de la lista. Tenés 30 minutos para tomarlo.</p>
+        <p class="a-p">Alguien no puede ir el lunes 23, así que el lugar es solo por ese día. Sos la primera de la lista y tenés 30 minutos para tomarlo. Tu horario fijo no cambia.</p>
         <button class="btn primary" data-act="takeSpot">Tomar el lugar</button>
         <button class="btn ghost" data-act="declineSpot">No, gracias</button></div>`;
     } else {
       card = `<div class="card next-card"><div class="next-title"><span class="a-label">Lista de espera</span><span class="pill">1.ª en la lista</span></div>
         <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
-        <p class="a-p">La clase está llena. Si alguien libera su lugar antes del plazo, sos la primera en enterarte.</p></div>`;
+        <p class="a-p">Te sumaste cuando quisiste cambiar tu horario fijo y esta clase estaba llena. Si se libera un lugar, sos la primera en enterarte.</p></div>`;
     }
+    const own = byId('mar-1930');
+    const ownCard = `<div class="card"><div class="next-title"><span class="a-label">Tu horario fijo</span><span class="pill">Todas las semanas</span></div>
+        <div><div class="class-name">${own.name}</div><div class="class-meta">${full(own)} · con ${own.coach}</div></div></div>`;
     return `<div class="scr">
       <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Lu</div></div><div class="avatar">LP</div></div>
+      ${ownCard}
       ${card}
-      <div class="card tint"><div class="a-h3">¿Cómo funciona la lista de espera?</div><p class="a-p">Cuando alguien no puede ir y avisa antes del plazo, le ofrecemos su lugar a la primera persona de la lista. Si no lo toma en 30 minutos, pasa a la siguiente.</p></div>
+      <div class="card tint"><div class="a-h3">¿Cómo funciona la lista de espera?</div><p class="a-p">Siempre tenés tu horario fijo para ir. Si querés cambiarlo a una clase que está llena, te sumás a su lista de espera desde "Cambiar mi horario fijo". Si alguien no puede ir un día, te ofrecemos su lugar solo por ese día. Si no lo tomás en 30 minutos, pasa a la siguiente persona.</p></div>
     </div>`;
   },
 
@@ -1020,6 +1036,20 @@ const V = {
       <div><h1 class="a-h1">Gestionar mis horarios</h1><p class="a-p">Cambiá tu horario fijo o avisá cuándo no vas a estar.</p></div>
       <button class="btn secondary left" data-act="seekBetter" ${canFixed ? '' : 'disabled'}>Cambiar mi horario fijo<small>${S.slots.map(id => short(byId(id))).join(' y ')}</small></button>
       <button class="btn secondary left" data-act="goOff" ${offLeft() ? '' : 'disabled'}>Avisar días off<small>Para viajes o vacaciones. Te quedan ${offLeft()} de ${RULES.off} este trimestre.</small></button>
+      ${S.waitlist.length ? `<div class="card"><span class="a-label">Tus listas de espera</span>${S.waitlist.map(id => `<div class="row-split"><div><b>${byId(id).name}</b> · ${short(byId(id))}</div><span class="pill">En espera</span></div>`).join('')}<div class="class-meta">Te avisamos apenas se libere un lugar.</div></div>` : ''}
+    </div>`;
+  },
+
+  waitJoined: () => {
+    const c = byId(S.waitJoined);
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon brand">✓</div>
+      <div><h1 class="a-h1">Te sumamos a la lista de espera</h1>
+      <p class="a-p">${c.name} del ${full(c)} con ${c.coach} está llena. Si se libera un lugar, te avisamos primero para que lo tomes como tu nuevo horario fijo.</p></div>
+      <div class="card"><div><b>Mientras tanto, seguís con tu horario de siempre</b></div><div class="class-meta">${S.slots.map(id => `${byId(id).name} · ${full(byId(id))}`).join('<br>')}</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="home">Volver al inicio</button>
     </div>`;
   },
 
@@ -1092,7 +1122,7 @@ function pushView() {
 function luPush() {
   if (!S.circ.released || S.circ.taken || S.circ.luOpened) return '';
   const c = byId(S.circ.cls);
-  return lockView('20:14', '¡Se liberó un lugar!', `${c.name} · mañana ${c.time} con ${c.coach}. Tenés 30 min para tomarlo.`, 'openLu');
+  return lockView('20:14', '¡Se liberó un lugar!', `${c.name} · mañana lunes 23 a las ${c.time} con ${c.coach}, solo por ese día. Tenés 30 min para tomarlo.`, 'openLu');
 }
 
 /* circuit steps: 0 reminder, 1 confirm/release, 2 waitlist takes it, 3 owner sees it */

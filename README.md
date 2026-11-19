@@ -54,6 +54,8 @@ El objetivo es reducir el **no-show**: la persona que no va y no avisa. Pero qui
 | **2.ª falta** en el mes | Aviso: **"Te queda 1 falta"**. La app le pregunta "¿Querés buscar un hueco que te quede mejor?" y le muestra los horarios disponibles. | — |
 | **3.ª falta** en el mes | Puede reservar clases sueltas. | Pierde su lugar en el mes. Lo **recupera yendo a 3 clases** sin faltar. |
 
+**Lista de espera:** solo existe dentro de "Cambiar mi horario fijo". Si el horario que la persona quiere está lleno, se suma a la lista y le avisamos cuando se libera un lugar. Mientras tanto sigue yendo a su horario de siempre: la persona siempre tiene horarios para ir. Si alguien libera una sola clase de ese horario, el lugar se le ofrece a la primera de la lista solo por ese día.
+
 Una falta es faltar sin avisar o cancelar después del plazo. Cualquier falta hace perder la clase gratis de ese mes.
 
 **Primer uso:** antes de empezar, la app muestra estas reglas, explica por qué importan los recordatorios (cancelar a tiempo evita perder el lugar y libera horarios para otros), pide activarlos y ofrece sumar las clases al calendario.
@@ -147,7 +149,7 @@ Para la hackathon, el alcance se recorta a un solo circuito completo, que se cue
 
 1. **Recordatorio antes de que cierre el plazo.** Sofi recibe el aviso para su clase del lunes 8:00.
 2. **La persona confirma o libera el lugar.** Toca "Voy", o "No puedo" y cambia o cancela.
-3. **La lista de espera lo ocupa.** Lu, primera en la lista, recibe "¡Se liberó un lugar!" y lo toma. Si lo deja pasar, se ofrece a la siguiente persona.
+3. **La lista de espera lo ocupa.** Lu tiene su horario fijo (Yoga martes 19:30) y se sumó a la lista de Pilates lunes 8:00 al querer cambiarlo. Como es la primera, recibe "¡Se liberó un lugar!" y lo toma solo por ese lunes: su horario fijo no cambia y sigue en la lista. Si lo deja pasar, se ofrece a la siguiente persona.
 4. **El dueño ve el lugar recuperado en su tablero.** La clase vuelve a 12/12 con "1 lugar recuperado", y la actividad muestra qué pasó.
 
 En el prototipo, unas pestañas arriba del teléfono cambian entre las tres vistas: Sofi (socia), Lu (lista de espera) y Estudio (dueño). El tablero del dueño es mínimo: solo existe para cerrar el circuito.
@@ -167,7 +169,7 @@ En el prototipo, unas pestañas arriba del teléfono cambian entre las tres vist
 - 7 días off por trimestre en el plan de 2 clases por semana.
 - Con los 5 cambios usados y antes del plazo, solo puede cancelar, sin que cuente como falta.
 - Cambiar el horario fijo después de la 2.ª falta no usa los cambios del mes.
-- El lugar liberado se ofrece a la primera persona de la lista de espera, que tiene 30 minutos para tomarlo. Si no lo toma, pasa a la siguiente.
+- El lugar liberado por un día se ofrece a la primera persona de la lista de espera, que tiene 30 minutos para tomarlo. Si no lo toma, pasa a la siguiente.
 
 ## Fuente
 
