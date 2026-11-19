@@ -100,7 +100,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .btn.danger { background: var(--bad); color: #fff; }
 .btn.left { text-align: left; }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
-.btn-row { display: flex; gap: 10px; }
+.btn-row { display: flex; flex-direction: column; gap: 10px; }
 .btn-row .btn { flex: 1; }
 .btn small { display: block; font-weight: 500; font-size: 12px; opacity: .8; margin-top: 2px; }
 .link { background: none; border: 0; padding: 4px 0; color: var(--brand); font-weight: 600; align-self: center; }
@@ -209,6 +209,17 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .push .btn { padding: 10px; font-size: 14px; border-radius: 12px; }
 .toast { position: absolute; left: 16px; right: 16px; bottom: 22px; z-index: 7; background: var(--a-fg); color: #fff; border-radius: 14px; padding: 12px 14px; font-weight: 500; animation: drop .22s ease-out; }
 @media (prefers-reduced-motion: reduce) { .sheet, .push, .toast { animation: none; } }
+/* lock screen with push notification (fixed device wallpaper, same in both themes) */
+.lock { position: absolute; inset: 0; z-index: 6; background: linear-gradient(165deg, #33466B 0%, #1A2233 55%, #0E121B 100%); color: #fff; display: flex; flex-direction: column; align-items: center; padding: 0 12px 28px; }
+.lock-bar { align-self: stretch; display: flex; justify-content: space-between; padding: 14px 14px 0; }
+.lock-bar .dots i { width: 16px; height: 9px; border: 1.5px solid #fff; border-radius: 3px; display: block; }
+.lock-date { margin-top: 40px; font-size: 15px; font-weight: 500; opacity: .85; }
+.lock-time { font-family: var(--font-display); font-size: 72px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.lock-note { margin-top: 36px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 12px 14px; background: rgba(245,246,248,.9); color: var(--a-fg); display: flex; flex-direction: column; gap: 8px; animation: drop .28s ease-out; }
+.lock-note .class-meta { color: var(--a-muted); }
+.lock-hint { margin-top: auto; font-size: 12px; opacity: .7; }
+@media (prefers-reduced-motion: reduce) { .lock-note { animation: none; } }
+
 /* owner board */
 .crow { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-top: 1px solid var(--a-line); }
 .crow:first-of-type { border-top: 0; padding-top: 0; }
@@ -294,12 +305,12 @@ const DAYS_FULL = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábad
 const PREV_DAY = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
 const WEEK7 = [['Lun', 23], ['Mar', 24], ['Mié', 25], ['Jue', 26], ['Vie', 27], ['Sáb', 28], ['Dom', 29]];
 const CLASSES = [
-  ['lun-0700', 0, '07:00', 'Funcional', 'Vicky', 3], ['lun-0800', 0, '08:00', 'Funcional', 'Vicky', 1], ['lun-1230', 0, '12:30', 'Yoga', 'Caro', 5], ['lun-1900', 0, '19:00', 'HIIT', 'Tomi', 0], ['lun-2000', 0, '20:00', 'Pilates', 'Juli', 4],
-  ['mar-0700', 1, '07:00', 'HIIT', 'Tomi', 2], ['mar-0900', 1, '09:00', 'Pilates', 'Juli', 6], ['mar-1800', 1, '18:00', 'Funcional', 'Vicky', 0], ['mar-1930', 1, '19:30', 'Yoga', 'Caro', 3],
-  ['mie-0800', 2, '08:00', 'Funcional', 'Vicky', 2], ['mie-1230', 2, '12:30', 'Pilates', 'Juli', 4], ['mie-1900', 2, '19:00', 'HIIT', 'Tomi', 1], ['mie-2000', 2, '20:00', 'Yoga', 'Caro', 6],
-  ['jue-0700', 3, '07:00', 'Funcional', 'Vicky', 5], ['jue-1800', 3, '18:00', 'Pilates', 'Juli', 2], ['jue-1900', 3, '19:00', 'Funcional', 'Tomi', 3],
-  ['vie-0800', 4, '08:00', 'Yoga', 'Caro', 4], ['vie-1830', 4, '18:30', 'HIIT', 'Tomi', 0], ['vie-1930', 4, '19:30', 'Funcional', 'Vicky', 2],
-  ['sab-1000', 5, '10:00', 'Funcional', 'Vicky', 7], ['sab-1100', 5, '11:00', 'Yoga', 'Caro', 5],
+  ['lun-0700', 0, '07:00', 'Pilates', 'Vicky', 3], ['lun-0800', 0, '08:00', 'Pilates', 'Vicky', 1], ['lun-1230', 0, '12:30', 'Yoga', 'Caro', 5], ['lun-1900', 0, '19:00', 'Yoga', 'Tomi', 0], ['lun-2000', 0, '20:00', 'Pilates', 'Juli', 4],
+  ['mar-0700', 1, '07:00', 'Yoga', 'Tomi', 2], ['mar-0900', 1, '09:00', 'Pilates', 'Juli', 6], ['mar-1800', 1, '18:00', 'Pilates', 'Vicky', 0], ['mar-1930', 1, '19:30', 'Yoga', 'Caro', 3],
+  ['mie-0800', 2, '08:00', 'Pilates', 'Vicky', 2], ['mie-1230', 2, '12:30', 'Pilates', 'Juli', 4], ['mie-1900', 2, '19:00', 'Yoga', 'Tomi', 1], ['mie-2000', 2, '20:00', 'Yoga', 'Caro', 6],
+  ['jue-0700', 3, '07:00', 'Pilates', 'Vicky', 5], ['jue-1800', 3, '18:00', 'Pilates', 'Juli', 2], ['jue-1900', 3, '19:00', 'Pilates', 'Tomi', 3],
+  ['vie-0800', 4, '08:00', 'Yoga', 'Caro', 4], ['vie-1830', 4, '18:30', 'Yoga', 'Tomi', 0], ['vie-1930', 4, '19:30', 'Pilates', 'Vicky', 2],
+  ['sab-1000', 5, '10:00', 'Pilates', 'Vicky', 7], ['sab-1100', 5, '11:00', 'Yoga', 'Caro', 5],
 ].map(([id, day, time, name, coach, left]) => ({ id, day, time, name, coach, left }));
 const byId = id => CLASSES.find(c => c.id === id);
 const order = id => CLASSES.findIndex(c => c.id === id);
@@ -321,11 +332,11 @@ const CALS = { google: 'Google Calendar', apple: 'Calendario de Apple', outlook:
 
 const FLOWS = [
   { id: 'f1', title: 'Me inscribo y voy', steps: ['Se loguea', 'Ve los horarios disponibles', 'Elige sus horarios según su plan', 'Conoce las reglas y activa recordatorios', 'Agrega sus clases al calendario', 'Recibe el recordatorio y confirma', 'Va a clase', `Si va a todas sus clases del mes, gana una clase gratis en ${RULES.nextMonth}`] },
-  { id: 'f2', title: 'Avisa antes del plazo', steps: ['Indica que no puede ir', 'Acción principal: Cambiar. Ve horarios y cambios restantes', 'Elige otro horario (o cancela sin consecuencias)'] },
+  { id: 'f2', title: 'Avisa antes del plazo', steps: ['Indica que no puede ir', 'Acción principal: Cambiar. Ve horarios y cambios restantes', 'Elige otro horario (no puede cancelar)'] },
   { id: 'f3', title: 'Avisa después del plazo', steps: ['Indica que no puede ir', 'Solo puede cancelar: cuenta como falta'] },
   { id: 'f4', title: 'No va y no avisa', steps: ['Falta sin avisar', '2.ª falta: "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', '3.ª falta: pierde su lugar en el mes y reserva clases sueltas', `Recupera su horario yendo a ${RULES.recover} clases`] },
   { id: 'f5', title: 'Tiene un motivo justificado', steps: ['Avisa que no puede ir, o ya faltó', 'Elige "Tengo un motivo": enfermedad', 'No cuenta como falta'] },
-  { id: 'f6', title: 'Se toma días off', steps: ['Entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige los días, según lo que le queda de su plan', 'Sus clases quedan en pausa y conserva su horario'] },
+  { id: 'f6', title: 'Se toma días off', steps: ['Desde su perfil entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige los días, según lo que le queda de su plan', 'Sus clases quedan en pausa y conserva su horario'] },
 ];
 
 const fresh = () => ({
@@ -335,13 +346,13 @@ const fresh = () => ({
   reminders: true, confirmAsk: true, push: false, sheet: null, changeMode: 'once',
   changeDay: 0, picked: null, lateCancel: false, toast: null, brand: S?.brand ?? 0,
   persona: 'socia',
-  circ: { cls: 'lun-0800', released: false, taken: null, luSeen: false, boardSeen: false, confirmed: false, events: [['19:00', 'Recordatorio enviado a las 12 personas de Funcional Lun 08:00']] },
+  circ: { cls: 'lun-0800', released: false, taken: null, luSeen: false, boardSeen: false, confirmed: false, events: [['19:00', 'Recordatorio enviado a las 12 personas de Pilates Lun 08:00']] },
 });
 /* Circuit: Sofi frees her spot in a full class -> the waitlist (Lu) gets it -> the owner sees it recovered. */
 function release(how) {
   if (!S.next || S.next.id !== S.circ.cls || S.circ.released) return;
   S.circ.released = true;
-  S.circ.events.push(['20:14', `Sofi ${how} Funcional Lun 08:00. Se ofreció su lugar a la lista de espera.`]);
+  S.circ.events.push(['20:14', `Sofi ${how} Pilates Lun 08:00. Se ofreció su lugar a la lista de espera.`]);
 }
 let S = null;
 S = fresh();
@@ -400,9 +411,12 @@ const A = {
   },
   confirm: () => {
     S.next.status = 'confirmada'; S.push = false;
-    if (S.next.id === S.circ.cls && !S.circ.confirmed) { S.circ.confirmed = true; S.circ.events.push(['19:05', 'Sofi confirmó que va a Funcional Lun 08:00.']); }
+    if (S.next.id === S.circ.cls && !S.circ.confirmed) { S.circ.confirmed = true; S.circ.events.push(['19:05', 'Sofi confirmó que va a Pilates Lun 08:00.']); }
     toast(`Confirmaste tu clase del ${short(byId(S.next.id))}. ${byId(S.next.id).coach} te espera.`); },
-  cantGo: () => set({ push: false, sheet: 'cantgo' }),
+  cantGo: () => {
+    if (S.clock === 'far' && changesLeft() > 0) return set({ push: false, sheet: null, screen: 'change', changeMode: 'once', picked: null, changeDay: byId(S.next.id).day });
+    set({ push: false, sheet: 'cantgo' });
+  },
   closeSheet: () => set({ sheet: null }),
   goChange: () => set({ sheet: null, screen: 'change', changeMode: 'once', picked: null, changeDay: byId(S.next.id).day }),
   seekBetter: () => set({ screen: 'change', changeMode: 'fixed', picked: null, changeDay: byId(S.next.id).day }),
@@ -460,6 +474,7 @@ const A = {
   },
   home: () => set({ screen: 'home', sheet: null }),
   manage: () => set({ screen: 'manage', sheet: null }),
+  profile: () => set({ screen: 'profile', sheet: null, push: false }),
   nextClass: () => set({ next: nextFixed(S.next?.kind === 'fijo' ? S.next.id : null), clock: 'far', screen: 'home', sheet: null }),
   dropin: () => set({ screen: 'dropin', sheet: null }),
   reserve: id => { set({ next: { id, status: 'reservada', kind: 'suelta' }, clock: 'far', screen: 'home' }); toast(`Reservaste ${byId(id).name} del ${short(byId(id))}.`); },
@@ -493,11 +508,13 @@ const A = {
     if (p === 'estudio') S.circ.boardSeen = true;
     set({ persona: p, toast: null });
   },
+  openPush: () => set({ push: false, screen: 'home', sheet: null }),
+  openLu: () => { S.circ.luOpened = true; render(); },
   takeSpot: () => {
     S.circ.taken = 'Lu';
     S.circ.events.push(['20:16', 'Lu tomó el lugar desde la lista de espera. La clase vuelve a estar llena.']);
     S.circ.boardSeen = false;
-    toast('Listo, reservaste Funcional del Lun 08:00 con Vicky.');
+    toast('Listo, reservaste Pilates del Lun 08:00 con Vicky.');
   },
   declineSpot: () => {
     S.circ.taken = 'Mati';
@@ -513,7 +530,7 @@ const A = {
   reset: () => { S = fresh(); render(); },
   flow: id => {
     if (id === 'f1') S = fresh();
-    if (id === 'f2') onboarded({ clock: 'far', sheet: 'cantgo' });
+    if (id === 'f2') { onboarded({ clock: 'far' }); return A.cantGo(); }
     if (id === 'f3') onboarded({ clock: 'near', sheet: 'cantgo' });
     if (id === 'f5') onboarded({ clock: 'near', sheet: 'reason' });
     if (id === 'f6') onboarded({ screen: 'off' });
@@ -702,17 +719,12 @@ const V = {
     const left = changesLeft();
     const warn = !S.lostSlot && S.noShows === RULES.strikes - 1;
     return `<div class="scr">
-      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Sofi</div><div class="class-meta">Plan ${RULES.plan} por semana</div></div><div class="avatar">SG</div></div>
+      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Sofi</div></div><button class="avatar" style="border:0" data-act="profile" aria-label="Mi perfil">SG</button></div>
       ${S.lostSlot ? `<div class="banner warn"><div><b>Recuperá tu horario fijo</b>Andá a ${RULES.recover} clases sin faltar y te lo devolvemos. Vas ${S.recover} de ${RULES.recover}.</div>${recoverBar()}</div>` : ''}
       ${warn ? `<div class="banner"><b>Te queda 1 falta</b>Si faltás o cancelás sin anticipación una vez más este mes, perdés tu lugar. Si no podés ir, avisá antes del plazo.</div>` : ''}
       ${nextCard()}
       ${weekBlock()}
-      <div class="stats">
-        <div class="stat"><div class="v">${S.monthAttended}<span>/${RULES.monthTotal}</span></div><div class="k">Clases este mes</div></div>
-        <div class="stat ${S.noShows ? 'alert' : ''}"><div class="v">${Math.min(S.noShows, RULES.strikes)}<span>/${RULES.strikes}</span></div><div class="k">Faltas este mes</div></div>
-      </div>
       ${bonusBlock()}
-      <button class="link" data-act="manage">Gestionar mis horarios y días off →</button>
     </div>`;
   },
 
@@ -727,11 +739,12 @@ const V = {
       <button class="back" data-act="home">← Volver</button>
       <div>${fixed ? '<span class="a-label">Cambiar tu horario fijo</span>' : `<span class="a-label">Te quedan ${changesLeft()} de ${RULES.max} cambios</span>`}
         <h1 class="a-h1">${fixed ? 'Buscá un horario que te quede mejor' : `Cambiá tu clase del ${short(cur)}`}</h1>
-        <p class="a-p">${fixed ? `Reemplaza tu ${full(cur)} desde la semana que viene.` : 'Elegí otro horario de esta semana. Tu lugar actual queda libre para otra persona.'}</p></div>
+        ${fixed ? `<p class="a-p">Reemplaza tu ${full(cur)} desde la semana que viene.</p>` : ''}</div>
       <div class="days">${tabs}</div>
       <div class="slots">${list}</div>
       <div class="spacer"></div>
       <button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>
+      ${fixed ? '' : '<button class="link" data-act="reason">Tengo un motivo (enfermedad o viaje)</button>'}
     </div>`;
   },
 
@@ -889,6 +902,18 @@ const V = {
     </div>`;
   },
 
+  profile: () => `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div class="topbar"><div class="avatar" style="width:56px;height:56px;font-size:18px">SG</div><div class="who"><h1 class="a-h1">Sofi García</h1><div class="class-meta">Plan ${RULES.plan} clases por semana</div></div></div>
+      <div><span class="a-label">Noviembre</span></div>
+      <div class="stats">
+        <div class="stat"><div class="v">${S.monthAttended}<span>/${RULES.monthTotal}</span></div><div class="k">Clases este mes</div></div>
+        <div class="stat ${S.noShows ? 'alert' : ''}"><div class="v">${Math.min(S.noShows, RULES.strikes)}<span>/${RULES.strikes}</span></div><div class="k">Faltas este mes</div></div>
+      </div>
+      <div class="card"><div class="row-split"><div><span class="a-label">Calendario</span><div>${S.calendar ? `Conectado a ${CALS[S.calendar]}` : 'Sin conectar'}</div></div></div></div>
+      <button class="link" data-act="manage">Gestionar mis horarios y días off →</button>
+    </div>`,
+
   lu: () => {
     const c = byId(S.circ.cls);
     const t = S.circ.taken;
@@ -912,7 +937,7 @@ const V = {
         <p class="a-p">La clase está llena. Si alguien libera su lugar antes del plazo, sos la primera en enterarte.</p></div>`;
     }
     return `<div class="scr">
-      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Lu</div><div class="class-meta">Plan 3 por semana</div></div><div class="avatar">LP</div></div>
+      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Lu</div></div><div class="avatar">LP</div></div>
       ${card}
       <div class="card tint"><div class="a-h3">¿Cómo funciona la lista de espera?</div><p class="a-p">Cuando alguien no puede ir y avisa antes del plazo, le ofrecemos su lugar a la primera persona de la lista. Si no lo toma en 30 minutos, pasa a la siguiente.</p></div>
     </div>`;
@@ -978,9 +1003,8 @@ function sheetView() {
   const reasonLink = '<button class="link" data-act="reason">Tengo un motivo (enfermedad o viaje)</button>';
   let body = '';
   if (S.sheet === 'cantgo' && S.clock === 'far' && changesLeft() > 0) {
-    body = `<div><h2 class="a-h2">No podés ir el ${short(c)}</h2><p class="a-p">Estás a tiempo: hasta el ${deadline(c)} podés pasarla a otro horario sin perder nada.</p></div>
-      <button class="btn primary" data-act="goChange">Cambiar de horario<small>Te quedan ${changesLeft()} de ${RULES.max} cambios este mes</small></button>
-      <button class="btn secondary" data-act="askCancel">Prefiero cancelar</button>${reasonLink}`;
+    body = `<h2 class="a-h2">No puedo asistir a la clase del ${DAYS_FULL[c.day]} ${WEEK7[c.day][1]} a las ${c.time} hrs</h2>
+      <button class="btn primary" data-act="goChange">Cambiar de horario<small>Te quedan ${changesLeft()} de ${RULES.max} cambios este mes</small></button>${reasonLink}`;
   } else if (S.sheet === 'cantgo' && S.clock === 'far') {
     body = `<div><h2 class="a-h2">No podés ir el ${short(c)}</h2><p class="a-p">Ya usaste tus ${RULES.max} cambios de este mes. Como estás antes del plazo, podés cancelar sin que cuente como falta.</p></div>
       <button class="btn primary" data-act="cancelFar">Cancelar la clase</button>
@@ -1002,25 +1026,31 @@ function sheetView() {
   return `<div class="dim" data-act="closeSheet"><div class="sheet" data-stop="1"><div class="grab"></div>${body}</div></div>`;
 }
 
+/* Push notifications live on the phone's lock screen, outside the app. Tapping one opens the app. */
+function lockView(time, title, text, act) {
+  return `<div class="lock" role="alert">
+    <div class="lock-bar"><span></span><span class="dots"><i></i></span></div>
+    <div class="lock-date">Domingo 22 de noviembre</div>
+    <div class="lock-time">${time}</div>
+    <button class="lock-note" data-act="${act}">
+      <div class="push-head"><div class="logo">LOGO</div><span class="app">Tu estudio</span><span class="when">ahora</span></div>
+      <div><b>${title}</b><div class="class-meta">${text}</div></div>
+    </button>
+    <div class="lock-hint">Tocá la notificación para abrir la app</div>
+  </div>`;
+}
+
 function pushView() {
   if (!S.push || !S.next) return '';
   const c = byId(S.next.id);
   const when = S.clock === 'near' ? 'hoy' : 'mañana';
-  return `<div class="push" role="alert">
-    <div class="push-head"><div class="logo">LOGO</div><span class="app">Tu estudio</span><span class="when">ahora</span></div>
-    <div><b>${c.coach} te espera ${when} a las ${c.time}</b><div class="class-meta">${c.name} · ¿Vas a ir? Si no podés, cambiala hasta el ${deadline(c)}.</div></div>
-    <div class="btn-row"><button class="btn primary" data-act="confirm">Voy</button><button class="btn secondary" data-act="cantGo">No puedo</button></div>
-  </div>`;
+  return lockView('20:00', `${c.coach} te espera ${when} a las ${c.time}`, `${c.name} · ¿Vas a ir? Si no podés, cambiala hasta el ${deadline(c)}.`, 'openPush');
 }
 
 function luPush() {
-  if (!S.circ.released || S.circ.taken) return '';
+  if (!S.circ.released || S.circ.taken || S.circ.luOpened) return '';
   const c = byId(S.circ.cls);
-  return `<div class="push" role="alert">
-    <div class="push-head"><div class="logo">LOGO</div><span class="app">Tu estudio</span><span class="when">ahora</span></div>
-    <div><b>¡Se liberó un lugar!</b><div class="class-meta">${c.name} · mañana ${c.time} con ${c.coach}. Tenés 30 min para tomarlo.</div></div>
-    <div class="btn-row"><button class="btn primary" data-act="takeSpot">Tomar el lugar</button><button class="btn secondary" data-act="declineSpot">No, gracias</button></div>
-  </div>`;
+  return lockView('20:14', '¡Se liberó un lugar!', `${c.name} · mañana ${c.time} con ${c.coach}. Tenés 30 min para tomarlo.`, 'openLu');
 }
 
 /* circuit steps: 0 reminder, 1 confirm/release, 2 waitlist takes it, 3 owner sees it */
@@ -1029,7 +1059,7 @@ function circTags() {
   const onC = S.next && S.next.id === S.circ.cls;
   if (S.persona === 'socia') {
     if (S.push && onC) t.add(0);
-    if ((S.sheet && onC) || (S.circ.released && ['cancelled', 'changed', 'justified', 'offDone'].includes(S.screen)) || (onC && S.next.status === 'confirmada' && S.screen === 'home')) t.add(1);
+    if ((S.sheet && onC) || (S.screen === 'change' && onC) || (S.circ.released && ['cancelled', 'changed', 'justified', 'offDone'].includes(S.screen)) || (onC && S.next.status === 'confirmada' && S.screen === 'home')) t.add(1);
   }
   if (S.persona === 'espera') t.add(2);
   if (S.persona === 'estudio') t.add(3);
@@ -1056,11 +1086,11 @@ function tags() {
   if (S.sheet === 'confirmFar') t.add('f2-2');
   if (S.sheet === 'reason') { t.add('f5-1'); t.add('f6-0'); }
   if (sc === 'justified') t.add('f5-2');
-  if (sc === 'change') t.add(S.changeMode === 'fixed' ? 'f4-1' : 'f2-1');
+  if (sc === 'change') { if (S.changeMode === 'fixed') t.add('f4-1'); else { t.add('f2-0'); t.add('f2-1'); } }
   if (sc === 'changed') t.add(S.changeMode === 'fixed' ? 'f4-1' : 'f2-2');
   if (sc === 'cancelled') t.add(S.lateCancel ? 'f3-1' : 'f2-2');
   if (sc === 'noshow') { t.add(S.noShows >= RULES.strikes ? 'f4-2' : S.noShows === RULES.strikes - 1 ? 'f4-1' : 'f4-0'); if (!S.lateCancel) t.add('f5-0'); else t.add('f3-1'); }
-  if (sc === 'manage') t.add('f6-0');
+  if (sc === 'manage' || sc === 'profile') t.add('f6-0');
   if (sc === 'off') { t.add('f6-0'); t.add('f6-1'); }
   if (sc === 'offDone' || (sc === 'home' && S.next?.status === 'off')) t.add('f6-2');
   return t;
@@ -1083,7 +1113,7 @@ function sideView() {
   const cdone = [S.circ.confirmed || S.circ.released, S.circ.confirmed || S.circ.released, !!S.circ.taken, !!S.circ.taken && S.circ.boardSeen];
   const csteps = [
     ['socia', 'Recordatorio antes de que cierre el plazo', 'Sofi recibe el aviso para su clase del lunes 8:00.'],
-    ['socia', 'Confirma o libera su lugar', 'Toca "Voy", o "No puedo" y cambia o cancela.'],
+    ['socia', 'Confirma o libera su lugar', 'Abre la app desde la notificación y toca "Confirmar que voy" o "No puedo ir".'],
     ['espera', 'La lista de espera lo ocupa', 'Lu recibe el lugar y lo toma.'],
     ['estudio', 'El estudio ve el lugar recuperado', 'La clase vuelve a estar llena en el panel.'],
   ].map(([p, title, sub], i) => `<button class="cstep ${ct.has(i) ? 'on' : cdone[i] ? 'done' : ''}" data-act="persona" data-arg="${p}"><b>${i + 1}</b><span>${title}</span>${sub}</button>`).join('');
@@ -1111,7 +1141,7 @@ function sideView() {
     <div class="box"><h2>Reglas del demo</h2>
       <ul class="rules">
         ${rule('Plazo según el horario: clases antes de las 12, hasta las 21 h del día anterior. El resto, hasta 6 h antes.', 'Feedback')}
-        ${rule(`Antes del plazo: la acción principal es <b>Cambiar</b> (usa 1 de ${RULES.max} cambios). Cancelar no cuenta como falta.`, 'Definido')}
+        ${rule(`Antes del plazo: solo puede <b>cambiar</b> la clase (usa 1 de ${RULES.max} cambios), no cancelarla.`, 'Definido')}
         ${rule('Después del plazo: solo se puede cancelar, y cuenta como falta.', 'Definido')}
         ${rule('2.ª falta en el mes: aviso "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', 'Definido')}
         ${rule(`${RULES.strikes} faltas en el mes (sin avisar o cancelando sin anticipación): pierde su lugar en el mes y puede reservar clases sueltas.`, 'Definido')}

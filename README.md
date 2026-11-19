@@ -46,7 +46,7 @@ El objetivo es reducir el **no-show**: la persona que no va y no avisa. Pero qui
 
 | Situación | Qué puede hacer | Consecuencia |
 | --- | --- | --- |
-| **Antes del plazo** | Acción principal: **Cambiar** de horario (usa 1 de los 5 cambios). También puede cancelar. | Ninguna. No cuenta como falta. |
+| **Antes del plazo** | Solo puede **cambiar** de horario (usa 1 de los 5 cambios). No puede cancelar. | Ninguna. No cuenta como falta. |
 | **Después del plazo** | Solo puede **cancelar**. | Cuenta como falta. |
 | **Motivo justificado** (enfermedad) | Lo indica al avisar, o después de faltar. | Ninguna. No cuenta como falta. |
 | **Viaje o vacaciones** | Se toma **días off** según su membresía. | Sus clases quedan en pausa y conserva su horario fijo. |
@@ -108,8 +108,8 @@ Estos flujos salen del paso 3 del happy path: el usuario ya tiene sus horarios e
 **Flujo 2 — Avisa antes del plazo: cambia de horario.**
 
 1. El usuario indica que no puede ir, antes del plazo.
-2. La acción principal es **Cambiar**: le mostramos los horarios disponibles y cuántos cambios le quedan en el mes.
-3. Elige otro horario. Si prefiere, también puede cancelar sin consecuencias.
+2. "No puedo ir" lo lleva directo a elegir un horario nuevo, con los horarios disponibles.
+3. Elige otro horario. Antes del plazo no puede cancelar, solo cambiar.
 
 **Flujo 3 — Avisa después del plazo: solo puede cancelar.**
 
