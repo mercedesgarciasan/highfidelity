@@ -25,6 +25,13 @@ La clase figura llena, pero en la práctica quedan lugares vacíos. El instructo
 - "Tengo otro plan."
 - "El horario es temprano y me da fiaca."
 
+## Cómo funciona la app
+
+- **Pago mensual.**
+- **Slot reservado:** se reserva un horario fijo de antemano ("te guardamos el slot").
+- **5 modificaciones por mes.**
+- **Cancelación hasta 6 horas antes.** Si cancelás 3 veces seguidas, perdés tu slot.
+
 ## Ideas (brainstorming)
 
 ### Rewards
@@ -39,19 +46,48 @@ La clase figura llena, pero en la práctica quedan lugares vacíos. El instructo
 ### Penalidades
 
 - Fee o bloqueo por no-show.
-- Mostrarle a la persona su % de cancelaciones.
+- Si cancelás 3 veces seguidas perdés tu slot y tenés que volver a esperar para recuperar tu lugar.
+- Baja tu scoring si no vas a clase.
 
 ### Visibilidad
 
-- Seguimiento de los profes para ver quién viene y quién no.
+- Seguimiento de los profes para ver quién viene y quién no, con notificaciones ("Vicky te espera hoy a las…") y confirmación de asistencia.
 - Bloques en la agenda con sync a Google Calendar.
 - Saber cuántos cambios de horario me quedan en el mes.
-- **Lugar fijo:** tenés tu día y horario fijo; esa plaza es tuya, pero si faltás 3 veces seguidas la perdés y volvés a la lista de espera.
+- **Lugar fijo:** tenés tu día y horario fijo; esa plaza es tuya, pero si faltás 3 veces seguidas la perdés.
 - **5 cambios por mes** con tiempo de antelación, viendo los lugares disponibles en una vista tipo calendario.
+- Ver el % de cancelaciones.
 
 **Pain detectado:** hoy es difícil cambiar el horario y enterarse con antelación de que se liberó un lugar para poder usarlo.
 
 ## Task flow
+
+### Parte 1: me inscribo y me comprometo
+
+**Flujo 1 — Happy path:** el usuario no cancela, hace todo bien y suma puntos.
+
+1. El usuario se loguea.
+2. Ve los horarios disponibles.
+3. Selecciona sus horarios según su membresía.
+4. Habilita recordatorios.
+5. Recibe un reminder: "¿Vas a asistir a la clase? Confirmá tu asistencia."
+6. Concurre a clase (el back registra que fue).
+7. Suma puntos por asistir a tiempo.
+
+### Parte 2: cancelaciones
+
+**Flujo 2 — Cancela a tiempo, sin consecuencias.**
+
+1. El usuario cancela con más de 6 horas de antelación, más de una vez en el mismo mes.
+2. Le preguntamos: "¿Necesitás cambiar de horario?"
+3. Le mostramos los horarios disponibles.
+
+**Flujo 3 — Cancela fuera del plazo permitido.**
+
+1. El usuario cancela con menos de 6 horas de antelación, más de una vez en el mismo mes.
+2. Le mostramos que bajó su puntaje, que tiene que esperar para recuperar su horario y que puede agendar manualmente las clases sueltas que queden disponibles.
+
+## Artefacto
 
 _En definición. Ver el board de FigJam._
 
