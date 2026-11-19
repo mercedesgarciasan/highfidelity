@@ -49,7 +49,7 @@ El objetivo es reducir el **no-show**: la persona que no va y no avisa. Pero qui
 | **Antes del plazo** | Solo puede **cambiar** de horario (usa 1 de los 5 cambios). No puede cancelar. | Ninguna. No cuenta como falta. |
 | **Después del plazo** | Solo puede **cancelar**. | Cuenta como falta. |
 | **Motivo justificado** (enfermedad) | Lo indica al avisar, o después de faltar. | Ninguna. No cuenta como falta. |
-| **Viaje o vacaciones** | Se toma **días off** según su membresía. | Sus clases quedan en pausa y conserva su horario fijo. |
+| **Viaje o vacaciones** | Se toma **días off** según su membresía: elige un rango de fechas dentro del período que ya pagó (por ejemplo, si pagó noviembre y hoy es 19, puede elegir del 20 al 30). | Sus clases quedan en pausa y conserva su horario fijo. |
 | **No va y no avisó** (no-show) | — | Cuenta como falta. |
 | **2.ª falta** en el mes | Aviso: **"Te queda 1 falta"**. La app le pregunta "¿Querés buscar un hueco que te quede mejor?" y le muestra los horarios disponibles. | — |
 | **3.ª falta** en el mes | Puede reservar clases sueltas. | Pierde su lugar en el mes. Lo **recupera yendo a 3 clases** sin faltar. |
@@ -132,12 +132,14 @@ Estos flujos salen del paso 3 del happy path: el usuario ya tiene sus horarios e
 **Flujo 6 — Se toma días off.**
 
 1. Entra a Días off, o elige "Me voy de viaje" al avisar que no puede ir.
-2. Elige los días, según los que le quedan de su membresía.
+2. Elige un rango de fechas en el calendario, dentro del mes que ya pagó y sin pasarse de los días off que le quedan.
 3. Sus clases quedan en pausa y conserva su horario fijo.
 
 ## Artefacto
 
 Prototipo funcional, sobre todo del lado del **socio** (la persona que va a entrenar). Está en [prototipo/index.html](prototipo/index.html): es un solo archivo HTML y se abre directo en el navegador.
+
+[prototipo/flujos.html](prototipo/flujos.html) muestra los dos flujos principales de faltas pantalla por pantalla (2 faltas → sugerimos cambiar de horario; 3 faltas → pierde su lugar ese mes). Usa las mismas pantallas que el prototipo.
 
 ### Circuito de la demo
 

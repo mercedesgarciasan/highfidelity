@@ -83,7 +83,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .card { background: var(--a-card); border: 1px solid var(--a-line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .card.tint { background: color-mix(in srgb, var(--brand) 6%, #fff); border-color: color-mix(in srgb, var(--brand) 18%, #fff); }
 .next-card { border-color: transparent; box-shadow: 0 1px 0 var(--a-line), 0 10px 24px -18px rgba(20,22,26,.35); }
-.next-title { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+.next-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 .class-name { font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.1; }
 .class-meta { color: var(--a-muted); }
 .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; white-space: nowrap; background: var(--a-bg); color: var(--a-muted); }
@@ -103,6 +103,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .btn-row { display: flex; flex-direction: column; gap: 10px; }
 .btn-row .btn { flex: 1; }
 .btn small { display: block; font-weight: 500; font-size: 12px; opacity: .8; margin-top: 2px; }
+.caption { font-size: 12px; color: var(--a-muted); text-align: center; margin-top: -4px; }
 .link { background: none; border: 0; padding: 4px 0; color: var(--brand); font-weight: 600; align-self: center; }
 
 .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -148,6 +149,16 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
 .day { flex: none; border: 1px solid var(--a-line); background: var(--a-card); border-radius: 12px; padding: 8px 12px; font-weight: 600; color: var(--a-muted); }
 .day.on { background: var(--a-fg); color: #fff; border-color: var(--a-fg); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); row-gap: 4px; }
+.cal .wh { text-align: center; font-size: 11px; color: var(--a-muted); font-weight: 600; padding-bottom: 4px; }
+.cday { height: 40px; border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-weight: 600; color: var(--a-fg); font-variant-numeric: tabular-nums; padding: 0; }
+.cday i { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
+.cday i.has { background: var(--brand); }
+.cday:disabled { color: #B9BEC7; cursor: not-allowed; }
+.cday.in { background: color-mix(in srgb, var(--brand) 14%, #fff); }
+.cday.edge { background: var(--brand); color: #fff; border-radius: 12px; }
+.cday.edge i.has { background: #fff; }
+.cday.taken { background: var(--a-bg); color: var(--a-muted); text-decoration: line-through; }
 .daygrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
 .dchip { border: 1.5px solid var(--a-line); background: var(--a-card); border-radius: 12px; padding: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--a-fg); }
 .dchip small { color: var(--a-muted); font-size: 11px; font-weight: 600; }
@@ -303,6 +314,13 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 const DAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DAYS_FULL = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const PREV_DAY = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
+/* November 2026: paid from the 1st to the 30th, today is the 19th. Nov 1 is a Sunday. */
+const FIRST_FREE = 20;
+const WEEK_START = 23; /* Monday of the class week shown in the app */
+const DAYS7 = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const wdOf = d => (d + 5) % 7; /* 0 = Monday */
+const classTimes = d => S.slots.filter(id => byId(id).day === wdOf(d)).map(id => byId(id).time);
+const rangeText = (a, b) => (a === b ? `el ${a} de noviembre` : `del ${a} al ${b} de noviembre`);
 const WEEK7 = [['Lun', 23], ['Mar', 24], ['Mié', 25], ['Jue', 26], ['Vie', 27], ['Sáb', 28], ['Dom', 29]];
 const CLASSES = [
   ['lun-0700', 0, '07:00', 'Pilates', 'Vicky', 3], ['lun-0800', 0, '08:00', 'Pilates', 'Vicky', 1], ['lun-1230', 0, '12:30', 'Yoga', 'Caro', 5], ['lun-1900', 0, '19:00', 'Yoga', 'Tomi', 0], ['lun-2000', 0, '20:00', 'Pilates', 'Juli', 4],
@@ -324,6 +342,14 @@ function deadline(c) {
   return `${DAYS[c.day]} ${String(h - 6).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
+const PREV_DAY_FULL = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes'];
+/* "el domingo a las 21 h" */
+function deadlineLong(c) {
+  if (isMorning(c)) return `el ${PREV_DAY_FULL[c.day]} a las 21 h`;
+  const [h, m] = c.time.split(':').map(Number);
+  return `el ${DAYS_FULL[c.day].toLowerCase()} a las ${h - 6}${m ? `:${String(m).padStart(2, '0')}` : ''} h`;
+}
+
 const RULES = { max: 5, plan: 2, strikes: 3, excuses: 2, off: 7, recover: 3, monthTotal: 8, nextMonth: 'diciembre' };
 const BRANDS = [['#2F5DDB', 'Azul'], ['#0E7C66', 'Verde'], ['#C2471F', 'Naranja'], ['#1E1F24', 'Negro']];
 const DEFAULT_SLOTS = ['lun-0800', 'mie-0800'];
@@ -336,13 +362,13 @@ const FLOWS = [
   { id: 'f3', title: 'Avisa después del plazo', steps: ['Indica que no puede ir', 'Solo puede cancelar: cuenta como falta'] },
   { id: 'f4', title: 'No va y no avisa', steps: ['Falta sin avisar', '2.ª falta: "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', '3.ª falta: pierde su lugar en el mes y reserva clases sueltas', `Recupera su horario yendo a ${RULES.recover} clases`] },
   { id: 'f5', title: 'Tiene un motivo justificado', steps: ['Avisa que no puede ir, o ya faltó', 'Elige "Tengo un motivo": enfermedad', 'No cuenta como falta'] },
-  { id: 'f6', title: 'Se toma días off', steps: ['Desde su perfil entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige los días, según lo que le queda de su plan', 'Sus clases quedan en pausa y conserva su horario'] },
+  { id: 'f6', title: 'Se toma días off', steps: ['Desde su perfil entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige un rango de fechas dentro del mes que ya pagó', 'Sus clases quedan en pausa y conserva su horario'] },
 ];
 
 const fresh = () => ({
   screen: 'login', clock: 'far', slots: [], next: null, changesUsed: 0, noShows: 0,
   monthAttended: 5, bonusOk: true, bonusLostAt: null, calendar: null,
-  lostSlot: false, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offSel: [], justFrom: null, lastFault: null,
+  lostSlot: false, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, justFrom: null, lastFault: null,
   reminders: true, confirmAsk: true, push: false, sheet: null, changeMode: 'once',
   changeDay: 0, picked: null, lateCancel: false, toast: null, brand: S?.brand ?? 0,
   persona: 'socia',
@@ -439,7 +465,7 @@ const A = {
     release('canceló fuera de plazo');
     S.next.status = 'cancelada';
     const n = addFault('late');
-    set({ sheet: null, lateCancel: true, screen: n >= RULES.strikes ? 'noshow' : 'cancelled' });
+    set({ sheet: null, lateCancel: true, screen: n >= RULES.strikes - 1 ? 'noshow' : 'cancelled' });
   },
   reason: () => set({ sheet: 'reason', push: false }),
   justify: () => {
@@ -456,21 +482,29 @@ const A = {
     set({ noShows: n, lostSlot: n >= RULES.strikes, recover: 0, excusesUsed: S.excusesUsed + 1, justFrom: 'falta', screen: 'justified', ...(restore ? { bonusOk: true, bonusLostAt: null } : {}) });
   },
   goOff: () => {
-    const pre = S.sheet && S.next ? [byId(S.next.id).day] : [];
-    set({ sheet: null, push: false, screen: 'off', offSel: pre.filter(d => !S.offDays.includes(d)) });
+    const pre = S.sheet && S.next ? WEEK_START + byId(S.next.id).day : null;
+    set({ sheet: null, push: false, screen: 'off', offStart: pre, offEnd: pre, offPhase: pre ? 'end' : 'start' });
   },
+  /* Range picker: first tap sets the start, second tap the end; a third tap starts over. */
   toggleOff: d => {
     d = +d;
-    if (S.offDays.includes(d)) return;
-    if (S.offSel.includes(d)) return set({ offSel: S.offSel.filter(x => x !== d) });
-    if (S.offSel.length >= offLeft()) return toast(`Te quedan ${offLeft()} días off en este trimestre.`);
-    set({ offSel: [...S.offSel, d] });
+    if (d < FIRST_FREE || S.offTaken.includes(d)) return;
+    let start = S.offStart, end = S.offEnd, phase = S.offPhase;
+    if (phase === 'end' && d >= start) { end = d; phase = 'done'; }
+    else { start = d; end = d; phase = 'end'; }
+    for (let x = start; x <= end; x++) if (S.offTaken.includes(x)) return toast('Ese rango incluye días que ya tomaste.');
+    if (end - start + 1 > offLeft()) return toast(`Te quedan ${offLeft()} días off este trimestre.`);
+    set({ offStart: start, offEnd: end, offPhase: phase });
   },
   confirmOff: () => {
-    if (!S.offSel.length) return;
-    const offDays = [...S.offDays, ...S.offSel].sort((a, b) => a - b);
+    if (!S.offStart) return;
+    const dates = [];
+    for (let x = S.offStart; x <= S.offEnd; x++) dates.push(x);
+    const offTaken = [...S.offTaken, ...dates];
+    /* weekday indices of the current class week (Mon 23 to Sat 28) that are now off */
+    const offDays = [...new Set([...S.offDays, ...dates.filter(x => x >= WEEK_START && x < WEEK_START + 6).map(x => x - WEEK_START)])].sort((a, b) => a - b);
     if (S.next && OPEN.includes(S.next.status) && offDays.includes(byId(S.next.id).day)) { release('se tomó días off y liberó'); S.next.status = 'off'; }
-    set({ offDays, offUsed: S.offUsed + S.offSel.length, screen: 'offDone' });
+    set({ offDays, offTaken, offUsed: S.offUsed + dates.length, offLast: [S.offStart, S.offEnd], offStart: null, offEnd: null, offPhase: 'start', screen: 'offDone' });
   },
   home: () => set({ screen: 'home', sheet: null }),
   manage: () => set({ screen: 'manage', sheet: null }),
@@ -578,14 +612,15 @@ function nextCard() {
       <button class="btn primary" data-act="dropin">Ver clases sueltas</button></div>`;
   }
   const c = byId(S.next.id);
-  const kind = S.next.kind === 'suelta' ? ' · clase suelta' : S.next.kind === 'cambio' ? ' · cambiada' : '';
+  const kind = S.next.kind === 'suelta' ? ' · clase suelta' : '';
   const st = S.next.status;
   let actions = '';
   if (OPEN.includes(st)) {
     if (S.clock === 'past') actions = '<p class="a-p">Estamos registrando tu asistencia.</p>';
     else actions = `<div class="btn-row">
         ${st === 'reservada' ? '<button class="btn primary" data-act="confirm">Confirmar que voy</button>' : ''}
-        <button class="btn secondary" data-act="cantGo">No puedo ir</button></div>`;
+        <button class="btn secondary" data-act="cantGo">No puedo ir</button></div>
+        <div class="caption">${S.clock === 'far' ? `Tenés hasta ${deadlineLong(c)} para gestionarla` : `Ya pasó el plazo para cambiarla (era ${deadlineLong(c)})`}</div>`;
   } else if (st === 'off') {
     actions = `<p class="a-p">Estás de días off: esta clase no cuenta y tu horario sigue siendo tuyo.</p><button class="btn secondary" data-act="nextClass">Ver mi próxima clase</button>`;
   } else {
@@ -594,7 +629,6 @@ function nextCard() {
   return `<div class="card next-card">
     <div class="next-title"><span class="a-label">Tu próxima clase${kind}</span>${statusPill(st)}</div>
     <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
-    ${OPEN.includes(st) ? timing(c) : ''}
     ${actions}
   </div>`;
 }
@@ -756,7 +790,6 @@ const V = {
       <div class="result-icon good">✓</div>
       <div><h1 class="a-h1">${fixed ? 'Tu nuevo horario fijo' : 'Listo, cambiaste tu clase'}</h1>
       <p class="a-p">${c.name} el <b>${full(c)}</b> con ${c.coach}.${S.calendar ? ` Lo actualizamos en tu ${CALS[S.calendar]}.` : ''}</p></div>
-      ${circLine()}
       <div class="card">${fixed ? '<div>Arranca la semana que viene. No usa tus cambios del mes.</div>' : `<div>Te quedan <b>${changesLeft()} de ${RULES.max}</b> cambios este mes.</div><div class="class-meta">No cuenta como falta y seguís en carrera por la clase gratis.</div>`}</div>
       <div class="spacer"></div>
       <button class="btn primary" data-act="home">Volver al inicio</button>
@@ -854,7 +887,7 @@ const V = {
       <div class="spacer"></div>
       <button class="btn primary" data-act="seekBetter">Ver otros horarios</button>
       <button class="btn ghost" data-act="nextClass">Por ahora no</button>
-      ${justifyLink()}
+      ${S.lateCancel ? '' : justifyLink()}
     </div>`;
     return `<div class="scr result">
       <div class="spacer"></div>
@@ -882,23 +915,30 @@ const V = {
   },
 
   off: () => {
-    const classDays = S.slots.map(id => byId(id).day);
-    const chips = WEEK7.map(([d, n], i) => {
-      const taken = S.offDays.includes(i);
-      const on = taken || S.offSel.includes(i);
-      return `<button class="dchip ${on ? 'on' : ''}" data-act="toggleOff" data-arg="${i}" ${taken ? 'disabled' : ''} aria-pressed="${on}"><small>${d}</small><b>${n}</b><i class="${classDays.includes(i) ? 'has' : ''}"></i></button>`;
-    }).join('');
-    const paused = S.slots.filter(id => S.offSel.includes(byId(id).day));
-    const k = S.offSel.length;
+    const head = ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(x => `<span class="wh">${x}</span>`).join('');
+    const blanks = '<span></span>'.repeat(wdOf(1));
+    let cells = '';
+    for (let d = 1; d <= 30; d++) {
+      const past = d < FIRST_FREE;
+      const taken = S.offTaken.includes(d);
+      const inR = S.offStart && d >= S.offStart && d <= S.offEnd;
+      const edge = inR && (d === S.offStart || d === S.offEnd);
+      const has = !past && classTimes(d).length;
+      cells += `<button class="cday ${inR ? 'in' : ''} ${edge ? 'edge' : ''} ${taken ? 'taken' : ''}" data-act="toggleOff" data-arg="${d}" ${past || taken ? 'disabled' : ''} aria-pressed="${!!inR}" aria-label="${d} de noviembre">${d}<i class="${has ? 'has' : ''}"></i></button>`;
+    }
+    const k = S.offStart ? S.offEnd - S.offStart + 1 : 0;
+    const paused = [];
+    for (let d = S.offStart || 1; S.offStart && d <= S.offEnd; d++) classTimes(d).forEach(t => paused.push(`${DAYS7[wdOf(d)]} ${d} · ${t}`));
     return `<div class="scr">
       <button class="back" data-act="home">← Volver</button>
       <div><span class="a-label">Te quedan ${offLeft()} de ${RULES.off} días este trimestre</span><h1 class="a-h1">Tomate unos días</h1>
-      <p class="a-p">Durante tus días off las clases quedan en pausa: no cuentan como faltas y tu horario fijo sigue siendo tuyo.</p></div>
-      <div><div class="class-meta" style="margin-bottom:8px">Noviembre · el punto marca tus clases</div><div class="daygrid">${chips}</div></div>
-      <div class="card">${paused.length ? `<div>Quedan en pausa: <b>${paused.map(id => short(byId(id))).join(', ')}</b></div>` : '<div class="class-meta">Elegí los días que no vas a estar.</div>'}
-      <div class="class-meta">Tu plan de ${RULES.plan} clases por semana incluye ${RULES.off} días off por trimestre.</div></div>
+      <p class="a-p">Tu plan está pago hasta el 30 de noviembre. Elegí desde qué día hasta qué día no vas a estar: tus clases quedan en pausa y no cuentan como faltas.</p></div>
+      <div class="card"><div class="next-title"><span class="a-h3">Noviembre 2026</span><span class="class-meta">${k ? `${k} ${k === 1 ? 'día' : 'días'}` : ''}</span></div>
+        <div class="cal">${head}${blanks}${cells}</div>
+        <div class="class-meta">Tocá el primer y el último día. Los días que ya pasaron no se pueden elegir. El punto marca tus clases.</div></div>
+      ${paused.length ? `<div class="card"><div><b>Quedan en pausa</b></div><div class="class-meta">${paused.join('<br>')}</div></div>` : ''}
       <div class="spacer"></div>
-      <button class="btn primary" data-act="confirmOff" ${k ? '' : 'disabled'}>${k ? `Tomar ${k} ${k === 1 ? 'día' : 'días'} off` : 'Elegí al menos un día'}</button>
+      <button class="btn primary" data-act="confirmOff" ${k ? '' : 'disabled'}>${k ? `Tomar días off ${rangeText(S.offStart, S.offEnd)}` : 'Elegí desde qué día'}</button>
     </div>`;
   },
 
@@ -984,12 +1024,14 @@ const V = {
   },
 
   offDone: () => {
-    const paused = S.slots.filter(id => S.offDays.includes(byId(id).day));
+    const [a, b] = S.offLast || [0, 0];
+    let n = 0;
+    for (let d = a; a && d <= b; d++) n += classTimes(d).length;
     return `<div class="scr result">
       <div class="spacer"></div>
       <div class="result-icon good">✓</div>
       <div><h1 class="a-h1">Listo, que lo disfrutes</h1>
-      <p class="a-p">${paused.length ? `Pusimos en pausa tu ${paused.map(id => short(byId(id))).join(' y ')}. ` : ''}Tu horario fijo te espera a la vuelta.</p></div>
+      <p class="a-p">Estás de días off ${rangeText(a, b)}. ${n ? `Pusimos en pausa ${n === 1 ? 'tu clase' : `tus ${n} clases`} de esos días. ` : ''}Tu horario fijo te espera a la vuelta.</p></div>
       <div class="card"><div>Te quedan <b>${offLeft()} de ${RULES.off}</b> días off este trimestre.</div></div>
       <div class="spacer"></div>
       <button class="btn primary" data-act="home">Volver al inicio</button>
