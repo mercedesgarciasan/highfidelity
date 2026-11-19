@@ -1,0 +1,156 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Chart
+   Gráficos de línea, barra y torta para dashboards y analytics.
+   Implementación simplificada: SVG a mano (línea/barra) + conic-gradient
+   CSS (torta) — sin librería de charting. Cubre los casos comunes de un
+   sitio de documentación; no tiene brush/zoom. El tooltip es rico y
+   posicionado por JS (indicador de color + etiqueta + valor, initChartTooltips)
+   sobre los puntos/barras; el <title> nativo queda como fallback accesible.
+
+   Cuándo usar: series temporales o categóricas en dashboards y analytics
+   (línea, barra, torta).
+   Cuándo no: una sola métrica puntual (usar Stat Card); tablas de datos
+   exactos (usar Table).
+   Reemplaza a: gráficos armados con imágenes estáticas o librerías ad-hoc
+   sin theming.
+
+   Dependencia: variables.css (Color Roles)
+   Paleta categórica (--chart-1..5) definida localmente acá — no existe
+   en variables.css, se mapea 1:1 a roles semánticos existentes
+   (Secondary/Tertiary/Success/Warning/Info), nunca a --primary
+   (invierte a blanco en dark mode, ver Tabs/GOVERNANCE.md §5.6).
+
+   Uso:
+   <div class="chart-container">
+     <svg class="chart-svg" viewBox="0 0 600 300">…</svg>
+   </div>
+═══════════════════════════════════════ */
+
+.chart-container {
+  --chart-1: var(--secondary);
+  --chart-2: var(--tertiary);
+  --chart-3: var(--success);
+  --chart-4: var(--warning);
+  --chart-5: var(--info);
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  font-size: var(--font-size-caption);
+  color: var(--on-surface-variant);
+}
+
+/* SVG scales responsively via viewBox — no JS measurement needed */
+.chart-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.chart-grid line {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  fill: var(--on-surface-variant);
+  /* 11px en font-body no tenía token: el único 11px de la escala es
+     --font-size-mono-sm, y un rótulo de eje no es mono. Por ROL es texto de
+     apoyo de un dato — el mismo registro que un timestamp — así que va a
+     caption. Un píxel más grande, y deja de ser un valor suelto. */
+  font-size: var(--font-size-caption);
+  font-family: var(--font-body);
+}
+
+/* ── Line chart ── */
+.chart-line {
+  fill: none;
+  stroke-width: 2;
+}
+.chart-area {
+  opacity: .14;
+}
+.chart-dot {
+  transition: r var(--duration-fast);
+  cursor: default;
+}
+.chart-dot:hover {
+  r: 5;
+}
+
+/* ── Bar chart ── */
+.chart-bar {
+  transition: opacity var(--duration-fast);
+  cursor: default;
+}
+.chart-bar:hover {
+  opacity: .82;
+}
+
+/* ── Pie chart ── */
+.chart-pie {
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-full);
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+/* ── Legend ── */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  font-size: var(--font-size-caption);
+  color: var(--on-surface-variant);
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.chart-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Pie layout (chart + legend side by side on wider screens) ── */
+.chart-pie-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ── Rich tooltip (posicionado por JS) ── par shadcn ChartTooltipContent:
+   indicador de color + etiqueta + valor, sobre superficie inversa. Lo posiciona
+   initChartTooltips() al hacer hover en un .chart-dot / .chart-bar. */
+.chart-tooltip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 8px));
+  padding: var(--space-1-5) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  background: var(--inverse-surface);
+  color: var(--inverse-on-surface);
+  box-shadow: var(--shadow-md);
+  font-size: var(--font-size-caption);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+.chart-tooltip.is-visible { opacity: 1; }
+.chart-tooltip-row { display: flex; align-items: center; gap: var(--space-2); }
+.chart-tooltip-indicator { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.chart-tooltip-label { color: color-mix(in srgb, var(--inverse-on-surface) 68%, transparent); }
+.chart-tooltip-value { margin-left: auto; font-family: var(--font-mono); font-weight: 600; }
+/* Punto resaltado en hover para un objetivo más visible. */
+.chart-dot { transition: r var(--duration-fast) var(--ease-default); }
+.chart-dot:hover { r: 5.5; }

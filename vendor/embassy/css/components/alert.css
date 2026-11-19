@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════
+   Embassy DS — Alert
+   Mensaje estático en contexto que destaca información importante
+   dentro de la página.
+
+   Cuándo usar: mensajes persistentes en la página — un aviso de sistema,
+   la validación completa de un formulario, una nota informativa que
+   debe seguir visible hasta que la persona actúe.
+   Cuándo no: feedback efímero de una acción (usar Snackbar); confirmación
+   que interrumpe (usar Alert Dialog); como único indicador por color
+   (acompañá siempre con título/ícono).
+   Reemplaza a: banners de aviso ad-hoc.
+
+   Alert vs. Snackbar (NO son duplicados):
+     Alert     → INLINE, PERSISTENTE. Convive con el contenido, varios a la
+                 vez, hasta que se resuelve o se descarta manualmente.
+     Snackbar  → FLOTANTE, EFÍMERO. Uno por vez en cola, se auto-descarta
+                 (~4–10s), confirma que algo ya pasó.
+   Regla rápida: si debe seguir visible hasta que la persona actúe → Alert;
+   si solo confirma un hecho → Snackbar.
+
+   Dependencia: variables.css (Color Roles). Reusa exactamente los mismos
+   roles container/on-container que Badge (badge.css) para que ambos
+   hablen el mismo lenguaje de color semántico.
+
+   Uso:
+   <div class="alert alert-info" role="alert">
+     <svg class="alert-icon">…</svg>
+     <div class="alert-body">
+       <div class="alert-title">Mantenimiento programado</div>
+       <div class="alert-description">El sistema estará en modo lectura el sábado de 2 a 4am.</div>
+     </div>
+   </div>
+═══════════════════════════════════════ */
+
+.alert {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-0-5) var(--space-3);
+  align-items: start;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-container);
+  color: var(--on-surface);
+}
+.alert:has(.alert-icon) { grid-template-columns: auto 1fr; }
+
+.alert-icon {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+}
+
+.alert-body { grid-column: 2; }
+.alert:not(:has(.alert-icon)) .alert-body { grid-column: 1; }
+
+.alert-title {
+  font-size: var(--font-size-body-md);
+  font-weight: 600;
+  line-height: var(--line-height-title);
+}
+
+.alert-description {
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+  opacity: .9;
+  margin-top: 2px;
+}
+
+/* ── Variantes semánticas — mismos roles que badge-{info,open,warning,error} ── */
+.alert-info {
+  background: var(--info-container);
+  border-color: transparent;
+  color: var(--on-info-container);
+}
+.alert-info .alert-icon { color: var(--on-info-container); }
+
+.alert-success {
+  background: var(--success-container);
+  border-color: transparent;
+  color: var(--on-success-container);
+}
+.alert-success .alert-icon { color: var(--on-success-container); }
+
+.alert-warning {
+  background: var(--warning-container);
+  border-color: transparent;
+  color: var(--on-warning-container);
+}
+.alert-warning .alert-icon { color: var(--on-warning-container); }
+
+.alert-error {
+  background: var(--error-container);
+  border-color: transparent;
+  color: var(--on-error-container);
+}
+.alert-error .alert-icon { color: var(--on-error-container); }
+
+/* ── Action ── botones de acción bajo la descripción + cierre opcional
+   (par shadcn Alert "Action"). Los botones son <button>/<a> reales de Embassy. */
+.alert-actions {
+  grid-column: 2;
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.alert:not(:has(.alert-icon)) .alert-actions { grid-column: 1; }
+
+/* Botón de cierre — descarta el alert; anclado arriba a la derecha. */
+.alert-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  opacity: .7;
+  transition: opacity var(--duration-fast) var(--ease-default),
+              background-color var(--duration-fast) var(--ease-default);
+}
+.alert-close:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
+.alert-close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; opacity: 1; }
+.alert-close svg { width: 16px; height: 16px; }
+.alert:has(.alert-close) { padding-right: var(--space-10); }

@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — MD3 System-Color Bridge  ·  DRAFT (evaluación)
+   ───────────────────────────────────────────────────────────────────
+   Expone los nombres de token de SISTEMA de Material Design 3
+   (--md-sys-color-*) como alias de los roles semánticos Embassy
+   (--primary, --surface, --on-surface…). Permite que cualquier componente escrito con la
+   nomenclatura MD3 nativa (p. ej. el prototipo segmented-button.proto.css,
+   o componentes de @material/web) resuelva contra la PALETA EMBASSY.
+
+   Dirección del flujo (Embassy = única fuente de verdad):
+       paleta Embassy (--secondary-200)
+         → rol Embassy (--secondary-container)
+           → nombre MD3 (--md-sys-color-secondary-container)   ← este archivo
+
+   THEME-AWARE GRATIS: los roles Embassy ya se recalibran en
+   [data-theme="dark"] (variables.css). Como el bridge apunta al rol, NO
+   necesita override en dark — hereda la recalibración automáticamente.
+
+   Lo que este archivo NO aliasea, a propósito (ver TOKENS.md §11b):
+     · --md-sys-color-surface-tint — Embassy no hace elevación tonal: la
+       superficie sube por la rampa, no se tiñe por altura.
+     · los doce roles *-fixed* (primary-fixed, on-primary-fixed-variant…) —
+       existen para que un color NO se recalibre entre temas, y acá todas las
+       superficies se recalibran a propósito.
+   Los dos son decisiones, no huecos. Si aparece un tercero que falte de verdad,
+   se agrega acá y se anota en §11b.
+
+   Cargar (solo si se adopta la nomenclatura MD3 nativa):
+     <link rel="stylesheet" href="css/variables.css">
+     <link rel="stylesheet" href="css/md-sys-bridge.css">   ← después de variables
+     <link rel="stylesheet" href="css/base.css">
+     ...
+═══════════════════════════════════════ */
+
+:root {
+  /* Primary */
+  --md-sys-color-primary:                 var(--primary);
+  --md-sys-color-on-primary:              var(--on-primary);
+  --md-sys-color-primary-container:       var(--primary-container);
+  --md-sys-color-on-primary-container:    var(--on-primary-container);
+
+  /* Secondary */
+  --md-sys-color-secondary:               var(--secondary);
+  --md-sys-color-on-secondary:            var(--on-secondary);
+  --md-sys-color-secondary-container:     var(--secondary-container);
+  --md-sys-color-on-secondary-container:  var(--on-secondary-container);
+
+  /* Tertiary */
+  --md-sys-color-tertiary:                var(--tertiary);
+  --md-sys-color-on-tertiary:             var(--on-tertiary);
+  --md-sys-color-tertiary-container:      var(--tertiary-container);
+  --md-sys-color-on-tertiary-container:   var(--on-tertiary-container);
+
+  /* Error */
+  --md-sys-color-error:                   var(--error);
+  --md-sys-color-on-error:                var(--on-error);
+  --md-sys-color-error-container:         var(--error-container);
+  --md-sys-color-on-error-container:      var(--on-error-container);
+
+  /* Surface / Background */
+  --md-sys-color-surface:                 var(--surface);
+  --md-sys-color-surface-dim:             var(--surface-dim);
+  --md-sys-color-surface-bright:          var(--surface-bright);
+  --md-sys-color-surface-container-lowest: var(--surface-container-lowest);
+  --md-sys-color-surface-container-low:   var(--surface-container-low);
+  --md-sys-color-surface-container:       var(--surface-container);
+  --md-sys-color-surface-container-high:  var(--surface-container-high);
+  --md-sys-color-surface-container-highest: var(--surface-container-highest);
+  --md-sys-color-surface-variant:         var(--surface-variant);
+  --md-sys-color-on-surface:              var(--on-surface);
+  --md-sys-color-on-surface-variant:      var(--on-surface-variant);
+  --md-sys-color-background:              var(--surface);
+  --md-sys-color-on-background:           var(--on-surface);
+
+  /* Outline */
+  --md-sys-color-outline:                 var(--outline);
+  --md-sys-color-outline-variant:         var(--outline-variant);
+
+  /* Inverse */
+  --md-sys-color-inverse-surface:         var(--inverse-surface);
+  --md-sys-color-inverse-on-surface:      var(--inverse-on-surface);
+  --md-sys-color-inverse-primary:         var(--inverse-primary);
+
+  /* Scrim / Shadow */
+  --md-sys-color-scrim:                   var(--scrim);
+  /* El rol --shadow existe en variables.css desde que se cerró ese hueco (es el
+     ancla de la elevación, aunque los compuestos --shadow-* lleven su propio
+     tinte navy). Faltaba acá, así que un componente MD3 que pidiera
+     --md-sys-color-shadow quedaba sin valor. */
+  --md-sys-color-shadow:                  var(--shadow);
+
+  /* ── Typography ──────────────────────────────────────────────
+     @material/web components default their typescale font to 'Roboto'
+     (not loaded → serif fallback). Map every typescale role's FONT to
+     Embassy's UI typeface so md-* components match the system. Va var(--font-body)
+     y NO el nombre de la familia a propósito: el comentario decía «Inter» y el rol
+     ya resolvía a Manrope, o sea que la doc del archivo mentía sobre su propio
+     código. El día que ese rol se mueva —está decidido que pase a Epilogue, ver
+     TOKENS.md §11b— esto sigue siendo cierto sin tocarlo.
+     Only the font family is overridden; Material keeps its own sizes,
+     weights, line-heights and tracking. */
+  --md-sys-typescale-display-large-font:    var(--font-body);
+  --md-sys-typescale-display-medium-font:   var(--font-body);
+  --md-sys-typescale-display-small-font:    var(--font-body);
+  --md-sys-typescale-headline-large-font:   var(--font-body);
+  --md-sys-typescale-headline-medium-font:  var(--font-body);
+  --md-sys-typescale-headline-small-font:   var(--font-body);
+  --md-sys-typescale-title-large-font:      var(--font-body);
+  --md-sys-typescale-title-medium-font:     var(--font-body);
+  --md-sys-typescale-title-small-font:      var(--font-body);
+  --md-sys-typescale-body-large-font:       var(--font-body);
+  --md-sys-typescale-body-medium-font:      var(--font-body);
+  --md-sys-typescale-body-small-font:       var(--font-body);
+  --md-sys-typescale-label-large-font:      var(--font-body);
+  --md-sys-typescale-label-medium-font:     var(--font-body);
+  --md-sys-typescale-label-small-font:      var(--font-body);
+}
+
+/* ── El mismo bloque, otra vez, para contenedores con tema propio ──────────
+   La sustitución de una custom property se resuelve DONDE SE DECLARA. Con el
+   bridge solo en :root, --md-sys-color-primary queda congelado con el valor
+   que --primary tenía ahí, y un <div data-theme="dark"> más abajo hereda
+   el valor ya calculado: el subárbol cambia los roles Embassy pero los --md-sys-*
+   no se enteran.
+
+   A nivel documento (<html data-theme="dark">) nunca se notó, porque :root
+   sigue siendo html y ahí --primary ya es el de oscuro. Se ve apenas
+   aparece un contenedor con tema propio — que es exactamente lo que hace la
+   doc y lo que hace el preview de Flutter con @material/web. */
+[data-theme="dark"],
+[data-theme="light"] {
+  /* Primary */
+  --md-sys-color-primary:                 var(--primary);
+  --md-sys-color-on-primary:              var(--on-primary);
+  --md-sys-color-primary-container:       var(--primary-container);
+  --md-sys-color-on-primary-container:    var(--on-primary-container);
+
+  /* Secondary */
+  --md-sys-color-secondary:               var(--secondary);
+  --md-sys-color-on-secondary:            var(--on-secondary);
+  --md-sys-color-secondary-container:     var(--secondary-container);
+  --md-sys-color-on-secondary-container:  var(--on-secondary-container);
+
+  /* Tertiary */
+  --md-sys-color-tertiary:                var(--tertiary);
+  --md-sys-color-on-tertiary:             var(--on-tertiary);
+  --md-sys-color-tertiary-container:      var(--tertiary-container);
+  --md-sys-color-on-tertiary-container:   var(--on-tertiary-container);
+
+  /* Error */
+  --md-sys-color-error:                   var(--error);
+  --md-sys-color-on-error:                var(--on-error);
+  --md-sys-color-error-container:         var(--error-container);
+  --md-sys-color-on-error-container:      var(--on-error-container);
+
+  /* Surface / Background */
+  --md-sys-color-surface:                 var(--surface);
+  --md-sys-color-surface-dim:             var(--surface-dim);
+  --md-sys-color-surface-bright:          var(--surface-bright);
+  --md-sys-color-surface-container-lowest: var(--surface-container-lowest);
+  --md-sys-color-surface-container-low:   var(--surface-container-low);
+  --md-sys-color-surface-container:       var(--surface-container);
+  --md-sys-color-surface-container-high:  var(--surface-container-high);
+  --md-sys-color-surface-container-highest: var(--surface-container-highest);
+  --md-sys-color-surface-variant:         var(--surface-variant);
+  --md-sys-color-on-surface:              var(--on-surface);
+  --md-sys-color-on-surface-variant:      var(--on-surface-variant);
+  --md-sys-color-background:              var(--surface);
+  --md-sys-color-on-background:           var(--on-surface);
+
+  /* Outline */
+  --md-sys-color-outline:                 var(--outline);
+  --md-sys-color-outline-variant:         var(--outline-variant);
+
+  /* Inverse */
+  --md-sys-color-inverse-surface:         var(--inverse-surface);
+  --md-sys-color-inverse-on-surface:      var(--inverse-on-surface);
+  --md-sys-color-inverse-primary:         var(--inverse-primary);
+
+  /* Scrim / Shadow */
+  --md-sys-color-scrim:                   var(--scrim);
+  /* El rol --shadow existe en variables.css desde que se cerró ese hueco (es el
+     ancla de la elevación, aunque los compuestos --shadow-* lleven su propio
+     tinte navy). Faltaba acá, así que un componente MD3 que pidiera
+     --md-sys-color-shadow quedaba sin valor. */
+  --md-sys-color-shadow:                  var(--shadow);
+
+  /* ── Typography ──────────────────────────────────────────────
+     @material/web components default their typescale font to 'Roboto'
+     (not loaded → serif fallback). Map every typescale role's FONT to
+     Embassy's UI typeface so md-* components match the system. Va var(--font-body)
+     y NO el nombre de la familia a propósito: el comentario decía «Inter» y el rol
+     ya resolvía a Manrope, o sea que la doc del archivo mentía sobre su propio
+     código. El día que ese rol se mueva —está decidido que pase a Epilogue, ver
+     TOKENS.md §11b— esto sigue siendo cierto sin tocarlo.
+     Only the font family is overridden; Material keeps its own sizes,
+     weights, line-heights and tracking. */
+  --md-sys-typescale-display-large-font:    var(--font-body);
+  --md-sys-typescale-display-medium-font:   var(--font-body);
+  --md-sys-typescale-display-small-font:    var(--font-body);
+  --md-sys-typescale-headline-large-font:   var(--font-body);
+  --md-sys-typescale-headline-medium-font:  var(--font-body);
+  --md-sys-typescale-headline-small-font:   var(--font-body);
+  --md-sys-typescale-title-large-font:      var(--font-body);
+  --md-sys-typescale-title-medium-font:     var(--font-body);
+  --md-sys-typescale-title-small-font:      var(--font-body);
+  --md-sys-typescale-body-large-font:       var(--font-body);
+  --md-sys-typescale-body-medium-font:      var(--font-body);
+  --md-sys-typescale-body-small-font:       var(--font-body);
+  --md-sys-typescale-label-large-font:      var(--font-body);
+  --md-sys-typescale-label-medium-font:     var(--font-body);
+  --md-sys-typescale-label-small-font:      var(--font-body);
+}

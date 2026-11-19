@@ -1,0 +1,322 @@
+/* ═══════════════════════════════════════
+   Embassy DS — Button
+   Jerarquía de énfasis (alto → bajo), inspirada en Material 3
+   pero con identidad Embassy:
+
+     Primary    · Filled         · acción de mayor jerarquía
+     Elevated   · Tonal + shadow · MD3 elevated button — primary-container con
+                                    elevación real que crece en hover; distinto
+                                    de Tertiary (outlined, sin sombra)
+     Secondary  · Neutral tonal  · jerarquía media — superficie neutra (NO acento)
+     Tertiary   · Outlined       · acción secundaria / alternativa
+     Text       · Text only     · acción de baja jerarquía / inline
+     Icon       · Icon          · acción compacta solo-ícono
+
+   Cuándo usar: acciones. Jerarquía obligatoria: UN solo btn-primary por contexto; btn-secondary para alternativas; btn-tertiary menor peso; btn-text acciones inline.
+   Cuándo no: navegación (usar links/nav). NUNCA estirar a full-width ni alinear contenido a la izquierda — el botón tiene ancho intrínseco y contenido centrado; si el layout legacy lo pide, se cambia el layout, no el botón.
+   Reemplaza a: cualquier botón/CTA legacy; un "action row" plano se mapea a grupo con jerarquía (un primary + alternativas).
+
+   Dependencia: variables.css (Color Roles)
+   Consume EXCLUSIVAMENTE roles semánticos (--primary, --on-primary…) → funciona en
+   light y dark sin overrides por tema (los roles se recalibran en
+   variables.css → [data-theme="dark"]).
+
+   Tamaños: .btn-xs · .btn-sm · .btn-lg · .btn-xl (el radio escala con el tamaño,
+   nunca con la variante — ver GOVERNANCE.md §4.3).
+   Modificadores: .btn-danger · .btn-success · .btn-compact
+   Compat: .btn-ghost y .btn-next se mantienen como alias.
+
+   Uso:
+   <button class="btn-primary">Crear vacante</button>
+   <button class="btn-elevated">Ver detalle</button>
+   <button class="btn-secondary">Guardar borrador</button>
+   <button class="btn-tertiary">Cancelar</button>
+   <button class="btn-text">Ver más</button>
+   <button class="icon-btn" aria-label="Ajustes"><svg>…</svg></button>
+═══════════════════════════════════════ */
+
+/* ── Base compartida ── */
+.btn-primary,
+.btn-elevated,
+.btn-secondary,
+.btn-tertiary,
+.btn-text,
+.btn-link,
+.btn-ghost,
+.btn-next {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, var(--radius-md));
+  font-family: inherit;
+  font-size: var(--font-size-body-md); font-weight: 600;
+  line-height: var(--line-height-control);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default);
+}
+
+/* Foco visible accesible — común a todas las variantes (WCAG 2.4.7) */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-tertiary:focus-visible,
+.btn-text:focus-visible,
+.btn-link:focus-visible,
+.btn-ghost:focus-visible,
+.btn-next:focus-visible,
+.icon-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+/* ─────────────────────────────────────
+   Primary · Filled (rol Primary)
+───────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  background: var(--disabled);
+  color: var(--on-disabled);
+  cursor: not-allowed; transform: none; box-shadow: none;
+}
+
+/* Modificadores semánticos de Primary */
+/* El RELLENO, no la señal: --error es el rojo del borde de un campo y del
+   punto de estado, y como superficie con texto encima daba 3.58:1. El par
+   -fill / -on es el que pasa AA en los dos temas (6.37:1 y 6.78:1). */
+.btn-primary.btn-danger  { background: var(--error-fill);   color: var(--on-error);   }
+.btn-primary.btn-danger:hover  { background: var(--error-fill-hover);   }
+/* Anillo de foco teñido de error (par shadcn destructive focus-visible:ring-destructive/20). */
+.btn-primary.btn-danger:focus-visible {
+  outline-color: var(--error);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--error) 25%, transparent);
+}
+.btn-primary.btn-success { background: var(--success-fill); color: var(--on-success); }
+.btn-primary.btn-success:hover { background: var(--success-fill-hover); }
+
+/* ─────────────────────────────────────
+   Secondary · la variante TONAL. Consume los roles globales directamente
+   (--secondary-container / -on-secondary-container / -container-hover);
+   el botón no tiene tokens propios, como dice el sistema publicado.
+
+   Entre sep-2026 y hoy tuvo un relleno neutro con tokens --button-secondary-*,
+   para que no saliera igual que el item de menú activo —que consume el mismo
+   secondary-container vía --nav-selected—. La convivencia de los dos en
+   una pantalla sigue siendo algo para mirar; si molesta, el que se mueve es el
+   nav, que tiene su propia capa de tokens.
+───────────────────────────────────── */
+.btn-secondary {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border-color: transparent;
+}
+.btn-secondary:hover {
+  background: var(--secondary-container-hover);
+  transform: translateY(-1px);
+}
+.btn-secondary:active { transform: translateY(0); }
+.btn-secondary:disabled {
+  background: var(--disabled);
+  color: var(--on-disabled);
+  border-color: transparent;
+  cursor: not-allowed; transform: none;
+}
+
+/* ─────────────────────────────────────
+   Elevated · Tonal (Primary Container) + sombra real que crece en hover
+   (MD3 elevated button). Se diferencia de Filled (opaco, sin sombra) y de
+   Outlined/Tertiary (transparente + borde, sin sombra) — la sombra ES el punto
+   de esta variante. --btn-elevation(-hover) tiene override en dark mode
+   (variables.css) para que la elevación se vea también sobre superficies oscuras.
+───────────────────────────────────── */
+.btn-elevated {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: transparent;
+  box-shadow: var(--btn-elevation);
+}
+.btn-elevated:hover {
+  background: color-mix(in srgb, var(--on-primary-container) 8%, var(--primary-container));
+  box-shadow: var(--btn-elevation-hover);
+  transform: translateY(-1px);
+}
+.btn-elevated:active {
+  background: color-mix(in srgb, var(--on-primary-container) 12%, var(--primary-container));
+  box-shadow: var(--btn-elevation);
+  transform: translateY(0);
+}
+.btn-elevated:disabled {
+  background: var(--disabled);
+  color: var(--on-disabled);
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─────────────────────────────────────
+   Tertiary · Outlined (rol Outline + Primary)
+   (alias histórico: .btn-ghost)
+───────────────────────────────────── */
+.btn-tertiary,
+.btn-ghost {
+  background: transparent;
+  border-color: var(--outline);
+  color: var(--primary);
+  font-weight: 500;
+}
+.btn-tertiary:hover,
+.btn-ghost:hover {
+  background: var(--surface-variant);
+  border-color: var(--primary);
+}
+.btn-tertiary:disabled,
+.btn-ghost:disabled {
+  background: transparent;
+  border-color: var(--outline-variant);
+  color: var(--on-disabled);
+  cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────
+   Text · Text button (rol Primary, sin contenedor)
+───────────────────────────────────── */
+.btn-text {
+  background: transparent;
+  color: var(--primary);
+  padding: var(--space-2) var(--space-3);
+}
+.btn-text:hover {
+  background: var(--primary-state-hover);
+}
+.btn-text:disabled {
+  background: transparent;
+  color: var(--on-disabled);
+  cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────
+   Link · texto subrayado en hover, sin contenedor ni bloque de fondo
+   (par shadcn variant="link"). Distinto de .btn-text (que pinta un bloque de
+   fondo en hover): el Link es un enlace de acción inline.
+───────────────────────────────────── */
+.btn-link {
+  background: transparent;
+  color: var(--primary);
+  padding: var(--space-2) var(--space-1);
+  font-weight: 500;
+  text-underline-offset: 4px;
+}
+.btn-link:hover { text-decoration: underline; }
+.btn-link:active:not(:disabled) { color: var(--primary-hover); }
+.btn-link:disabled {
+  background: transparent;
+  color: var(--on-disabled);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* ─────────────────────────────────────
+   Tamaños (aplica a cualquier variante)
+
+   La escalera del botón es PROPORCIONAL al alto del control, no la escala de
+   texto: el label de un botón de 24px es chico porque el botón es chico, no
+   porque sea texto secundario. Que SM y MD coincidan con --font-size-body-sm y
+   --font-size-body-md es una coincidencia de VALOR, no de rol — mapearlos por
+   ahí es el error que este repo ya cometió dos veces (11px "es"
+   --font-size-mono-sm, y el label de un botón no es mono).
+
+   Vive acá y no en variables.css a propósito: GOVERNANCE §21 dice que un tier de
+   custom properties para UN componente se define en el archivo del componente,
+   como hace Segmented Button con --seg-btn-*. Si algún día un segundo componente
+   necesita esta escalera, se promueve.
+───────────────────────────────────── */
+.btn-xs, .btn-sm, .btn-lg, .btn-xl,
+.btn-primary, .btn-secondary, .btn-tertiary, .btn-text, .btn-link, .btn-ghost, .btn-next {
+  --btn-h-xs: 24px;   --btn-label-xs: 11px;    /* dense lists, tags               */
+  --btn-h-sm: 32px;   --btn-label-sm: 12.5px;  /* compact toolbars                */
+  --btn-h-md: 36px;   --btn-label-md: 13.5px;  /* default — base styles de arriba */
+  --btn-h-lg: 44px;   --btn-label-lg: 15px;    /* CTAs, piso táctil               */
+  --btn-h-xl: 52px;   --btn-label-xl: 16px;    /* hero / marketing                */
+}
+.btn-xs { padding: 3px var(--space-2);   font-size: var(--btn-label-xs); font-weight: 600; min-height: var(--btn-h-xs); border-radius: var(--radius-button, var(--radius-sm)); }
+.btn-sm { padding: var(--space-1-5) var(--space-3);  font-size: var(--btn-label-sm); min-height: var(--btn-h-sm); border-radius: var(--radius-button, var(--radius-sm)); }
+.btn-lg { padding: var(--space-2-5) 22px; font-size: var(--btn-label-lg); min-height: var(--btn-h-lg); border-radius: var(--radius-button, var(--radius-md)); }
+.btn-xl { padding: var(--space-3-5) 30px; font-size: var(--btn-label-xl); font-weight: 700; min-height: var(--btn-h-xl); border-radius: var(--radius-button, var(--radius-lg)); }
+
+.btn-text.btn-xs { padding: 3px var(--space-1-5); }
+.btn-text.btn-sm { padding: var(--space-1-5) var(--space-2-5); }
+.btn-text.btn-lg { padding: var(--space-2-5) var(--space-4); }
+.btn-text.btn-xl { padding: var(--space-3-5) var(--space-5); }
+
+/* Forma: el radio escala con el tamaño del botón.
+   XS/SM → --radius-sm (4px)  ·  MD/LG → --radius-md (8px)  ·  XL → --radius-lg (12px)
+   La píldora (--radius-full) está reservada a chips y badges —
+   un botón píldora se confunde con un chip seleccionado. */
+
+/* Variante compacta (MD3): 16px izquierda y derecha.
+   Usar en contextos de mayor densidad (toolbars, formularios, tablas).
+   <button class="btn-primary btn-compact">Guardar</button> */
+.btn-compact { padding-left: var(--space-4); padding-right: var(--space-4); }
+
+/* ─────────────────────────────────────
+   Next · avance de wizard (alias de Primary)
+───────────────────────────────────── */
+.btn-next {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.btn-next:hover { background: var(--primary-hover); }
+
+/* ─────────────────────────────────────
+   Icon button · superficie + outline
+───────────────────────────────────── */
+.icon-btn {
+  position: relative;
+  width: 36px; height: 36px;
+  padding: 0;   /* fixed square box: reset any padding inherited from a size class
+                   (.btn-sm/.btn-xs/.btn-lg/.btn-xl) so the icon isn't squished */
+  border-radius: var(--radius-button, var(--radius-md));
+  background: var(--surface-container);
+  border: 1px solid var(--outline);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--on-surface-variant);
+  transition: background var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+.icon-btn:hover { background: var(--surface-variant); color: var(--on-surface); }
+.icon-btn:disabled {
+  background: transparent;
+  border-color: var(--outline-variant);
+  color: var(--on-disabled);
+  cursor: not-allowed;
+}
+.icon-btn.btn-xs { width: 24px; height: 24px; border-radius: var(--radius-button, var(--radius-sm)); }
+.icon-btn.btn-sm { width: 30px; height: 30px; border-radius: var(--radius-button, var(--radius-sm)); }
+.icon-btn.btn-lg { width: 44px; height: 44px; border-radius: var(--radius-button, var(--radius-md)); }
+.icon-btn.btn-xl { width: 52px; height: 52px; border-radius: var(--radius-button, var(--radius-lg)); }
+
+/* ─────────────────────────────────────
+   Pressed state — 12% state layer (WCAG 2.5.3)
+   Implemented via filter so it works across all variants
+   without a pseudo-element overlay.
+───────────────────────────────────── */
+.btn-primary:active:not(:disabled)              { filter: brightness(0.88); transform: translateY(0); }
+.btn-secondary:active:not(:disabled)            { filter: brightness(0.92); transform: translateY(0); }
+.btn-tertiary:active:not(:disabled),
+.btn-ghost:active:not(:disabled)                { background: var(--surface-container-high); }
+.btn-text:active:not(:disabled)                 { background: var(--primary-state-press); }
+.icon-btn:active:not(:disabled)                 { background: var(--surface-container-high); }

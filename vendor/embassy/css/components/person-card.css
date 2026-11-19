@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Person (variante de Basic Card)
+   NO es un componente aparte: es la variante de dominio "Person" de la Basic Card
+   (el primitivo .item — ver item.css), documentada dentro de Basic Card. Solo
+   aporta el avatar circular tonal (Secondary container) + fondo de superficie; el
+   layout, padding, gap, hover, foco, título y descripción vienen de
+   .item / .item-content / .item-title / .item-description.
+
+   Cuándo usar: persona en grillas (avatar + nombre + rol).
+   Cuándo no: vacantes (vacancy-card); datos tabulares de personas (Table);
+     una fila genérica sin avatar de marca (usá .item directamente).
+   Reemplaza a: cards de perfil custom.
+
+   Dependencia: variables.css, item.css (primitivo base / Basic Card)
+
+   Uso:
+   <div class="people-grid">
+     <!-- Interactiva: .item-clickable trae cursor:pointer + hover; agregá
+          tabindex="0" role="button" (o usá <a class="item person-card">) para
+          que sea focusable y se anuncie como control. -->
+     <div class="item item-outline item-clickable person-card" tabindex="0" role="button">
+       <div class="item-media person-avatar">MG</div>
+       <div class="item-content">
+         <div class="item-title">María García</div>
+         <div class="item-description">Desarrolladora Frontend</div>
+       </div>
+     </div>
+   </div>
+═══════════════════════════════════════ */
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+/* Fondo de superficie para que la card se despegue de la página (el primitivo
+   .item es transparente; Person Card es una tarjeta, no una fila embebida). */
+.person-card { background: var(--surface-container); }
+
+/* Avatar circular tonal — usa el par semántico Secondary container/on-container,
+   igual que el Avatar canónico (item.css/avatar.css), no un gradiente con
+   primitivos. Se coloca en el slot .item-media; centrado vertical (el default
+   del media es align-self:flex-start). */
+.person-card .person-avatar {
+  /* Escalón lg de la escala de avatar (variables.css) */
+  width: var(--avatar-size-lg); height: var(--avatar-size-lg);
+  border-radius: 50%;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  font-size: var(--avatar-initial-lg); font-weight: 600;
+  align-self: center;
+}
+
+/* Al ser interactiva eleva su sombra en hover (además del fondo que aporta
+   .item-clickable), reforzando el patrón de tarjeta de la grilla. */
+.person-card.item-clickable:hover,
+a.person-card.item:hover { box-shadow: var(--shadow-md); }

@@ -1,0 +1,282 @@
+/* ═══════════════════════════════════════
+   Layout — App Shell, Sidebar, Topbar
+
+   Cuándo usar: shell de aplicación completo — sidebar + topbar + avatar. Solo para apps con navegación persistente.
+   Cuándo no: páginas standalone (auth, landing) — no cargar layout.css.
+   Reemplaza a: nav bars/sidebars legacy.
+═══════════════════════════════════════ */
+
+/* ── App Shell ── */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  /* min-width:0 anula el min-width:auto que traen los ítems flex. Sin esto el
+     shell no puede encogerse por debajo del min-content de su contenido, y
+     cualquier tabla ancha lo empuja más allá del viewport: en 375px medimos
+     589px de desborde. Es el arreglo de fondo — sin él cada pantalla
+     redescubre el problema la primera vez que mete una tabla en el shell. */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 32px 32px 48px;
+  flex: 1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--surface-container);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 16px;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  height: var(--topbar-height); padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600; font-size: var(--font-size-heading-xs); color: var(--on-surface);
+}
+.sidebar-logo svg { color: var(--secondary); }
+
+.sidebar-search {
+  margin: 12px 12px 8px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  color: var(--on-surface-variant);
+  font-size: var(--font-size-label);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-default);
+}
+.sidebar-search:hover { border-color: var(--neutral-200); }
+.sidebar-search .shortcut {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono-sm);
+  background: var(--neutral-50);
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.sidebar-nav { padding: 4px 8px; flex: 1; }
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  color: var(--on-surface-variant);
+  padding: 16px 12px 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  color: var(--on-surface-variant);
+  font-size: var(--font-size-body-md);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+  position: relative;
+  user-select: none;
+}
+.nav-item:hover { background: var(--nav-hover); color: var(--nav-hover-content); }
+.nav-item.active {
+  background: var(--nav-selected);
+  color: var(--nav-selected-content);
+  font-weight: 500;
+}
+.nav-item.active svg { color: var(--nav-selected-content); }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-item .chevron { margin-left: auto; opacity: .5; }
+.nav-item .nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  /* El par CONTAINER, no "acento sobre acento claro". Empezó en --interactive
+     sobre --interactive-light (2.54:1); lo pasé a --secondary-text y arregló
+     el claro pero en oscuro seguía en 3.98:1, porque ahí el acento ya es claro y
+     el fondo también. Un contador sobre superficie tintada es exactamente para lo
+     que existe el par container, y [15] lo certifica en los DOS temas:
+     12.16:1 en claro y 5.09:1 en oscuro. */
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+.nav-sub-items {
+  padding-left: 20px;
+}
+.nav-sub-items .nav-item {
+  font-size: var(--font-size-label);
+  padding: 6px 12px;
+}
+
+.sidebar-footer {
+  padding: 12px 12px 0;
+  border-top: 1px solid var(--border);
+}
+.sidebar-footer .nav-item { margin-top: 4px; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--surface-container);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: var(--topbar-height);
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 12px;
+  position: sticky; top: 0; z-index: 5;
+}
+
+.topbar-breadcrumb {
+  margin-right: auto;
+  display: flex; align-items: center; gap: 6px;
+  font-size: var(--font-size-label); color: var(--on-surface-variant);
+}
+.topbar-breadcrumb a { color: var(--on-surface-variant); text-decoration: none; }
+.topbar-breadcrumb a:hover { color: var(--on-surface); }
+.topbar-breadcrumb .separator { color: var(--neutral-200); }
+
+.topbar-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-label); font-weight: 500;
+  cursor: pointer; border: none;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+.topbar-btn.secondary {
+  background: var(--surface);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--border);
+}
+.topbar-btn.secondary:hover { background: var(--secondary-container); }
+
+.topbar-notif {
+  position: relative;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.notif-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--secondary);
+  color: var(--on-primary);
+  font-size: 10px; font-weight: 600;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--surface);
+}
+
+/* Shell avatar. Flat tonal fill (matches the Avatar component in
+   css/components/avatar.css; the color audit removed gradient/primitives).
+   NOTE: this .avatar shares the class name with avatar.css's component base;
+   components.css loads after layout.css so the component rules win where both
+   are present — kept token-identical here so the shell renders the same. */
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary-container);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--on-primary-container); font-size: var(--font-size-caption); font-weight: 600;
+  cursor: pointer;
+}
+.avatar-label {
+  font-size: var(--font-size-label); font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* ═══════════════════════════════════════
+   MOBILE SHELL — canonical modal navigation drawer (resolved 2026-07)
+
+   ≥768px (--breakpoint-md): the sidebar is persistent/fixed (the rules above).
+   <768px: it becomes a MODAL NAVIGATION DRAWER — off-canvas by default, slides
+   in over a scrim when the shell root gets `.nav-open`, toggled by the topbar
+   hamburger (.shell-menu-btn). This is MD3's modal-vs-standard drawer split,
+   reusing Embassy's Navigation Drawer language. Media queries use the literal
+   768px because @media can't read var(--breakpoint-md).
+
+   Consuming app wires ~10 lines of JS: the hamburger toggles `.nav-open` on
+   `.app`; Esc and a scrim click remove it; on open move focus into the sidebar,
+   on close return it to the hamburger. See GOVERNANCE §14.3.
+═══════════════════════════════════════ */
+
+/* Hamburger — only shown on compact. Place first in .topbar. El target de 44px
+   lo aplica el bloque de punteros gruesos en base.css, no esta regla. */
+.shell-menu-btn {
+  display: none;
+  width: 40px; height: 40px; margin-right: 4px;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface); color: var(--on-surface-variant);
+  cursor: pointer;
+}
+.shell-menu-btn:hover { background: var(--secondary-container); }
+.shell-menu-btn:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+
+/* Scrim behind the modal drawer — sits below the sidebar (z-index 10), above content. */
+.sidebar-scrim {
+  display: none;
+  position: fixed; inset: 0; z-index: 9;
+  background: var(--scrim);
+  opacity: 0; transition: opacity var(--duration-normal) var(--ease-default);
+}
+
+@media (max-width: 768px) {
+  /* Sidebar off-canvas by default; slides in as a modal drawer when open. */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--duration-medium) var(--ease-default);
+    box-shadow: var(--shadow-lg);
+  }
+  .app.nav-open .sidebar { transform: translateX(0); }
+
+  /* Content reclaims full width; the hamburger appears in the topbar. */
+  .main { margin-left: 0; }
+  .shell-menu-btn { display: inline-flex; }
+
+  /* El drawer resolvía el sidebar y dejaba el topbar sin tocar: 28px de padding
+     lateral y un breadcrumb sin truncar alcanzan para desbordar solos. */
+  .topbar { padding: 0 var(--space-4); gap: var(--space-2); }
+  .topbar-breadcrumb {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .avatar-label { display: none; }
+
+  /* Scrim shown while the drawer is open. */
+  .app.nav-open .sidebar-scrim { display: block; opacity: 1; }
+}
+
+/* Respect reduced-motion — no slide, just show/hide. */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar { transition: none; }
+  .sidebar-scrim { transition: none; }
+}

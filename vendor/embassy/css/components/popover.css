@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Popover
+   Panel flotante anclado a un trigger, sin flecha, para contenido rico
+   arbitrario (no una lista de acciones — eso es Dropdown Menu).
+
+   Cuándo usar: contenido contextual breve junto a un elemento (info extra,
+   mini-formulario, selector custom).
+   Cuándo no: lista de acciones → Dropdown Menu; confirmación bloqueante →
+   Dialog; texto de una línea al hover → Tooltip.
+   Reemplaza a: cualquier "dropdown" custom que solo muestre contenido, sin
+   navegación por teclado tipo lista.
+
+   Posicionamiento: JS (components/lib/use-flyout.ts) calcula top/left vía
+   getBoundingClientRect con flip de borde de viewport; este archivo solo
+   define look & feel, no vue lógica de posición (se aplica inline desde React
+   como top/left en px sobre `.popover-content`).
+
+   Dependencia: variables.css
+
+   Uso:
+   <button class="popover-trigger">Abrir</button>
+   <div class="popover-content" style="top:120px;left:80px">…</div>
+═══════════════════════════════════════ */
+
+.popover-content {
+  position: fixed;
+  z-index: 100;
+  min-width: 220px;
+  max-width: 320px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
+  color: var(--on-surface);
+  font-size: var(--font-size-body-sm);
+  animation: popoverIn var(--duration-normal) var(--ease-default);
+}
+
+@keyframes popoverIn {
+  from { opacity: 0; transform: scale(.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Sub-partes opcionales (par shadcn PopoverHeader/Title/Description) ──
+   para el patrón popover-con-título. El cuerpo sigue siendo contenido libre. */
+.popover-header { margin-bottom: 8px; }
+.popover-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-body-md);
+  font-weight: 600;
+  line-height: var(--line-height-title);
+  color: var(--on-surface);
+}
+.popover-description {
+  font-size: var(--font-size-body-sm);
+  color: var(--on-surface-variant);
+  line-height: var(--line-height-body-sm);
+}
+
+/* Alineación (align=start|center|end de shadcn) — la resuelve el posicionador JS
+   (use-flyout) vía left/top; no hay clase de estilo. El flip de lado/edge ya es
+   automático. */

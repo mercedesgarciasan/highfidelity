@@ -1,0 +1,153 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Dropdown Menu
+   Lista de acciones flotante anclada a un trigger (click), con navegación por
+   teclado (↑↓, Home/End, Enter/Espacio) — a diferencia de Popover, que es
+   contenido libre sin semántica de lista.
+
+   Cuándo usar: menú de acciones contextual sobre un botón/ícono ("⋮").
+   Cuándo no: click derecho sobre un área → Context Menu; navegación de nivel
+   superior siempre visible → Menubar / Navigation Menu.
+   Reemplaza a: cualquier "menú" custom con `position:absolute` + z-index ad hoc.
+
+   Posicionamiento: JS (components/lib/use-flyout.ts), ver popover.css para el
+   detalle del mecanismo compartido.
+
+   Dependencia: variables.css
+
+   Uso:
+   <button class="dropdown-trigger">Opciones</button>
+   <div class="dropdown-content" role="menu" style="top:140px;left:60px">
+     <div class="dropdown-label">Cuenta</div>
+     <div class="dropdown-separator"></div>
+     <button class="dropdown-item" role="menuitem">Editar perfil</button>
+     <button class="dropdown-item" role="menuitem">Cerrar sesión</button>
+   </div>
+═══════════════════════════════════════ */
+
+/* El display:flex de .dropdown-content pisa el [hidden] del UA stylesheet; este
+   selector combinado (más específico) restaura hidden para poder alternar el
+   panel con el atributo hidden desde JS. */
+.dropdown-content[hidden] { display: none; }
+
+.dropdown-content {
+  position: fixed;
+  z-index: 100;
+  min-width: 180px;
+  max-width: 280px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-1-5);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  animation: dropdownIn var(--duration-normal) var(--ease-default);
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: scale(.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-2-5);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-body-sm);
+  color: var(--on-surface);
+  text-align: left;
+  cursor: pointer;
+}
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+  background: var(--surface-variant);
+  outline: none;
+}
+.dropdown-item[data-disabled="true"] {
+  color: var(--on-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.dropdown-item[data-variant="danger"] {
+  color: var(--error-text);
+}
+.dropdown-item[data-variant="danger"]:hover,
+.dropdown-item[data-variant="danger"]:focus-visible {
+  background: var(--error-container);
+}
+
+.dropdown-item-indicator {
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dropdown-label {
+  padding: var(--space-1-5) var(--space-2-5) var(--space-1);
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.dropdown-separator {
+  height: 1px;
+  margin: 4px -2px;
+  background: var(--outline-variant);
+}
+
+.dropdown-shortcut {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  color: var(--on-surface-variant);
+  letter-spacing: var(--letter-spacing-overline);
+}
+
+/* ── Group (role="group") ── agrupa ítems relacionados; par shadcn DropdownMenuGroup. */
+.dropdown-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* ── Inset ── ítems/labels sin ícono líder se alinean con los que sí tienen uno
+   (shadcn data-inset → pl-8 = 32px = 10px padding + 16px slot + 6px gap). */
+.dropdown-item[data-inset="true"],
+.dropdown-label[data-inset="true"] {
+  padding-left: var(--space-8);
+}
+
+/* ── Checkbox / Radio items ──
+   role="menuitemcheckbox" | role="menuitemradio" + aria-checked manejan el
+   indicador líder: check (SVG en el markup) para checkbox, punto CSS para radio.
+   El slot .dropdown-item-indicator queda siempre reservado (16px) para que las
+   etiquetas se alineen estén marcadas o no — igual que el pl-8 de shadcn. */
+.dropdown-checkbox-item .dropdown-item-indicator > svg,
+.dropdown-radio-item .dropdown-item-indicator::before {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+.dropdown-radio-item .dropdown-item-indicator::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.dropdown-checkbox-item[aria-checked="true"] .dropdown-item-indicator > svg,
+.dropdown-radio-item[aria-checked="true"] .dropdown-item-indicator::before {
+  opacity: 1;
+}
+
+/* ── Submenús (Sub/SubTrigger/SubContent) ──
+   NO soportados en la arquitectura buildless (use-flyout no hace portal/anidado).
+   Decisión de diseño documentada — para ramificar, usar acciones planas o un
+   segundo Dropdown. No improvisar un motor de submenús. */

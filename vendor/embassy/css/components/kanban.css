@@ -1,0 +1,133 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Kanban
+   Tablero kanban con columnas y tarjetas arrastrables.
+
+   Cuándo usar: tableros de flujo por columnas (pipelines de recruiting/HR).
+   Cuándo no: datos tabulares (usar Table); listas simples (usar cards).
+   Reemplaza a: boards custom.
+
+   Dependencia: variables.css
+   Requiere: badge.css (para badges en columnas, opcional)
+
+   Uso:
+   <div class="kanban-board">
+     <div class="kanban-column">
+       <div class="kanban-column-header">
+         Aplicados <span class="count">5</span>
+       </div>
+       <div class="kanban-column-body">
+         <!-- Interactiva/arrastrable: agregá tabindex="0" role="button" — la card
+              es focusable y trae :focus-visible + estado dragging. -->
+         <div class="kanban-card" tabindex="0" role="button">
+           <div class="kanban-card-title">Juan Perez</div>
+           <div class="kanban-card-meta">Frontend · 3 dias</div>
+         </div>
+       </div>
+     </div>
+   </div>
+═══════════════════════════════════════ */
+
+.kanban-board {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  padding-bottom: var(--space-4);
+}
+.kanban-column {
+  min-width: 280px;
+  max-width: 320px;
+  flex-shrink: 0;
+  background: var(--surface-variant);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+}
+.kanban-column-header {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  color: var(--on-surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kanban-column-header .count {
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  color: var(--on-surface-variant);
+  background: var(--surface-container);
+  border: 1px solid var(--border);
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-full);
+}
+.kanban-column-body {
+  padding: var(--space-3);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 100px;
+}
+/* Entidad (COMPOSICION.md §4b): escalon compacto. */
+.kanban-card {
+  background: var(--surface-container);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  cursor: grab;
+  transition: box-shadow var(--duration-fast), transform var(--duration-fast);
+}
+.kanban-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.kanban-card.dragging {
+  opacity: .5;
+  transform: rotate(2deg);
+}
+.kanban-card:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.kanban-card-title {
+  font-size: var(--font-size-body-md);
+  line-height: var(--line-height-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--on-surface);
+  margin-bottom: var(--space-1-5);
+}
+.kanban-card-meta {
+  font-size: var(--font-size-caption);
+  color: var(--on-surface-variant);
+  display: flex; align-items: center; gap: var(--space-1-5);
+}
+
+/* ── Header row: título + badge de estado opcional ── */
+.kanban-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.kanban-card-header .kanban-card-title { margin-bottom: 0; }
+
+/* ── Footer row: meta + avatar de asignado opcional ── */
+.kanban-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.kanban-card-avatar {
+  /* Escalón xs de la escala de avatar (variables.css) */
+  width: var(--avatar-size-xs); height: var(--avatar-size-xs);
+  border-radius: 50%;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--avatar-initial-xs); font-weight: 600;
+  flex-shrink: 0;
+  margin-left: auto;
+}

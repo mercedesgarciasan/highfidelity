@@ -1,0 +1,1112 @@
+/* ═══════════════════════════════════════
+   Amalgama Design System — Tokens
+   Source of truth: Embassy UI Figma file
+   (H7roIg3WybZXZhse6H7pVg)
+═══════════════════════════════════════ */
+
+:root {
+  /* ─────────────────────────────────────
+     Neutral palette
+  ───────────────────────────────────── */
+  --neutral-10:  #FAFBFC;
+  /* El fondo de una app vive entre 10 y 50, y ese tramo estaba vacío: 10 contra
+     blanco da 1.036:1, o sea que fondo y tarjeta eran el mismo color. 30 da 1.10:1,
+     que es el escalón mínimo para que un grupo se lea como grupo sin dibujar una
+     línea. Ver MOBILE.md §6b·1. */
+  --neutral-30:  #F3F4F6;
+  --neutral-50:  #EAEBED;
+  --neutral-100: #BFC1C8;
+  --neutral-200: #9FA3AE;
+  --neutral-300: #747989;
+  /* El escalón de texto apagado que faltaba. 300 no se puede usar para texto (4.34:1,
+     no llega a AA) y 400 no está apagado (8.39:1, casi cuerpo). 350 da 5.54:1 sobre
+     tarjeta, 5.03:1 sobre el fondo de página y 4.64:1 sobre surface-variant: pasa AA
+     en los tres y por fin se lee como jerarquía. Ver FAILURES.md M13. */
+  --neutral-350: #63687A;
+  --neutral-400: #474D61;
+  --neutral-500: #353A4A;
+  --neutral-600: #282C39;
+  --neutral-700: #1C202C;
+  --neutral-750: #171B26; /* el escalon que faltaba entre 800 y 700 — sin el,
+                             --surface-container-low en dark resolvia al MISMO
+                             #13161F que --surface y un panel en ese token era
+                             invisible salvo por su borde (medido sep 2026) */
+  --neutral-800: #13161F;
+  --neutral-900: #0A0C12;
+  --neutral-black: #000000;
+  --neutral-white: #FFFFFF;
+
+  /* ─────────────────────────────────────
+     Primary palette  (navy blues)
+  ───────────────────────────────────── */
+  --primary-50:  #E4E7EF;
+  --primary-60:  #D7DEFB; /* periwinkle-blue tint — Primary Container (light) */
+  --primary-75:  #D6DBE8; /* gris-navy claro con cuerpo */
+  --primary-100: #BCC2D8;
+  --primary-200: #909BBE;
+  --primary-300: #6675A4;
+  --primary-400: #475993;
+  --primary-500: #253E82;
+  --primary-600: #1F387A;
+  --primary-700: #162F6F;
+  --primary-800: #0D2663;
+  --primary-900: #01164D;
+
+  /* ─────────────────────────────────────
+     Secondary palette  (periwinkle blues)
+  ───────────────────────────────────── */
+  --secondary-10:  #FBFCFF;
+  --secondary-50:  #EDF2FF;
+  --secondary-100: #DCE6FF;
+  --secondary-200: #CAD9FF;
+  --secondary-300: #B9CCFF;
+  --secondary-400: #A7C0FF;
+  --secondary-500: #95B3FF;
+  --secondary-600: #84A6FF;
+  --secondary-700: #7299FF;
+  --secondary-800: #618DFF;
+  --secondary-900: #4F80FF;
+  --secondary-925: #3A5BB0; /* mid-dark periwinkle — Secondary Container en dark (tono ~40) */
+  --secondary-950: #1E3A8C; /* dark agile-blue — accessible "on" text within the Secondary family */
+
+  /* ─────────────────────────────────────
+     Tertiary palette (purple / violet)
+  ───────────────────────────────────── */
+  --tertiary-50:  #F1EEFE;
+  --tertiary-100: #E3DEFD;
+  --tertiary-200: #D4CDFC;
+  --tertiary-300: #C6BCFB;
+  --tertiary-400: #B8ACFA;
+  --tertiary-500: #AA9BF8;
+  --tertiary-600: #9C8AF7;
+  --tertiary-700: #8D79F6;
+  --tertiary-800: #7F69F5;
+  --tertiary-900: #7158F4;
+  --tertiary-950: #4A3BA8;  /* el escalon que faltaba. Todas las otras familias acento lo
+                              tienen y por el mismo motivo: sin el, on-tertiary-container
+                              se quedaba en el -900 y daba 3.66:1 sobre el container claro,
+                              y el container oscuro tenia que usar el -800, un lila brillante
+                              con luminancia 0.212 cuando el resto de los containers oscuros
+                              viven entre 0.045 y 0.115. Fallaba AA en los dos temas. */
+
+  /* ─────────────────────────────────────
+     Success palette
+  ───────────────────────────────────── */
+  --success-50:  #E4F8EC;
+  --success-100: #BFECD1;
+  --success-200: #93E1B3;
+  --success-300: #60D594;
+  --success-400: #28CB7C;
+  --success-500: #00C164;
+  --success-600: #00B15A;
+  --success-700: #009E4D;
+  --success-800: #008D40;
+  --success-900: #006D2C;
+  --success-950: #004D1E;  /* container en oscuro — el -900 queda en 4.24:1 */
+  --success-975: #00351A;  /* on-success en oscuro: texto sobre el verde claro */
+
+  /* ─────────────────────────────────────
+     Error palette
+  ───────────────────────────────────── */
+  --error-50:  #FFEBF0;
+  --error-100: #FFCDD7;
+  --error-200: #F29AA1;
+  --error-300: #EA727D;
+  --error-400: #F64F5D;
+  --error-500: #FD3A45;
+  --error-600: #EE3043;
+  --error-700: #DB263C;
+  --error-800: #CE1D35;
+  --error-900: #BF0B29;
+  --error-950: #7A0C1B;    /* container en oscuro — el -700 era demasiado claro */
+  --error-975: #5C0010;    /* on-error en oscuro: texto sobre el rojo claro */
+
+  /* ─────────────────────────────────────
+     Warning palette
+  ───────────────────────────────────── */
+  --warning-50:  #FFF2DF;
+  --warning-100: #FFDEB0;
+  --warning-200: #FFC97D;
+  --warning-600: #FFA120;
+  --warning-500: #FFB249;
+  --warning-700: #FC7400;
+  --warning-800: #F66200;
+  --warning-900: #ED4403;
+  --warning-925: #C43800;  /* texto y on-container en claro — el -900 da 3.50:1 */
+  --warning-950: #7A3200;  /* container en oscuro — el -900 es naranja saturado */
+  --warning-975: #5A2A00;  /* on-warning en oscuro: texto sobre el ámbar claro */
+
+  /* ─────────────────────────────────────
+     Information palette
+  ───────────────────────────────────── */
+  --info-50:  #E9EBFD;
+  --info-100: #C7CCFA;
+  --info-200: #9FABF8;
+  --info-300: #748AF5;
+  --info-400: #4F6EF3;
+  --info-500: #1E52EE;
+  --info-600: #1749E2;
+  --info-700: #003ED6;
+  --info-800: #0032CB;
+  --info-900: #001ABA;
+  --info-950: #00177A;  /* on-info en oscuro: texto sobre el azul claro */
+
+  /* ─────────────────────────────────────
+     Paleta de marca  (Manual de Marca 2022)  —  PRIMITIVAS
+
+     Son primitivas, no roles: valores crudos de la marca, y ningún componente
+     los escribe. Se consumen por su rol (--accent-*), igual
+     que ninguna pantalla escribe --primary-900.
+
+     No son familias con rampa: el Manual define un valor por acento, no diez.
+     Por eso no llevan número de paso.
+  ───────────────────────────────────── */
+  --palette-accent-hot-pink:      #FE566A;  /* Hot Pink      · 5.51:1 con navy encima */
+  --palette-accent-chelo-yellow:  #FFC700;  /* Chelo Yellow  · 11.0:1 con navy encima */
+  --palette-accent-kika-green:    #67B9A4;  /* Kika Green    · 7.28:1 con navy encima */
+  --palette-accent-pink-sebiche:  #F1A7A3;  /* Pink Sebiche */
+  --palette-accent-sky:           #49A4FF;  /* Sky / Data — pisa de cerca a --chart-1 */
+  --palette-accent-lime:          #E0FF4F;  /* Lime — aparece una sola vez, como highlight */
+
+  /* ─────────────────────────────────────
+     Color Roles (semantic) — capa de uso
+     Los componentes consumen SOLO estos tokens (o sus alias).
+     Cada rol apunta a un primitivo de la paleta Embassy.
+  ───────────────────────────────────── */
+  /* Primary · Navy */
+  --primary:                   var(--primary-900);
+  --on-primary:                var(--neutral-white);
+  --primary-container:         var(--primary-60);
+  --on-primary-container:      var(--primary-900);
+  --primary-hover:             var(--primary-700);
+  /* Capa de estado de la variante de TEXTO: no es un fondo, es un velo de
+     Primary sobre lo que haya atrás. Estaba escrita a mano en button.css como
+     color-mix inline; el sitio la documenta como rol, así que vive acá. */
+  --primary-state-hover:       color-mix(in srgb, var(--primary) 10%, transparent);
+  --primary-state-press:       color-mix(in srgb, var(--primary) 16%, transparent);
+  /* Secondary · Agile Blue */
+  --secondary:                 var(--secondary-900);
+  /* Texto oscuro, no blanco. El acento en claro es un color vivo y saturado: blanco
+     encima da 3.58:1 en Embassy y 3.26:1 en un verde de marca, o sea por debajo de AA
+     para texto normal. Con primary-900 da 4.79:1 en Embassy y 5.11:1 en Nortia, y
+     escala a cualquier marca porque el 900 de la rampa siempre es el paso más oscuro.
+     En dark el rol ya usa secondary-950 sobre secondary-300 (6.45:1) y no cambia. */
+  --on-secondary:              var(--primary-900);
+  /* Container = secondary-200 + on = primary navy: el botón/chip Secondary
+     (tonal) se diferencia del Primary por inversión (claro + texto navy). */
+  --secondary-container:       var(--secondary-200);
+  --on-secondary-container:    var(--primary-900);
+  /* Hover de la variante tonal. El sitio lo documenta como rol
+     (Components · Buttons → Tokens y especificaciones) y no existía en el CSS.
+     Oscurece un escalón; en los dos temas el par con on-container sigue pasando. */
+  --secondary-container-hover: var(--secondary-300);
+  /* Tertiary (Purple) */
+  --tertiary:                    var(--tertiary-900);
+  --on-tertiary:                 var(--neutral-white);
+  --tertiary-container:          var(--tertiary-100);
+  --on-tertiary-container:       var(--tertiary-950);  /* 6.5:1. El -900 daba 3.66:1 */
+  /* Acentos de marca — la capa de uso sobre la paleta del Manual.
+     Un componente o una lámina consume ESTOS, nunca la primitiva.
+     Las reglas del Manual son parte del rol: máximo DOS juntos en una
+     composición, uno si es tipografía; nunca fondo dominante; nunca texto
+     corrido; nunca amarillo sobre azul («no todos somos hinchas de Boca :)»).
+     El `on` de los tres es navy: blanco no llega a AA en ninguno (3.09:1 en el
+     rosa, 2.34:1 en el verde). No se recalibran en oscuro: son color de marca,
+     no de superficie, y su par ya pasa en los dos temas. */
+  --accent-hot-pink:           var(--palette-accent-hot-pink);
+  --accent-chelo-yellow:       var(--palette-accent-chelo-yellow);
+  --accent-kika-green:         var(--palette-accent-kika-green);
+  --on-accent:                 var(--primary-900);
+  /* Error */
+  --error:                     var(--error-500);
+  --on-error:                  var(--neutral-white);
+  --error-container:           var(--error-50);
+  --on-error-container:        var(--error-900);
+  --error-hover:               var(--error-700);
+  /* El RELLENO de un botón lleno, separado de la señal.
+     --error es el rojo de señal: sirve para un borde de campo, un punto de
+     estado o un anillo de foco, donde WCAG pide 3:1 porque son objetos gráficos.
+     Como superficie con texto encima es otra cosa: blanco sobre #FD3A45 da
+     3.58:1 y no pasa AA. Un token, dos trabajos.
+     El -900 ya existe en la rampa: 6.37:1 con blanco. En OSCURO no se toca —
+     ahí el par ya da 6.78:1 y pisarlo sería empeorarlo. */
+  --error-fill:                var(--error-900);
+  --error-fill-hover:          var(--error-950);
+  /* Success */
+  --success:                   var(--success-500);
+  --on-success:                var(--neutral-white);
+  --success-container:         var(--success-50);
+  --on-success-container:      var(--success-900);
+  --success-hover:             var(--success-700);
+  /* Idem verde, y acá el caso era peor: blanco sobre #00C164 da 2.38:1.
+     El -900 da 6.51:1. En oscuro tampoco se toca (8.96:1). */
+  --success-fill:              var(--success-900);
+  --success-fill-hover:        var(--success-950);
+  /* Warning */
+  --warning:                   var(--warning-500);
+  --on-warning:                var(--neutral-900);
+  --warning-container:         var(--warning-50);
+  --on-warning-container:      var(--warning-925);
+  /* Info */
+  --info:                      var(--info-500);
+  --on-info:                   var(--neutral-white);
+  --info-container:            var(--info-50);
+  --on-info-container:         var(--info-900);
+  /* Background & Surface */
+  --surface:                   var(--neutral-30);
+  --surface-dim:               var(--neutral-50);
+  --surface-bright:            var(--neutral-white);
+  --surface-container-lowest:  var(--neutral-10);
+  --surface-container-low:     var(--neutral-10);
+  --surface-container:         var(--neutral-white);
+  --surface-container-high:    var(--neutral-50);
+  --surface-container-highest: var(--neutral-100);
+  --surface-variant:           var(--neutral-50);
+  --on-surface:                var(--neutral-900);
+  --on-surface-variant:        var(--neutral-350);  /* texto de énfasis medio (#63687A) — antes neutral-400, que a 8.39:1 no se leía como apagado */
+  /* Outline · bordes (outline = más prominente/oscuro; variant = sutil) */
+  --outline:                   var(--neutral-200);  /* #9FA3AE */
+  --outline-variant:           var(--neutral-100);  /* #BFC1C8 */
+  /* Inverse */
+  --inverse-surface:           var(--neutral-900);
+  --inverse-on-surface:        var(--neutral-50);
+  --inverse-primary:           var(--secondary-900);
+  /* Disabled */
+  --disabled:                  var(--neutral-100);
+  --on-disabled:               var(--neutral-300);
+  /* Focus & Overlay */
+  --focus:                     var(--secondary-900);
+  /* Anillo de foco: derivado de --focus (single source of truth) en vez de
+     hardcodear rgba(79,128,255,.15). --focus no tiene override en dark
+     (señal de foco consistente entre temas), así que el valor resuelto es el
+     mismo en ambos temas — pero ahora sigue automáticamente cualquier cambio de
+     --focus, sin duplicar el hex. */
+  --focus-ring:                color-mix(in srgb, var(--focus) 15%, transparent);
+  /* Ring de error (inputs .is-error): derivado de --error vía color-mix,
+     por lo que se recalibra solo en dark. Nunca hardcodear el rgba. */
+  --error-ring:                color-mix(in srgb, var(--error) 12%, transparent);
+  --scrim:                     rgba(0,0,0,.32);
+  /* Color base de la elevación. Está en el sistema publicado (Styles · Color ·
+     Baseline → Utilidad) y faltaba acá. Se agrega para cerrar el hueco, con una
+     advertencia: los compuestos --shadow-sm/md/lg NO derivan de él todavía —
+     llevan su propio tinte navy rgba(28,36,56,…), que es una decisión de
+     Embassy y no el neutral de la fuente. Dos verdades sobre el mismo concepto;
+     unificarlas cambia el aspecto de toda la elevación, así que es una decisión
+     aparte y no un arreglo de anclaje. */
+  --shadow:                    var(--neutral-900);
+  /* Capa de estado. Estaban documentados en el sitio (Styles · Color · Baseline,
+     «State Palette») y no existían en el CSS: tres tokens fantasma. Se derivan
+     de --secondary con color-mix, así que se recalibran solos en oscuro
+     en vez de arrastrar el rgba de claro. */
+  --hover:                     color-mix(in srgb, var(--secondary) 8%, transparent);
+  --pressed:                   color-mix(in srgb, var(--secondary) 14%, transparent);
+  /* SELECCIONADO. El sitio lo documentaba en secondary-50; se unifica con el
+     token que ya significa «seleccionado» en todo el sistema (chip, segmented,
+     pagination, toggle, calendar, list, nav activo) en vez de abrir un segundo
+     valor para lo mismo. --nav-selected sigue siendo su alias de nav. */
+  --selected:                  var(--secondary-container);
+
+  /* Button · Secondary: NO tiene tokens propios.
+     Hasta sep-2026 existieron --button-secondary-bg/-fg/-border/-bg-hover: un
+     tratamiento neutro para que el Secondary no saliera igual que el item de
+     menú activo (los dos consumían --secondary-container). El sistema
+     publicado dice lo contrario y gana — «los botones consumen roles semánticos
+     globales directamente; no existen tokens de componente (--button-*)».
+     La variante tonal es --secondary-container / -on-secondary-container,
+     y su hover --secondary-container-hover. Si el botón y el nav activo
+     vuelven a leerse igual, lo que se mueve es el NAV —que ya tiene su propia
+     capa --nav-*—, no el botón. */
+
+  /* ─────────────────────────────────────
+     Semantic aliases
+  ───────────────────────────────────── */
+  /* No hay un alias --surface, y es a propósito: apuntaba a --surface-DIM,
+     o sea que el token llamado «surface» no era la superficie. Cero usos, y una
+     trampa para el que lo leyera. La superficie de página es --bg; la de tarjeta,
+     --card-bg; el resto de la rampa se pide por su rol. */
+  /* Borde de CONTENEDORES (cards, tablas, paneles): on-surface al 10% de opacidad.
+     Decisión de diseño (jun 2026): el chrome de contenedores se atenúa para que el
+     outline de elementos INTERACTIVOS (--outline, botones/chips/inputs) se
+     distinga con claridad. Theme-aware vía color-mix — sin override en dark. */
+  --border:         color-mix(in srgb, var(--on-surface) 10%, transparent);
+  /* No hay --divider: era un alias exacto de --border, con cero usos, y en la
+     tabla de tokens aparecía como una fila repetida sin nada que la explicara.
+     Una línea divisoria se pide con --border. */
+
+  /* Tipografía de página (decisión de diseño, jun 2026): el texto principal
+     —títulos y cuerpo— usa el NAVY BRAND (primary-900), no el casi-negro
+     neutral-900. Igual que el sitio de docs. En dark se recalibra a
+     neutral-50 (override abajo). --on-surface queda para contenido
+     interno de componentes (labels de chips, botones, celdas). */
+  /* Los alias que eran un SEGUNDO NOMBRE de un rol se retiraron en sep-2026:
+     --bg, --card-bg, --sidebar-bg, --interactive(-light/-hover), --tertiary-purple*
+     y los atajos de estado --green/--red/--yellow/--blue. Resolvían exactamente al
+     mismo valor que su rol en los DOS temas —medido—, o sea que eran vocabulario
+     duplicado para una sola cosa. El archivo de Design System define los roles, y
+     eso es lo que se consume. Los que siguen NO son duplicados: cada uno dice algo
+     que el DS no dice, y por eso sobreviven. */
+  /* Prosa larga de COLATERAL: el gris-carbón del Manual («Ink»). El navy de
+     --text-primary es el color de producto y sigue siéndolo; en un párrafo de
+     varias líneas de un deck o una propuesta, el Manual usa este.
+     No es para UI: una celda, un label o un botón siguen en los tokens de
+     componente. En oscuro no hay casi-negro que valga, así que vuelve a ser
+     el mismo color que el texto principal (ver los bloques por tema). */
+
+  /* Estados como TEXTO sobre una superficie.
+     --success / --error están calibrados para funcionar como FONDO
+     con su par -on-* encima; usados como color de texto no llegan a AA en claro
+     (2.30:1 y 3.45:1 medidos). Estos roles son el mismo significado con el
+     contraste que corresponde. El color de marca y el color legible no tienen
+     por qué ser el mismo hex, y forzarlos a serlo es lo que rompía los KPIs. */
+  /* El acento cuando hay que LEERLO. --secondary es #4F80FF: 3.58:1 sobre
+     blanco. Alcanza para un borde, un caret o un icono (WCAG pide 3:1 para
+     objetos graficos), no para el label de una pestaña seleccionada. La familia
+     *-text ya existia para los cuatro de estado y a secondary le faltaba: por eso
+     .tab.active fallaba AA en todos los productos que usan tabs, con el token
+     correcto de la familia correcta escrito en el componente.
+     No usa --on-secondary-container (navy #01164D) como hacen los de estado,
+     porque ahi el acento deja de ser azul y la pestaña activa pierde su diferencia
+     con las inactivas. El -950 existe justamente para esto: 10.3:1 sobre blanco. */
+  --secondary-text: var(--secondary-950);
+  --success-text: var(--on-success-container);
+  --error-text:   var(--on-error-container);
+  --warning-text: var(--on-warning-container);
+  --info-text:    var(--on-info-container);
+
+  /* No hay --accent ni --accent-light. Eran alias del color interactivo para el
+     cromo de la doc, y desde que existen los acentos de marca (--accent-hot-pink
+     y compañía) el prefijo --accent- significaba dos cosas sin relación. docs.css
+     consume --interactive / --interactive-light, que es lo que eran. */
+
+  /* No hay --text-* ni --ctx-*, y es deliberado (sep-2026).
+     El Design System documenta DOS niveles de contenido sobre superficie, como
+     Material: --on-surface y --on-surface-variant. Acá habían
+     crecido cinco tokens --text-* encima de esos dos, y cada uno coincidía con
+     su rol en un tema y se separaba en el otro — imposible de razonar, y sin
+     ficha en ninguna tabla del sistema. Se colapsaron a los dos roles.
+     Los --ctx-* eran lo mismo en chico: --ctx-surface y --ctx-surface-raised
+     duplicaban exacto a surface y surface-container, y el mecanismo que
+     justificaban —que un contenedor los redeclare— funciona igual redeclarando
+     el rol, porque las custom properties ya cascadean. --ctx-track/-thumb
+     bajaron a segmented-button, su único consumidor. */
+
+  /* ─────────────────────────────────────
+     Spacing scale  (4px base grid)
+     Consume these tokens — never hardcode px values.
+     Usage:  padding: var(--space-4);  gap: var(--space-2);
+  ───────────────────────────────────── */
+  /* Medios pasos. Existen porque el interior de un componente los necesita:
+     6px entre un ícono y su label es correcto y 8px queda flojo. Son parte de
+     la escala, no una excepción — y por eso también responden a la densidad. */
+  --space-0-5:  2px;  /* separación mínima, compensación de borde  */
+  --space-1:    4px;  /* icon gaps, min separators          */
+  --space-1-5:  6px;  /* ícono ↔ label, padding de control chico   */
+  --space-2:    8px;  /* inline element gaps                */
+  --space-2-5: 10px;  /* padding vertical de controles compactos   */
+  --space-3:   12px;  /* badge / chip padding               */
+  --space-3-5: 14px;  /* padding de editor, celda cómoda           */
+  --space-4:   16px;  /* compact card padding               */
+  --space-5:   20px;   /* form field gaps                    */
+  --space-6:   24px;   /* standard card padding              */
+  --space-8:   32px;   /* medium section padding             */
+  --space-10: 40px;   /* block separators                   */
+  --space-12: 48px;   /* main content padding               */
+  --space-16: 64px;   /* section separators                 */
+  --space-20: 80px;   /* hero / large section padding       */
+  /* El escalón de lámina. No lo pide ninguna pantalla de producto: lo piden los
+     decks y las portadas del Manual, que respiran a otra escala. Entra acá y no
+     en una hoja de colateral porque un espaciado es un espaciado, y tenerlo
+     suelto es exactamente cómo se vuelven a inventar los valores. */
+  --space-24: 96px;   /* lámina, portada, apertura de deck   */
+
+  /* ─────────────────────────────────────
+     Densidad y superficie táctil
+
+     Los 44px de target vivían sueltos dentro de media queries en
+     components.css, así que no existían como decisión: eran un parche por
+     archivo. Acá son un token, y en [data-platform="native"] suben a 48.
+     --target-min es un PISO: un control puede ser más alto, nunca más bajo.
+  ───────────────────────────────────── */
+  --target-min:     44px;  /* WCAG 2.5.5 / iOS. En nativo: 48 */
+  --row-height:     36px;  /* fila de tabla y de lista en escritorio */
+  --control-height: 36px;  /* botón, input y select por defecto */
+
+  /* ─────────────────────────────────────
+     La capa de pantalla — la densidad con la que se dibuja la composición
+
+     Las clases de composition.css (.screen-anchor, .screen-group, .screen-row…)
+     son el PATRÓN y valen igual en una pantalla de producto y en una app. Estos
+     ocho tokens son la DENSIDAD, y por eso son lo único que cambia entre las dos
+     — acá los valores de escritorio; [data-platform="native"] los sube.
+
+     Un proyecto los redeclara en su capa de marca y sigue teniendo exactamente
+     las mismas reglas. Lo que no se ajusta desde acá: --target-min (es
+     accesibilidad) y el peso de la fila (es la falla M13).
+     Ver COMPOSICION.md Parte III·d y MOBILE.md §6e.
+  ───────────────────────────────────── */
+  --screen-block-gap:      24px;  /* entre bloques: secciones, grupos, paneles   */
+  --screen-block-padding:  20px;  /* adentro de un bloque de encabezado          */
+  --screen-group-padding:  16px;  /* adentro de un grupo: el inset del divisor   */
+  --screen-row-height:     44px;  /* fila de etiqueta/dato                       */
+  --screen-item-height:    56px;  /* fila con ícono guía                         */
+  --screen-item-icon:      32px;  /* el contenedor del ícono guía                */
+  --screen-item-gap:       12px;  /* entre el ícono y el texto                   */
+  --screen-radius:  var(--radius-lg);  /* el radio del ancla y de los grupos     */
+
+  /* ─────────────────────────────────────
+     Iconografía — grosor de trazo
+
+     Un solo valor para todos los íconos del sistema. Antes convivían seis
+     grosores distintos (1, 1.5, 2, 2.2, 2.5, 3) sin ninguna regla, así que dos
+     íconos vecinos podían tener peso distinto sin que nadie lo hubiera decidido.
+
+     Es también un eje de marca: 1.5 se lee liviano y elegante, 2.5 se lee
+     robusto y utilitario. Se overridea en el brand layer, nunca por componente.
+
+     Escape hatch: un ícono que de verdad necesita otro peso lo declara inline
+     (style="stroke-width:3"), que gana sobre la hoja de estilos.
+  ───────────────────────────────────── */
+  --icon-stroke: 2;
+
+  /* ─────────────────────────────────────
+     Typography — Font families
+  ───────────────────────────────────── */
+  /* Epilogue es la principal: títulos, overline de página, botones.
+     Manrope es la de párrafo y de UI. Inter queda de fallback en el stack, no
+     como decisión: si Manrope no carga, el sistema no se cae a una genérica.
+     Ojo, y está dicho a propósito: Manrope NO tiene itálica. Un énfasis en
+     cursiva sale oblicuo sintético; si el texto la necesita de verdad, es un
+     caso de la capa editorial, no de producto. */
+  --font-heading: 'Epilogue', sans-serif;
+  --font-body:    'Manrope', 'Inter', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  /* ─────────────────────────────────────
+     Typography — Named type scale
+     Consume these tokens for consistent sizing.
+     Format: --font-size-{role}  /  --line-height-{role}
+  ───────────────────────────────────── */
+
+  /* Registro editorial — SOLO para el título de apertura de una landing, una portada
+     de propuesta o un reporte. No entra a producto: la escala de abajo es la de las
+     pantallas y no se toca.
+     Existe porque la escala de producto arranca en 28px, y a 28px un hero se lee
+     tímido — que es exactamente el default de una página generada: todo un poco
+     grande y nada dominante. La identidad no está en agrandar todo, está en el
+     CONTRASTE entre un título de 96 y un cuerpo de 13.5.
+     Uno solo por página. Dos títulos editoriales son dos aperturas. */
+  --font-size-editorial-lg: clamp(52px, 8vw, 96px);  --line-height-editorial-lg: 1.02;
+  --font-size-editorial-md: clamp(40px, 6vw, 68px);  --line-height-editorial-md: 1.06;
+  --font-size-editorial-sm: clamp(32px, 4.5vw, 46px); --line-height-editorial-sm: 1.1;
+  /* A este tamaño el tracking se mide en em, no en px: -0.4px no se nota en 96 y
+     desarma un título de 32. */
+  --letter-spacing-editorial: -0.02em;
+
+  /* Epilogue — Display & Headings */
+  --font-size-display:     28px;   --line-height-display:     1.15;
+  --font-size-heading-xl:  24px;   --line-height-heading-xl:  1.2;
+  --font-size-heading-lg:  22px;   --line-height-heading-lg:  1.25;
+  --font-size-heading-md:  18px;   --line-height-heading-md:  1.3;
+  --font-size-heading-sm:  17px;   --line-height-heading-sm:  1.35;
+  --font-size-heading-xs:  15px;   --line-height-heading-xs:  1.4;
+
+  /* Inter — Body & UI */
+  --font-size-body-lg:     14px;   --line-height-body-lg:     1.5;
+  /* El cuerpo del registro editorial. No es «body-lg un poco más grande»: es el
+     par que usa el Manual para leer —16 sobre 30— y sólo tiene sentido al lado de
+     un titular editorial. En producto no entra: ahí la base sigue siendo body-md. */
+  --font-size-body-editorial: 16px; --line-height-body-editorial: 1.875;
+  --font-size-body-md:     13.5px; --line-height-body-md:     1.5;  /* base: inputs, buttons, table cells */
+  --font-size-body-sm:     12.5px; --line-height-body-sm:     1.6;
+  --font-size-label:       13px;   --line-height-label:       1.4;
+  --font-size-caption:     12px;   --line-height-caption:     1.4;
+  --font-size-badge:       11.5px; --line-height-badge:       1.2;
+  --font-size-overline:    12px;   --line-height-overline:    1.2;  /* uppercase table headers */
+  /* El registro chico de versalitas. La prosa del sistema ya lo describe —«versalitas
+     de componente: badge, header de tabla, label del nav», 10-11px con
+     --letter-spacing-label— pero no tenía token, así que el cromo lo escribía a mano
+     en 25 lugares. NO es un tamaño de texto: a 10px solo se lee en mayúsculas y con
+     tracking. Para texto corrido el piso sigue siendo --font-size-caption. */
+  --font-size-overline-sm: 10px;   --line-height-overline-sm: 1.4;
+
+  /* DM Mono — Monospace */
+  --font-size-mono-md:     13px;   --line-height-mono-md:     1.5;
+  --font-size-mono-sm:     11px;   --line-height-mono-sm:     1.4;
+
+  /* Interlineados que NO vienen del paso, sino del contexto.
+     La escala de arriba está pareada: usar --font-size-X implica --line-height-X.
+     Estos dos son las únicas dos excepciones con nombre, y no agregan valores
+     nuevos — son los que ya estaban, dichos por su motivo en vez de por su paso.
+     Ver GOVERNANCE.md §8.3. */
+
+  /* Una sola línea adentro de un control: botón, label, segmented button. El
+     interlineado de prosa ahí no separa nada (no hay segunda línea), infla la
+     altura del control y pelea con su padding. */
+  --line-height-control: 1.2;
+
+  /* Prosa adentro de un bloque de lectura: cuerpo de accordion, editor, bajada
+     de empty state. Se lee en párrafo, no en renglón de UI, así que el
+     interlineado lo manda el bloque y no el paso. */
+  --line-height-prose:   1.6;
+
+  /* Titular corto puesto a un tamaño de CUERPO (alert, popover, toast): el peso
+     lo hace titular, pero el interlineado de cuerpo lo devolvería a párrafo. */
+  --line-height-title:   1.3;
+
+  /* Texto centrado en una caja de alto fijo: inicial de avatar, número de día
+     del calendario. El interlineado no participa del centrado — participa la
+     caja. Cualquier valor > 1 descentra el glifo. */
+  --line-height-none:    1;
+
+  /* ── Inicial de avatar ──────────────────────────────────────────────
+     Escala PROPORCIONAL al diámetro del disco, no la escala de texto: una
+     inicial no es tipografía de lectura, es una marca centrada en una caja.
+     Por eso no hay --font-size-* que le sirva, y mapearla por valor es el
+     error clásico (10px "es" overline-sm, 15px "es" heading-xs — y ninguno
+     de los dos lo es por rol).
+     La razón inicial/diámetro NO es constante y eso es deliberado: baja de
+     .42 a .32 a medida que el disco crece, porque en un disco chico la
+     inicial necesita proporcionalmente más cuerpo para seguir leyéndose.
+     Cuatro componentes se inventaron un escalón cada uno antes de que esto
+     estuviera escrito (avatar-group-count, kanban, person-card, vacancy).
+     Si necesitás un disco que no está acá, agregá el escalón ACÁ. */
+  --avatar-size-xs: 24px;  --avatar-initial-xs: 10px;
+  --avatar-size-sm: 28px;  --avatar-initial-sm: 11px;
+  --avatar-size-md: 36px;  --avatar-initial-md: 13px;
+  --avatar-size-lg: 44px;  --avatar-initial-lg: 15px;
+  --avatar-size-xl: 56px;  --avatar-initial-xl: 18px;
+
+  /* Font weights */
+  --font-weight-regular:   400;
+  --font-weight-medium:    500;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+  --font-weight-extrabold: 800;
+
+  /* Letter spacing (heading only) */
+  /* Escala cerrada. No hay tracking libre: si un texto necesita uno que no está
+     acá, no lo necesita. Los dos positivos son los ÚNICOS, y no son
+     intercambiables — ver COMPOSICION.md, eje A. */
+  --letter-spacing-display:    -0.5px;
+  --letter-spacing-heading-xl: -0.4px;
+  --letter-spacing-heading-lg: -0.3px;
+  --letter-spacing-heading-md: -0.2px;
+  /* Overline de página, a 12px. Apretado a propósito: el default de una página
+     generada es 0.12–0.16em y ese tracking amplio es lo que la vuelve reconocible
+     a diez metros. Lo usan el rótulo de página (`.overline`, en Epilogue) y el
+     índice de sección y los atajos de teclado (en mono): comparten el VALOR, no la
+     familia. */
+  --letter-spacing-overline:    0.04em;
+  /* Versalitas de componente (badge, header de tabla, label del nav, acción del
+     toast): 10–11px. Acá el tracking apretado se lee PEOR — a ese tamaño las
+     mayúsculas necesitan aire para separarse. No unificar con el de arriba:
+     resuelven problemas distintos. */
+  --letter-spacing-label:       0.08em;
+  --letter-spacing-normal:      0;
+
+  /* ─────────────────────────────────────
+     Layout
+  ───────────────────────────────────── */
+  /* El riel siempre visible del app shell. 112px y no 72: los labels mas largos
+     —Foundations 68.9px, Components 71.4px— no ENTRABAN en los 55px utiles que
+     dejaban 72px menos el padding, y como el label va con white-space:nowrap se
+     salian del padding y el riel los recortaba. El aire no era poco, era negativo.
+     A 112 quedan 95 utiles: 12px a cada lado del mas largo. */
+  /* ── Contexto de superficie ──────────────────────────────────────────────
+     Todo componente asumia que estaba apoyado sobre --surface. Metido en
+     un panel con fondo propio, su relleno quedaba mal y habia que pisarlo a
+     mano: medido en una consola de check-in (sep 2026), ocho de catorce
+     overrides de clases publicas eran esto.
+
+     Dos tokens, y los dos los declara el CONTENEDOR, no el componente:
+       --ctx-surface         el fondo de lo que me contiene. Un componente que
+                             tiene que fundirse con su contenedor lo usa.
+       --ctx-surface-raised  el escalon que se despega de ese fondo. Un campo,
+                             un input, un track: algo que tiene que verse
+                             ENCIMA del contenedor.
+     Un contenedor del DS los setea solo. Un panel propio del proyecto declara
+     `data-surface="container"` y listo — sin pisar ninguna clase publica. */
+
+  /* ── La pista y lo que corre sobre ella ──────────────────────────────────
+     Un escalon de superficie da 1.10:1 y nada mas, en los dos temas: un
+     elemento "levantado" sobre el fondo de la pagina no se despega solo, y por
+     eso terminaba pidiendo un aro o una sombra que lo dibujara. Una pista
+     HUNDIDA usa dos escalones en vez de uno y llega a 1.19:1 en claro y 1.24:1
+     en oscuro, sin ningun borde.
+
+     Va aparte de --ctx-surface/-raised porque la rampa CAMBIA DE DIRECCION
+     entre temas: en claro container-high esta por debajo de surface, en oscuro
+     por encima. Ese override vive aca una sola vez, no en cada componente que
+     necesite una pista (segmented, slider, progress, toggle-group).
+       --ctx-track        el canal hundido
+       --ctx-track-thumb  lo que corre sobre el: el segmento activo, el pulgar */
+
+  --rail-width:    112px;
+  --sidebar-width: 220px;
+  --topbar-height: 56px;
+
+  /* Breakpoints — referencia canónica del DS.
+     Limitación CSS: las media queries NO pueden consumir var(); usá estos
+     valores literales en @media y mantenelos sincronizados con estos tokens.
+       md  768px  — debajo: layout de columna única; grids colapsan
+       lg 1024px  — debajo: contenido compacto; sidebar puede colapsar
+     Shell en mobile (resuelto jul-2026): debajo de 768px el sidebar es un
+     modal navigation drawer (off-canvas + scrim + hamburguesa .shell-menu-btn)
+     — implementado en layout.css, spec en GOVERNANCE.md §14.3. */
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+
+  /* ─────────────────────────────────────
+     Border radius  (DS scale)
+  ───────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  /* Paneles grandes de lámina. El Manual llega a usar 40, pero a 24 la familia
+     sigue cerrada (4 · 8 · 12 · 16 · 24) y la pieza se redibuja sin perder nada.
+     El 6 del Manual no entra: se metía entre dos escalones que ya existen. */
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+  /* --radius-button: NO se define acá a propósito, y eso ES la decisión.
+     Es el INTERRUPTOR DE FORMA del sistema, el único que existe. Sin declarar,
+     cada botón toma el radio de su tamaño (GOVERNANCE §4.3) y sale redondeado.
+     Declarado en 9999px por un tema de marca, TODOS los botones del proyecto
+     pasan a píldora de una, sin tocar tarjetas, modales ni campos.
+     Los botones lo leen como var(--radius-button, <el token de su tamaño>).
+
+     La forma del botón es una decisión de marca, no de pantalla: se toma una vez
+     en el kickoff del proyecto y no se discute botón por botón. Embassy no la
+     toma por vos y no la prohíbe — la expone. (Antes decía «un botón píldora está
+     prohibido»; era una regla escrita desde el lado del producto, y el Manual de
+     Marca usa píldora en su propio material.) Ver design.md §8.5. */
+  --radius:      var(--radius-lg);
+
+  /* ─────────────────────────────────────
+     Shadows
+  ───────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(28,36,56,.06);
+  --shadow-md: 0 4px 16px rgba(28,36,56,.08);
+  --shadow-lg: 0 8px 32px rgba(28,36,56,.12);
+
+  /* Elevated Button elevation (MD3 elevated button). A runtime var so it can flip in
+     dark — Tailwind inlines --shadow-* into utility classes (they can't recalibrate),
+     so the elevated button consumes THIS via shadow-[var(--btn-elevation)]. Slightly
+     stronger than the card --shadow-* so the lift reads clearly; black in dark. */
+  --btn-elevation:       0 1px 2px rgba(28,36,56,.18), 0 2px 6px rgba(28,36,56,.12);
+  --btn-elevation-hover: 0 2px 4px rgba(28,36,56,.20), 0 6px 16px rgba(28,36,56,.16);
+
+  /* Nav/menu item interaction states — the "blue hover" unified across sidebar
+     nav and dropdown/context menus. Derived from --secondary-container so
+     they recalibrate automatically in dark mode with no separate override. */
+  --nav-hover:            color-mix(in srgb, var(--secondary-container) 45%, transparent);
+  --nav-hover-content:    var(--secondary);
+  --nav-press:            color-mix(in srgb, var(--secondary-container) 70%, transparent);
+  --nav-selected:         var(--secondary-container);
+  --nav-selected-content: var(--on-secondary-container);
+
+  /* ─────────────────────────────────────
+     Degradés — set cerrado, construido con las primitivas de la marca.
+     Salen de var(--primary-*) y var(--secondary-*) a propósito: en un proyecto de
+     cliente toman SU paleta, y por eso un degradé sí se puede usar en producto ajeno
+     mientras que la capa espacial no. Lo que no cambia es la regla: el degradé es una
+     SUPERFICIE (una banda, una tarjeta, un titular grande), nunca una mancha flotando
+     ni un vidrio esmerilado — eso sigue siendo la falla H2.
+     Tres, y no hay un cuarto:
+  ───────────────────────────────────── */
+  /* Fuerte: una banda o una tarjeta que tiene que pesar. Texto claro encima. */
+  --gradient-brand:   linear-gradient(135deg, var(--primary-900) 0%, var(--secondary-925) 100%);
+  /* Sutil: separa una sección del fondo sin dibujar una caja. Texto normal encima. */
+  --gradient-surface: linear-gradient(180deg,
+                        color-mix(in srgb, var(--secondary) 10%, var(--surface)) 0%,
+                        var(--surface) 100%);
+  /* Halo: el foco de luz detrás de una apertura. Es el mismo gesto que --space-glow,
+     pero con el color de la marca que corresponda. */
+  --gradient-glow:    radial-gradient(60% 100% at 50% 0%,
+                        color-mix(in srgb, var(--secondary) 35%, transparent) 0%,
+                        transparent 70%);
+
+  /* Medida de línea. El límite de legibilidad no depende del ancho del layout:
+     una página borde a borde sigue necesitando que el TEXTO corte a tiempo. Por eso
+     es un token propio y no el ancho del contenedor (COMPOSICION.md, estructura). */
+  --measure:      68ch;   /* texto corrido */
+  --measure-lead: 52ch;   /* bajadas y párrafos de apertura, más cortos */
+
+  /* ─────────────────────────────────────
+     Transitions
+  ───────────────────────────────────── */
+  /* Standard scheme — functional, minimal bounce (MD3 fallback for Web) */
+  --ease-default:    cubic-bezier(.4,0,.2,1);
+  --ease-enter:      cubic-bezier(0,0,0,1);
+  --ease-exit:       cubic-bezier(.3,0,1,1);
+  /* Un loop continuo —shimmer, spinner, barra indeterminada— no acelera ni
+     frena: si lo hiciera, cada vuelta tendría un principio y un final visibles
+     y la espera se leería como tirones. Por eso es su propia curva, y por eso
+     GOVERNANCE §11.1a la exime del par enter/exit. */
+  --ease-linear:     linear;
+  /* Expressive scheme — CSS-engineered overshoot approximating MD3's spring
+     physics (which MD3 itself says has no native Web/CSS implementation).
+     Spatial use only (movement/scale/rotate) — MD3 explicitly excludes
+     effects (opacity/color) from overshoot, so never pair these with a
+     color/opacity transition. */
+  --ease-expressive:        cubic-bezier(.34,1.56,.64,1);
+  --ease-expressive-enter:  cubic-bezier(.175,.885,.32,1.4);
+  --ease-expressive-exit:   cubic-bezier(.3,0,.8,.15);
+  /* Emphasized decelerate — the shared Sheet curve. Smooth, no overshoot;
+     the shared curve for every edge-anchored Sheet (Side + Bottom Sheet)
+     enter/exit as one motion system. Use for large edge-anchored surfaces. */
+  --ease-emphasized: cubic-bezier(.32,.72,0,1);
+  --duration-fast:   120ms;
+  --duration-normal: 200ms;
+  --duration-medium: 300ms;
+  --duration-slow:   450ms;
+  /* Shared Sheet slide duration (500ms) for all sides. */
+  --duration-sheet: 500ms;
+}
+
+/* ═══════════════════════════════════════
+   Dark Mode — Color Roles (semantic)
+   Recalibra SOLO la capa semántica de roles.
+   Los componentes consumen estos roles, nunca primitivos.
+
+   Todo rol apunta a su PRIMITIVA con var(). Hasta sep-2026 este bloque
+   escribía el hex literal porque el shell de la doc reasignaba
+   --neutral-50 / -100 / -900 y se producía resolución cruzada; ese atajo del
+   cromo se eliminó (index.html), así que la cadena primitiva → rol → componente
+   vuelve a estar entera y un cambio de rampa llega hasta acá solo.
+
+   Superficies derivadas de la rampa Neutral profunda:
+     surface-dim   neutral-900  #0A0C12   (la más apagada)
+     surface       neutral-800  #13161F   (base)
+     surface-bright neutral-700 #1C202C   (la más luminosa)
+═══════════════════════════════════════ */
+[data-theme="dark"] {
+  /* Todas las familias se referencian con var(--primitiva), las de marca y las
+     neutrales por igual: así un tema white-label llega también a dark (ver
+     WHITE-LABEL.md) y una corrección de rampa no hay que copiarla en tres
+     lugares. El hex del comentario es el valor de Embassy, como referencia. */
+
+  /* Primary · Navy → en dark mode el rol Primary se invierte a BLANCO.
+     #01164D sobre #FFFFFF = 18.4:1 (WCAG AAA). Es la "Dark Mode definition"
+     oficial de Embassy: máximo énfasis, máximo contraste. Single source of
+     truth — todo Primary (botón relleno, FAB, CTA) lo consume desde aquí. */
+  --primary: var(--neutral-white);
+  --on-primary:                var(--primary-900);          /* #01164D */
+  --primary-container:         var(--primary-400);          /* #475993 */
+  --on-primary-container:      var(--primary-50);           /* #E4E7EF */
+  --primary-hover:             var(--primary-50);           /* #E4E7EF */
+  /* Secondary · Agile Blue — 4 valores distintos (sin duplicación) */
+  --secondary:                 var(--secondary-300);        /* #B9CCFF */
+  /* En oscuro el acento YA es claro sobre fondo oscuro (11.31:1): el -950 de
+     claro seria azul oscuro sobre casi negro. Recalibra como cualquier rol. */
+  --secondary-text:            var(--secondary-300);        /* #B9CCFF */
+  --on-secondary:              var(--secondary-950);        /* #1E3A8C */
+  --secondary-container:       var(--secondary-925);        /* #3A5BB0 */
+  --on-secondary-container:    var(--secondary-100);        /* #DCE6FF */
+  --secondary-container-hover: var(--secondary-950);        /* #1E3A8C */
+  /* Tertiary (Purple) */
+  --tertiary:                  var(--tertiary-300);         /* #C6BCFB */
+  --on-tertiary: var(--neutral-900); /* neutral-900 — máximo contraste sobre tertiary claro */
+  --tertiary-container:        var(--tertiary-950);         /* #4A3BA8 — 7.41:1 con el -50
+                                                                    encima. El -800 daba 3.51:1 y
+                                                                    ademas era el unico container
+                                                                    oscuro claro de la familia. */
+  --on-tertiary-container:     var(--tertiary-50);          /* #F1EEFE */
+  /* Estados · mains en dark — se ACLARAN (tono ~80) como los acentos, criterio MD3 */
+  --error:                     var(--error-200);            /* #F29AA1 */
+  --on-error: var(--error-975); /* rojo profundo */
+  --success:                   var(--success-200);          /* #93E1B3 */
+  --on-success: var(--success-975); /* verde profundo */
+  /* En oscuro el relleno y la señal vuelven a ser lo mismo: el par ya da 6.78:1
+     y 8.96:1 sin ayuda. Se redeclaran para que el token no arrastre el valor de
+     claro. */
+  --error-fill:                var(--error-200);            /* #F29AA1 */
+  --error-fill-hover:          var(--error-300);
+  --success-fill:              var(--success-200);          /* #93E1B3 */
+  --success-fill-hover:        var(--success-300);
+  --warning:                   var(--warning-200);          /* #FFC97D */
+  --on-warning: var(--warning-975); /* ámbar profundo */
+  --info:                      var(--info-200);             /* #9FABF8 */
+  --on-info: var(--info-950); /* azul profundo */
+  /* Estados · containers en dark (flip MD3: container oscuro + on-container claro) */
+  --error-container:           var(--error-950);            /* #7A0C1B */
+  --on-error-container:        var(--error-100);            /* #FFCDD7 */
+  --success-container:         var(--success-950);          /* #004D1E */
+  --on-success-container:      var(--success-200);          /* #93E1B3 */
+  --warning-container:         var(--warning-950);          /* #7A3200 */
+  --on-warning-container:      var(--warning-100);          /* #FFDEB0 */
+  --info-container:            var(--info-800);             /* #0032CB */
+  --on-info-container:         var(--info-100);             /* #C7CCFA */
+  /* Surfaces — rampa Neutral profunda (separación pareja y clara) */
+  --surface: var(--neutral-800);
+  --surface-dim: var(--neutral-900);
+  --surface-bright: var(--neutral-700);
+  --surface-container-lowest: var(--neutral-900);
+  --surface-container-low: var(--neutral-750); /* neutral-750 — el escalon sobre surface */
+  --surface-container: var(--neutral-700);
+  --surface-container-high: var(--neutral-600);
+  --surface-container-highest: var(--neutral-500);
+  --surface-variant: var(--neutral-600);
+  /* La pista se invierte: en claro container-high esta DEBAJO de surface, en
+     oscuro esta encima. Literales por la misma razon que el resto del bloque. */
+  --on-surface: var(--neutral-50);
+  --on-surface-variant: var(--neutral-100);
+  /* Outline · bordes */
+  --outline: var(--neutral-300);
+  --outline-variant: var(--neutral-400);
+  /* Inverse */
+  --inverse-surface: var(--neutral-50);
+  --inverse-on-surface: var(--neutral-800);
+  --inverse-primary:           var(--primary-700);          /* #162F6F */
+  --shadow:                    var(--neutral-black);        /* #000000 */
+  /* Disabled */
+  --disabled: var(--neutral-600);
+  --on-disabled: var(--neutral-300);
+
+  /* Aliases semánticos que dependen de la rampa */
+  /* En oscuro no existe el casi-negro: la prosa vuelve al texto principal. El
+     token sigue existiendo para que el colateral no tenga que preguntarse por el tema. */
+
+  /* Elevated Button elevation — black shadows so the lift is visible on dark surfaces
+     (the navy light shadows disappear against dark backgrounds). */
+  --btn-elevation:       0 1px 2px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.42);
+  --btn-elevation-hover: 0 2px 4px rgba(0,0,0,.60), 0 8px 20px rgba(0,0,0,.50);
+}
+
+/* Light-mode scoped override — permite usar data-theme="light" en un contenedor
+   dentro de una página en modo oscuro (eg. demos de estados en la doc site).
+   Restaura todos los tokens que [data-theme="dark"] sobreescribe, y es un espejo
+   exacto de :root: mismo rol, misma primitiva. Si agregás un rol arriba y no
+   acá, un contenedor data-theme="light" adentro de una página oscura se queda
+   con el valor de dark. */
+[data-theme="light"] {
+  --primary:                   var(--primary-900);         /* #01164D */
+  --on-primary: var(--neutral-white);
+  --primary-container:         var(--primary-60);          /* #D7DEFB */
+  --on-primary-container:      var(--primary-900);         /* #01164D */
+  --primary-hover:             var(--primary-700);         /* #162F6F */
+  --secondary:                 var(--secondary-900);       /* #4F80FF */
+  --on-secondary:              var(--primary-900);        /* texto oscuro: blanco sobre el acento no llega a AA */
+  --secondary-container:       var(--secondary-200);       /* #CAD9FF */
+  --on-secondary-container:    var(--primary-900);         /* #01164D */
+  --secondary-container-hover: var(--secondary-300);        /* #B9CCFF */
+  --tertiary:                  var(--tertiary-900);        /* #7158F4 */
+  --on-tertiary: var(--neutral-white);
+  --tertiary-container:        var(--tertiary-100);        /* #E3DEFD */
+  --on-tertiary-container:     var(--tertiary-950);        /* #4A3BA8 */
+  --error:                     var(--error-500);           /* #FD3A45 */
+  --on-error: var(--neutral-white);
+  --error-fill:                var(--error-900);           /* #BF0B29 */
+  --error-fill-hover:          var(--error-950);
+  --success:                   var(--success-500);         /* #00C164 */
+  --on-success: var(--neutral-white);
+  --success-fill:              var(--success-900);         /* #006D2C */
+  --success-fill-hover:        var(--success-950);
+  --warning:                   var(--warning-500);         /* #FFB249 */
+  --on-warning: var(--neutral-900);
+  --info:                      var(--info-500);            /* #1E52EE */
+  --on-info: var(--neutral-white);
+  --error-container:           var(--error-50);            /* #FFEBF0 */
+  --on-error-container:        var(--error-900);           /* #BF0B29 */
+  --success-container:         var(--success-50);          /* #E4F8EC */
+  --on-success-container:      var(--success-900);         /* #006D2C */
+  --warning-container:         var(--warning-50);          /* #FFF2DF */
+  --on-warning-container:      var(--warning-925);         /* #C43800 — el -900 da 3.50:1.
+                                                                   Este bloque es un espejo de :root
+                                                                   y este token se habia quedado atras. */
+  --info-container:            var(--info-50);             /* #E9EBFD */
+  --on-info-container:         var(--info-900);            /* #001ABA */
+  /* Surfaces — literal hex para neutrals hijackeados por el doc shell */
+  --surface: var(--neutral-30);
+  --surface-dim: var(--neutral-50);
+  --surface-bright: var(--neutral-white);
+  --surface-container-lowest: var(--neutral-10);
+  --surface-container-low: var(--neutral-10);
+  --surface-container: var(--neutral-white);
+  --surface-container-high: var(--neutral-50);
+  --surface-container-highest: var(--neutral-100);
+  --surface-variant: var(--neutral-50);
+  --on-surface: var(--neutral-900);
+  --on-surface-variant: var(--neutral-350);
+  /* Outline — literal hex */
+  --outline: var(--neutral-200);
+  --outline-variant: var(--neutral-100);
+  /* Inverse */
+  --inverse-surface: var(--neutral-900);
+  --inverse-on-surface: var(--neutral-50);
+  --inverse-primary:           var(--secondary-900);       /* #4F80FF */
+  --shadow:                    var(--neutral-900);         /* #0A0C12 */
+  /* Disabled — literal hex */
+  --disabled: var(--neutral-100);
+  --on-disabled: var(--neutral-300);
+  /* Aliases */
+  /* Elevated Button — restore light (navy) elevation inside a light-scoped island */
+  --btn-elevation:       0 1px 2px rgba(28,36,56,.18), 0 2px 6px rgba(28,36,56,.12);
+  --btn-elevation-hover: 0 2px 4px rgba(28,36,56,.20), 0 6px 16px rgba(28,36,56,.16);
+}
+
+/* ═══════════════════════════════════════
+   PLATAFORMA NATIVA  ·  el eje que no es claro/oscuro
+   ═══════════════════════════════════════
+
+   Embassy nació para pantallas de escritorio y su escala lo delata: el cuerpo
+   base son 13,5px, que es el tamaño del *caption* de iOS. Una app nativa con
+   esos valores sale chica y fuera de norma en las dos plataformas.
+
+   Esto NO es un tema. Claro/oscuro es un eje de color; escritorio/nativo es un
+   eje de tamaño y densidad. Son independientes: una app nativa en dark usa los
+   dos bloques a la vez.
+
+   Los NOMBRES no cambian — un componente lee --font-size-body-md en las dos
+   plataformas y no sabe dónde está corriendo. Cambian los valores.
+
+   Referencias: iOS body 17pt, secundario 15pt, caption 13pt · Material
+   body-large 16sp, title-large 22sp · targets 44pt (iOS) y 48dp (Android).
+
+   En web este bloque no hace nada salvo que alguien ponga data-platform="native"
+   a mano. Existe acá, y no en un archivo aparte, para que scripts/build-tokens.mjs
+   lo exporte con una sola fuente: tokens/embassy.tokens.ts sale con `native`
+   además de `light` y `dark`.
+   ═══════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Densidad de pantalla — se declara, no se hereda
+
+   Hasta septiembre de 2026 --row-height y --control-height eran ajustables (y
+   están documentados como tales en COMPOSICION.md III·d), pero no había forma de
+   DECLARAR la decisión: cada pantalla salía con el default de 36 salvo que
+   alguien se acordara de bajarlo control por control, y de ahí venía la mitad de
+   «los componentes quedaron gigantes». Acá la densidad es un atributo: se elige
+   una vez por pantalla, por quién la usa y cuántas horas por día, y todo lo que
+   depende de ella se recalibra solo.
+
+       <div data-ds-screen data-density="compact">   ← mostrador, ocho horas
+       <div data-ds-screen data-density="comfortable"> ← el socio, una vez al mes
+
+   La escalera es 32 · 36 · 48, todos múltiplos de 4: compacta, cómoda (el
+   default, declarado acá para que se pueda escribir explícito) y nativo.
+
+   Dos cosas que NO son densidad:
+   · El piso táctil. En puntero grueso, compacta vuelve al piso de --target-min:
+     24px alcanza para un mouse (WCAG 2.5.8) y no alcanza para un dedo (2.5.5).
+     El bloque de abajo lo resuelve solo, y por eso este bloque va ANTES que
+     [data-platform="native"]: en una app nativa gana la plataforma, siempre.
+   · El peso de la fila y el orden dato/etiqueta, que son M13 / D12 y no se mueven.
+
+   Ver guidelines/aceptacion-de-pantalla.md §1 (criterio A1, falla D17).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-density="comfortable"] {
+  --row-height:     36px;
+  --control-height: 36px;
+}
+
+[data-density="compact"] {
+  --row-height:     32px;
+  --control-height: 32px;
+
+  /* La capa de pantalla baja un escalón con la misma proporción: el gap entre
+     bloques sigue siendo mayor que el padding del grupo, que es lo que D24 mide. */
+  --screen-block-gap:     20px;
+  --screen-block-padding: 16px;
+  --screen-group-padding: 12px;
+  --screen-row-height:    36px;
+  --screen-item-height:   48px;
+  --screen-item-icon:     28px;
+  --screen-item-gap:      10px;
+}
+
+/* El dedo no negocia: con puntero grueso, compacta vuelve al piso. No es un
+   parche responsive —no depende del ancho— sino del dispositivo de entrada, que
+   es de lo que habla WCAG 2.5.5. Una tablet de mostrador entra por acá. */
+@media (pointer: coarse) {
+  [data-density="compact"] {
+    --row-height:     var(--target-min);
+    --control-height: var(--target-min);
+  }
+}
+
+[data-platform="native"] {
+  /* ─────────────────────────────────────
+     Escala tipográfica nativa
+  ───────────────────────────────────── */
+  --font-size-display:     32px;   --line-height-display:     1.1;
+  --font-size-heading-xl:  24px;   --line-height-heading-xl:  1.2;
+  --font-size-heading-lg:  22px;   --line-height-heading-lg:  1.25;
+  --font-size-heading-md:  20px;   --line-height-heading-md:  1.3;
+  --font-size-heading-sm:  17px;   --line-height-heading-sm:  1.35;
+  --font-size-heading-xs:  15px;   --line-height-heading-xs:  1.4;
+
+  --font-size-body-lg:     17px;   --line-height-body-lg:     1.45;
+  --font-size-body-md:     16px;   --line-height-body-md:     1.5;  /* la base: inputs, botones, filas */
+  --font-size-body-sm:     14px;   --line-height-body-sm:     1.45;
+  --font-size-label:       15px;   --line-height-label:       1.4;
+  --font-size-caption:     13px;   --line-height-caption:     1.45;
+  --font-size-badge:       11px;   --line-height-badge:       1.2;
+
+  /* El registro editorial no es fluido en nativo: no hay viewport que crezca.
+     Se congela en el extremo de teléfono; en tablet se sube un escalón a mano. */
+  --font-size-editorial-lg: 44px;  --line-height-editorial-lg: 1.05;
+  --font-size-editorial-md: 34px;  --line-height-editorial-md: 1.1;
+  --font-size-editorial-sm: 28px;  --line-height-editorial-sm: 1.15;
+
+  /* ─────────────────────────────────────
+     Densidad y superficie táctil
+  ───────────────────────────────────── */
+  /* 48 cubre iOS (44) y Android (48) de una. Es un piso, no un tamaño:
+     un control puede ser más alto, nunca más bajo. */
+  --target-min:      48px;
+  --row-height:      48px;
+  --control-height:  48px;
+
+  /* En nativo no hay columna: hay pantalla. El gutter no es fluido —no hay vw
+     que valga en un teléfono— y no existe max-width que acote nada.
+     Por eso el token se llama distinto que el --column-gutter de composition.css:
+     no es el mismo concepto y no queremos que alguien los cruce. */
+  --screen-gutter:   20px;
+
+  /* ─────────────────────────────────────
+     Forma del botón
+
+     `--radius-button` es el único token de forma que el sistema deja declarar para
+     mover todos los botones de una (GOVERNANCE §4.3); en :root queda sin declarar a
+     propósito para que cada tamaño use el de su escala. Acá sí se declara: en un
+     teléfono el botón primario es de ancho completo, y a 8px contra grupos de 16 se
+     lee como un botón de escritorio pegado adentro de una app.
+
+     **14 es una excepción deliberada a la escala** (4 · 8 · 12 · 16) y es el único
+     valor de forma fuera de escala del sistema. Sale de la pantalla que usábamos de
+     referencia, y el motivo es la relación con el contenedor, no el número: los
+     grupos van a `--screen-radius` (16), y el botón a 14 queda *apenas* por dentro,
+     que es lo que lo hace leer anidado. A 16 sería idéntico a la tarjeta y esa
+     jerarquía se pierde; a 12 el salto se nota demasiado.
+
+     Si alguna vez se mueve `--screen-radius`, este valor se mueve con él: la regla
+     es «un escalón por dentro del grupo», no «14».
+     Un tema de marca con forma píldora sigue ganando: carga después. */
+  --radius-button:   14px;
+
+  /* ─────────────────────────────────────
+     La capa de pantalla — lo que un proyecto SÍ puede mover
+
+     Las convenciones de MOBILE.md §6b son el patrón y no se negocian: el dato
+     pesa más que su etiqueta, el grupo va en tarjeta, el header afuera, el
+     divisor insetado. Pero la DENSIDAD con la que ese patrón se dibuja es una
+     decisión de cada app —una de consumo respira más que una de back-office— y
+     hasta acá estaba escrita a mano adentro del CSS, así que ajustarla obligaba
+     a abandonar el patrón.
+
+     Estos ocho tokens son la superficie de ajuste. Un proyecto los redeclara en
+     su capa de marca y sigue teniendo exactamente las mismas reglas.
+     Lo que NO se mueve desde acá: --target-min (es accesibilidad, no densidad)
+     y el peso de la fila (es la falla M13). Ver MOBILE.md §6e.
+  ───────────────────────────────────── */
+  --screen-block-gap:      20px;  /* entre bloques: ancla, secciones, grupos      */
+  --screen-block-padding:  18px;  /* adentro del ancla                            */
+  --screen-group-padding:  16px;  /* adentro de un grupo: el inset del divisor    */
+  --screen-row-height:     52px;  /* fila de etiqueta/dato — piso --target-min    */
+  --screen-item-height:    60px;  /* fila con ícono guía                          */
+  --screen-item-icon:      36px;  /* el contenedor del ícono guía                 */
+  --screen-item-gap:       13px;  /* entre el ícono y el texto                    */
+  --screen-radius:  var(--radius-xl);  /* el radio del ancla y de los grupos      */
+}

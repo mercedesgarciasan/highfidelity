@@ -1,0 +1,403 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Toolbar
+   La fila de controles que encabeza una lista, tabla o dashboard: búsqueda,
+   filtros, orden, cambio de vista/período y las acciones de la vista. Un solo
+   componente con VARIANTES (compuestas de componentes Embassy existentes):
+
+     · Actions only              .toolbar                 (solo acciones a la derecha)
+     · Search + actions          .toolbar + .search-field (búsqueda que crece + acción)
+     · Filters                   .toolbar-filters         (Selects + toolbar-btn, campo unificado)
+     · Filters + segmented       .toolbar-filters         (+ Segmented Button)
+     · Filters + date/calendar   .toolbar-filters         (+ Date Picker / Calendar)
+     · Bulk actions (selección)  .toolbar-selection       (aparece al seleccionar ítems)
+     · Overflow                  .toolbar-overflow-btn    (menú "más" cuando falta espacio)
+     · Sticky                    .toolbar-sticky          (queda fija al hacer scroll)
+     · Responsive / mobile       (flex-wrap por defecto; colapso a Sheet/Popover)
+
+   Cuándo usar: barra de controles sobre UNA lista/tabla/dashboard — búsqueda,
+     filtros, orden y las acciones de esa vista.
+   Cuándo no: búsqueda que encabeza una pantalla completa → search-bar (search.css).
+     Contexto y acciones globales de la app → Top Bar. Navegación entre sub-vistas → Tabs.
+   Reemplaza a: filter bars legacy, "action rows" planos, y el ex-"Filter Toolbar"
+     (ahora es la variante .toolbar-filters de este componente).
+
+   ── JERARQUÍA IZQUIERDA / DERECHA ──
+   Izquierda: lo que FILTRA o define la vista (search-field, Selects, Segmented Button,
+     Date Picker, Checkbox de "seleccionar todo"). Derecha (.toolbar-actions, empujada con
+     margin-left:auto): las ACCIONES de la vista, con UNA sola acción principal.
+   Jerarquía de la acción (GOVERNANCE §20.5): Filled/Primary (btn-primary) sólo si es la
+     acción principal de la vista; Tonal (btn-secondary) si es secundaria/de apoyo;
+     Outlined (btn-tertiary) / icon-btn para neutrales (Filtros, Ordenar, Restablecer).
+
+   ── TRATAMIENTO DE CAMPO COMPARTIDO (.toolbar-filters) ──
+   Los controles de filtro tienen, sueltos, formas distintas (Select = campo relleno ·
+   Segmented Button = píldora transparente · Date Picker = btn-tertiary outlined). Cuando
+   tienen la MISMA jerarquía funcional deben verse iguales: .toolbar-filters expone una
+   capa de tokens --tb-* y REESTILA a sus hijos SÓLO dentro de su alcance para unificar
+   superficie, borde, radio, altura, tipografía e ícono. El Select es el campo de
+   referencia (sin cambios); el Segmented Button conserva su segmento seleccionado primary;
+   el Date Picker adopta el mismo campo. NO cambia los componentes standalone.
+   No mezcles contenedores rellenos y transparentes sin una diferencia de jerarquía
+   deliberada (anti-patrón, GOVERNANCE §19.5 / §20.5).
+
+   Dependencia: variables.css. Para .toolbar-filters: select.css, segmented-button.css,
+     date-picker.css (+ calendar.css), button.css (reestila a esos hijos sólo si están
+     presentes). search-field es la variante compacta de .search-bar (search.css).
+
+   Uso (búsqueda + filtros + acción):
+   <div class="toolbar toolbar-filters" role="toolbar" aria-label="Controles de la lista">
+     <div class="search-field"><i data-lucide="search"></i><input type="search" aria-label="Buscar"></div>
+     <div class="select" data-select>…</div>
+     <div class="seg-btn-group" role="group" aria-label="Vista">…</div>
+     <div class="toolbar-actions"><button class="btn-primary">Nueva vacante</button></div>
+   </div>
+   <div class="result-count" aria-live="polite">Mostrando <strong>24</strong> vacantes</div>
+═══════════════════════════════════════ */
+
+/* ── Base: fila de controles ── */
+.toolbar {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+/* Agrupador opcional para clusters de controles a un lado. */
+.toolbar-group { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* Ranura de acciones — empujada a la derecha. */
+.toolbar-actions {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+}
+/* Empuje manual cuando la acción no se envuelve en .toolbar-actions. */
+.toolbar > .toolbar-spacer { margin-left: auto; }
+
+/* ── Search-field — variante compacta del Search component para toolbar ──
+   Fondo --surface (blanco en light), NUNCA transparente — a diferencia de la
+   .search-bar mobile, que es gris (--surface-container-high). Comparte borde y
+   tokens de texto/estado. Forma --radius-md (8px) y padding compacto para convivir
+   con toolbar-btn en la misma fila. .search-bar usa --radius-lg (12px) y 56px de alto. */
+.search-field {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface);   /* desktop: superficie (blanco en light) — par shadcn. NO igual que .search-bar mobile, que es gris (surface-container-high) */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--on-surface-variant);
+  cursor: text;
+  transition: background var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default);
+}
+.search-field:hover {
+  background: color-mix(in srgb, var(--on-surface) 8%, var(--surface));
+  border-color: color-mix(in srgb, var(--on-surface) 20%, transparent);
+}
+.search-field:focus-within {
+  background: color-mix(in srgb, var(--on-surface) 12%, var(--surface));
+  border-color: var(--secondary);
+}
+.search-field > svg,
+.search-field > i { width: 18px; height: 18px; flex-shrink: 0; color: inherit; }
+.search-field input {
+  flex: 1; min-width: 0;
+  border: none; outline: none; background: transparent;
+  font-family: var(--font-body); font-size: var(--font-size-body-md);
+  color: var(--on-surface);
+  caret-color: var(--secondary);
+}
+.search-field input::placeholder { color: var(--on-surface-variant); }
+.search-field input::-webkit-search-cancel-button { display: none; }
+
+/* ── Toolbar-btn — acción secundaria outlined (análoga a btn-secondary) ── */
+.toolbar-btn {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-container);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-md); font-weight: 500;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+.toolbar-btn:hover {
+  background: var(--surface-variant);
+  border-color: var(--outline-variant);
+  color: var(--on-surface);
+}
+.toolbar-btn:active { opacity: .85; }
+.toolbar-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.toolbar-btn:disabled,
+.toolbar-btn[aria-disabled="true"] {
+  background: var(--surface-variant);
+  color: var(--on-disabled);
+  border-color: var(--outline);
+  cursor: not-allowed; pointer-events: none;
+}
+.toolbar-btn > svg,
+.toolbar-btn > i { width: 18px; height: 18px; }
+/* Chip de conteo dentro de un toolbar-btn (p. ej. "Filtros · 3"). */
+.toolbar-btn .toolbar-btn-count {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--secondary-container); color: var(--on-secondary-container);
+  font-size: var(--font-size-caption); font-weight: 600;
+}
+
+/* ── Result count — resumen debajo de la barra ── */
+.result-count {
+  font-size: var(--font-size-label);
+  color: var(--on-surface-variant);
+  margin-bottom: 14px;
+  padding: 0 var(--space-0-5);
+}
+.result-count strong { color: var(--on-surface); font-weight: 500; }
+
+/* ═══════════════════════════════════════
+   VARIANTE · Filters — tratamiento de campo unificado
+   (ex "Filter Toolbar" — ahora .toolbar-filters). Reestila SÓLO dentro de .toolbar-filters:
+   NO toca el Segmented Button, Date Picker ni Select globales.
+═══════════════════════════════════════ */
+.toolbar-filters {
+  /* Capa de tokens de composición (una sola verdad para todos los controles). */
+  --tb-height:            40px;                         /* altura de control compartida (= Select trigger) */
+  --tb-radius:            var(--radius-md);             /* radio de campo (nunca píldora aquí) */
+  --tb-pad-x:             14px;                          /* padding horizontal interno del campo */
+  --tb-gap:               var(--space-3);               /* separación entre controles */
+  --tb-surface:           var(--surface-container);               /* superficie de campo (relleno, NO transparente) */
+  --tb-surface-hover:     color-mix(in srgb, var(--on-surface) 6%, var(--surface-container));
+  --tb-border:            var(--border);
+  --tb-border-hover:      color-mix(in srgb, var(--on-surface) 22%, transparent);
+  --tb-border-focus:      var(--secondary);           /* = --secondary */
+  --tb-focus-ring:        var(--focus-ring);
+  --tb-text:              var(--on-surface);
+  --tb-text-muted:        var(--on-surface-variant);
+  --tb-icon:              var(--on-surface-variant);
+  --tb-font-size:         var(--font-size-body-md);
+  --tb-selected-bg:       var(--secondary-container);      /* estado primary del Segmented Button */
+  --tb-selected-text:     var(--on-secondary-container);
+  --tb-disabled-surface:  var(--surface-variant);
+  --tb-disabled-text:     var(--on-disabled);
+  --tb-disabled-border:   var(--outline);
+  --tb-motion-duration:   var(--duration-fast);
+  --tb-motion-ease:       var(--ease-default);
+
+  gap: var(--tb-gap);
+}
+/* Alineación vertical de los controles directos al alto del campo. */
+.toolbar-filters > .select,
+.toolbar-filters > .seg-btn-group,
+.toolbar-filters > .date-picker,
+.toolbar-filters > .toolbar-actions { align-self: center; }
+
+/* ── Select — campo de referencia; re-apuntamos superficie/borde/radio a --tb-*. ── */
+.toolbar-filters .select-trigger {
+  min-height: var(--tb-height);
+  padding: var(--space-2) var(--tb-pad-x);
+  background: var(--tb-surface);
+  border-color: var(--tb-border);
+  border-radius: var(--tb-radius);
+  font-size: var(--tb-font-size);
+  transition: background var(--tb-motion-duration) var(--tb-motion-ease),
+              border-color var(--tb-motion-duration) var(--tb-motion-ease),
+              box-shadow var(--tb-motion-duration) var(--tb-motion-ease);
+}
+.toolbar-filters .select-trigger:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tb-surface-hover);
+  border-color: var(--tb-border-hover);
+}
+.toolbar-filters .select-trigger:focus-visible,
+.toolbar-filters .select-trigger[aria-expanded="true"] {
+  border-color: var(--tb-border-focus);
+  box-shadow: 0 0 0 4px var(--tb-focus-ring);
+}
+
+/* ── Date Picker trigger — adopta el mismo campo que los Selects. ── */
+.toolbar-filters .date-picker-trigger {
+  min-height: var(--tb-height);
+  width: auto;                                          /* base fija 240px → intrínseco en la barra */
+  gap: var(--space-2);
+  padding: var(--space-2) var(--tb-pad-x);
+  background: var(--tb-surface);
+  border: 1px solid var(--tb-border);
+  border-radius: var(--tb-radius);
+  color: var(--tb-text);
+  font-family: var(--font-body);
+  font-size: var(--tb-font-size);
+  font-weight: 400;                                     /* base btn = 600 */
+  transition: background var(--tb-motion-duration) var(--tb-motion-ease),
+              border-color var(--tb-motion-duration) var(--tb-motion-ease),
+              box-shadow var(--tb-motion-duration) var(--tb-motion-ease);
+}
+.toolbar-filters .date-picker-trigger:hover:not(:disabled) {
+  background: var(--tb-surface-hover);
+  border-color: var(--tb-border-hover);
+  transform: none;                                      /* neutraliza cualquier lift del btn base */
+}
+.toolbar-filters .date-picker-trigger:focus-visible {
+  outline: none;                                        /* reemplazado por el anillo de campo (Select) */
+  border-color: var(--tb-border-focus);
+  box-shadow: 0 0 0 4px var(--tb-focus-ring);
+}
+.toolbar-filters .date-picker-trigger:active { transform: none; }
+.toolbar-filters .date-picker-trigger:disabled {
+  background: var(--tb-disabled-surface);
+  color: var(--tb-disabled-text);
+  border-color: var(--tb-disabled-border);
+  cursor: not-allowed;
+}
+.toolbar-filters .date-picker-trigger .date-picker-icon,
+.toolbar-filters .date-picker-trigger > i,
+.toolbar-filters .date-picker-trigger > svg { color: var(--tb-icon); }
+.toolbar-filters .date-picker-trigger.date-picker-trigger-empty { color: var(--tb-text-muted); }
+
+/* ── Segmented Button — sólo el CONTENEDOR adopta el campo. ──
+   El segmento seleccionado conserva su estado primary (secondary-container) y cada
+   segmento conserva SU anillo de foco (accesibilidad — no se toca). */
+.toolbar-filters .seg-btn-group {
+  min-height: var(--tb-height);
+  background: var(--tb-surface);
+  border-radius: var(--tb-radius);                      /* campo cuadrado, no píldora, dentro de la barra */
+  padding: var(--space-1);
+  --seg-btn-outline-color: var(--tb-border);            /* re-apunta el borde del componente al campo */
+  /* Suelto, el segmented es un modo de vista y va neutro: pista hundida + pulgar
+     levantado (COMPOSICION.md §4c). Acá no: adentro de .toolbar-filters está al
+     lado de un Select y un Date picker, o sea que está eligiendo un FILTRO, y el
+     filtro activo sí lleva el tonal. Además la barra ya pintó el grupo con la
+     superficie de campo, así que un pulgar levantado quedaría del mismo color que
+     su contenedor en claro (los dos son --card-bg) y no se vería. */
+  --seg-btn-container-color:          var(--tb-surface);
+  --seg-btn-selected-container-color: var(--secondary-container);
+  --seg-btn-selected-label-color:     var(--on-secondary-container);
+  --seg-btn-selected-icon-color:      var(--on-secondary-container);
+  --seg-btn-selected-elevation:       none;
+}
+.toolbar-filters .seg-btn { border-radius: var(--radius-sm); }   /* segmentos anidados en el campo cuadrado */
+.toolbar-filters .seg-btn-group:hover { border-color: var(--tb-border-hover); }
+
+/* ── Search-field dentro de .toolbar-filters: misma superficie de campo (card-bg). ── */
+.toolbar-filters .search-field {
+  min-height: var(--tb-height);
+  background: var(--tb-surface);
+  border-color: var(--tb-border);
+}
+.toolbar-filters .search-field:hover { background: var(--tb-surface-hover); border-color: var(--tb-border-hover); }
+.toolbar-filters .search-field:focus-within { border-color: var(--tb-border-focus); }
+
+/* ═══════════════════════════════════════
+   VARIANTE · Dos líneas (desktop) — .toolbar-stack
+   Apila dos filas .toolbar cuando hay demasiados controles para una sola línea
+   (p. ej. fila 1 = título/búsqueda + acción principal; fila 2 = filtros). Es una
+   decisión de layout DESKTOP; en mobile la barra ya hace wrap por sí sola.
+═══════════════════════════════════════ */
+.toolbar-stack {
+  display: flex; flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.toolbar-stack > .toolbar { margin-bottom: 0; }
+
+/* ═══════════════════════════════════════
+   VARIANTE · Bulk actions (selección)
+   Aparece / se transforma cuando hay ítems seleccionados (p. ej. sobre una tabla o
+   Data Table). Superficie teñida secondary-container para señalar "modo selección".
+   Lo togglea el producto agregando .toolbar-selection + el conteo.
+═══════════════════════════════════════ */
+.toolbar-selection {
+  background: color-mix(in srgb, var(--secondary-container) 55%, var(--surface-container));
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  color: var(--on-surface);
+  animation: toolbar-selection-in var(--duration-normal) var(--ease-default) both;
+}
+@keyframes toolbar-selection-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.toolbar-selection-count {
+  font-size: var(--font-size-body-md); font-weight: 600;
+  color: var(--on-surface);
+}
+.toolbar-selection .toolbar-selection-clear {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border: none; border-radius: var(--radius-full);
+  background: transparent; color: var(--on-surface-variant); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+.toolbar-selection .toolbar-selection-clear:hover { background: color-mix(in srgb, var(--on-surface) 8%, transparent); }
+.toolbar-selection .toolbar-selection-clear:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+/* ═══════════════════════════════════════
+   VARIANTE · Overflow (espacio limitado)
+   Los controles que no entran se mueven a un menú "más" (icon-btn + Dropdown/Popover).
+   El botón de overflow es un icon-btn estándar; el menú es una composición con
+   dropdown-menu.css / popover.css (use-flyout). Aquí sólo el layout del disparador.
+═══════════════════════════════════════ */
+.toolbar-overflow-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--tb-height, 40px); height: var(--tb-height, 40px);
+  flex-shrink: 0;
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius-md);
+  color: var(--on-surface-variant); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default);
+}
+.toolbar-overflow-btn:hover { background: var(--surface-variant); color: var(--on-surface); }
+.toolbar-overflow-btn:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.toolbar-overflow-btn > svg, .toolbar-overflow-btn > i { width: 20px; height: 20px; }
+
+/* ═══════════════════════════════════════
+   VARIANTE · Sticky
+   La barra queda fija al hacer scroll (encabezado de tabla/lista larga).
+═══════════════════════════════════════ */
+.toolbar-sticky {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--surface);
+  /* respiro para que el contenido no “toque” la barra al scrollear */
+  padding-top: var(--space-2); padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default);
+}
+/* El producto agrega .is-stuck (vía IntersectionObserver) al despegarse del top. */
+.toolbar-sticky.is-stuck {
+  border-bottom-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ═══════════════════════════════════════
+   Responsive — la barra hace wrap por defecto (flex-wrap arriba). En viewports
+   angostos: el search-field pasa a ancho completo y las acciones dejan de empujar.
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .toolbar .search-field { flex-basis: 100%; }
+  .toolbar-actions { margin-left: 0; }           /* deja de empujar a la derecha al apilarse */
+}
+
+/* ═══════════════════════════════════════
+   Reduced motion — además del bloque global de base.css (GOVERNANCE §13.3).
+═══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .toolbar-filters .select-trigger,
+  .toolbar-filters .date-picker-trigger,
+  .toolbar-filters .seg-btn,
+  .toolbar-filters .search-field,
+  .toolbar-selection,
+  .toolbar-sticky { transition: none; animation: none; }
+}

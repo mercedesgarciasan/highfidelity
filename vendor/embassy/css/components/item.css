@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════
+   Embassy DS — Basic Card (primitivo de fila)
+   Nombre en la doc: "Basic Card". Clases con prefijo .item* (paridad shadcn Item).
+   Primitiva de fila de contenido flexible: media + contenido (título/descripción)
+   + acciones. Es el BLOQUE BASE reutilizable de todas las cards compactas de
+   dominio (Person, etc. — ver person-card.css). Más genérica que List (MD3) y que
+   el panel Full Card (card.css).
+
+   Cuándo usar: filas ricas y reutilizables (settings rows, resultados, notif con
+     ícono/avatar + texto + acción), personas en grilla, listas con separadores.
+   Cuándo no: tabla de datos (Table); panel con header/footer (Full Card → card.css).
+   Reemplaza a: divs flex ad-hoc con ícono + texto + botón.
+
+   Dependencia: variables.css
+
+   Uso:
+   <div class="item item-outline">
+     <div class="item-media item-media-icon"><i data-lucide="bell"></i></div>
+     <div class="item-content">
+       <div class="item-title">Notificaciones</div>
+       <div class="item-description">Recibí avisos por email.</div>
+     </div>
+     <div class="item-actions"><button class="btn-tertiary btn-sm">Config</button></div>
+   </div>
+═══════════════════════════════════════ */
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-body-md);
+  color: var(--on-surface);
+  transition: background-color var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default);
+}
+/* Variantes */
+.item-outline { border-color: var(--border); }
+.item-muted { background: color-mix(in srgb, var(--surface-variant) 50%, transparent); }
+/* Tamaño sm */
+.item-sm { gap: var(--space-2-5); padding: var(--space-3) var(--space-4); }
+
+/* Interactiva (a.item o .item-clickable) */
+a.item, .item-clickable { cursor: pointer; text-decoration: none; color: inherit; }
+a.item:hover, .item-clickable:hover { background: var(--surface-variant); }
+.item:focus-visible {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.item.is-disabled { opacity: .5; pointer-events: none; }
+
+/* Media: default (nada), icon (chip), image */
+.item-media { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); flex-shrink: 0; align-self: flex-start; }
+.item-media-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-variant);
+  color: var(--on-surface-variant);
+}
+.item-media-icon svg { width: 16px; height: 16px; }
+.item-media-image { width: 40px; height: 40px; border-radius: var(--radius-sm); overflow: hidden; }
+.item-media-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.item-content { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; min-width: 0; }
+/* Un segundo .item-content contiguo no crece (par shadcn [&+item-content]:flex-none) */
+.item-content + .item-content { flex: none; }
+.item-title { display: flex; width: fit-content; align-items: center; gap: var(--space-2); font-weight: 500; color: var(--on-surface); line-height: var(--line-height-title); }
+.item-description {
+  color: var(--on-surface-variant);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+  /* clamp a 2 líneas, como shadcn */
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
+.item-description > a { text-decoration: underline; text-underline-offset: 4px; }
+.item-description > a:hover { color: var(--primary); }
+.item-actions { display: inline-flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+.item-header, .item-footer { display: flex; flex-basis: 100%; align-items: center; justify-content: space-between; gap: var(--space-2); }
+
+/* Grupo + separador */
+.item-group { display: flex; flex-direction: column; }
+.item-separator { height: 1px; border: 0; margin: 0; background: var(--border); }

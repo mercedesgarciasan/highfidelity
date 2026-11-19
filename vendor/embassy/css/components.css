@@ -1,0 +1,102 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Library Components
+   Importa este archivo para cargar todos los componentes de la libreria.
+   Para uso individual, copia el archivo del componente que necesitas
+   desde la carpeta css/components/.
+
+   Dependencia: variables.css, base.css
+═══════════════════════════════════════ */
+
+@import url('components/page-header.css?v=1f073c27');
+@import url('components/button.css?v=d1baf6d0');
+@import url('components/segmented-button.css?v=7bf4017f');
+@import url('components/toolbar.css?v=83cf7be5');
+@import url('components/badge.css?v=35a6e287');
+@import url('components/card.css?v=ef46b5cc');
+@import url('components/form.css?v=acd89fab');
+@import url('components/tabs.css?v=cc246f66');
+@import url('components/table.css?v=7a137534');
+@import url('components/stat-card.css?v=f75255f2');
+@import url('components/back-link.css?v=7112c7c6');
+@import url('components/description.css?v=62991069');
+@import url('components/skeleton.css?v=8f06de7e');
+@import url('components/empty-state.css?v=2edf6b72');
+@import url('components/modal.css?v=057e1d79');
+@import url('components/toast.css?v=cef8614e');
+@import url('components/chip.css?v=7a2fde7b');
+@import url('components/search.css?v=3d323e93');
+@import url('components/select.css?v=b5095268');
+
+/* ── Extended components (domain-oriented) ── */
+@import url('components/vacancy-card.css?v=670d8ff7');
+@import url('components/person-card.css?v=bb54dc3a');
+@import url('components/kanban.css?v=a2f0729a');
+@import url('components/create-form.css?v=28cdc835');
+@import url('components/placeholder.css?v=bfc52bac');
+
+/* ── shadcn-parity primitives (added post-Tailwind-revert, 2026-07) ── */
+@import url('components/accordion.css?v=3394a652');
+@import url('components/alert.css?v=6e0d1eb7');
+@import url('components/avatar.css?v=86876d51');
+@import url('components/breadcrumb.css?v=32f872d2');
+@import url('components/calendar.css?v=f8730f63');
+@import url('components/carousel.css?v=cf8c4c3e');
+@import url('components/chart.css?v=6210e9fc');
+@import url('components/checkbox.css?v=1c5db066');
+@import url('components/collapsible.css?v=89b4aa8a');
+@import url('components/combobox.css?v=d79b17f7');
+@import url('components/command.css?v=9788a843');
+@import url('components/context-menu.css?v=ba500e5d');
+@import url('components/data-table.css?v=010ebe90');
+@import url('components/date-picker.css?v=146dff9c');
+@import url('components/divider.css?v=996b16e4');
+@import url('components/dropdown-menu.css?v=b92a63c4');
+@import url('components/input-otp.css?v=b8dccccd');
+@import url('components/label.css?v=867e0fd9');
+@import url('components/list.css?v=a102ab68');
+@import url('components/menubar.css?v=7a8ca6d3');
+@import url('components/navigation-menu.css?v=4d6ff5fd');
+@import url('components/pagination.css?v=8dcec8e1');
+@import url('components/popover.css?v=e0852e7a');
+@import url('components/progress.css?v=e82428b9');
+@import url('components/radio-group.css?v=cdac9242');
+@import url('components/rich-tooltip.css?v=6fd28d24');
+@import url('components/scroll-area.css?v=31867e55');
+@import url('components/sheet.css?v=dd06ebb4');
+@import url('components/slider.css?v=7f716359');
+@import url('components/switch.css?v=97228bc3');
+@import url('components/toggle-group.css?v=135d7665');
+@import url('components/toggle.css?v=54618fde');
+@import url('components/tooltip.css?v=5eb9822a');
+@import url('components/spinner.css?v=2ec9433f');
+@import url('components/button-group.css?v=1c743189');
+@import url('components/input-group.css?v=344d5501');
+@import url('components/item.css?v=ac458692');
+@import url('components/attachment.css?v=498c78a6');
+
+/* El bloque de punteros gruesos va acá y no en base.css: el orden de carga es
+   variables → brand → base → layout → components, así que una regla en base
+   queda pisada por layout.css, que es donde viven .nav-item y .shell-menu-btn.
+   Lo descubrimos midiendo: con el bloque en base, .topbar-btn llegaba a 44px y
+   .nav-item se quedaba en 36. */
+/* ─────────────────────────────────────────────────────────────
+   Punteros gruesos — WCAG 2.5.5 / guidelines/accessibility.md / GOVERNANCE §7.2
+
+   Los controles miden 36px y nada los llevaba a 44px: no existía ningún bloque
+   que lo aplicara, así que la regla estaba escrita en las guidelines y en
+   ninguna hoja de estilos.
+
+   (pointer: coarse) además del ancho, porque una tablet o una pantalla táctil
+   grande necesitan el target igual y el ancho solo no las detecta.
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px), (pointer: coarse) {
+  /* min-height y no padding: el padding calculado depende del line-height y
+     quedaba en 42px. */
+  .nav-item { min-height: 44px; }
+  .icon-btn,
+  .topbar-notif,
+  .topbar-btn,
+  .shell-menu-btn { width: 44px; height: 44px; }
+  .btn-primary, .btn-secondary, .btn-tertiary, .btn-elevated, .btn-text,
+  .toolbar-btn, .seg-btn { min-height: 44px; }
+}

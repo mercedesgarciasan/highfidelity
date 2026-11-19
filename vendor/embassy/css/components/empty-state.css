@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Empty State
+   Placeholder visual cuando no hay datos para mostrar.
+
+   Cuándo usar: listas/tablas/búsquedas sin resultados o sin datos aún.
+   Cuándo no: features en construcción (usar Placeholder); carga en progreso (usar Skeleton).
+   Reemplaza a: textos sueltos "no hay datos".
+
+   Dependencia: variables.css
+   Requiere: button.css (para CTA opcional)
+
+   Uso:
+   <div class="empty-state">
+     <i data-lucide="inbox" class="empty-state-icon" aria-hidden="true"></i>
+     <div class="empty-state-title">No hay vacantes</div>
+     <p class="empty-state-desc">Crea tu primera vacante para empezar.</p>
+     <button class="btn-primary">+ Nueva vacante</button>
+   </div>
+═══════════════════════════════════════ */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--on-surface-variant);
+}
+/* El icono de un estado vacio es el caso donde el icono ES el contenido
+   (COMPOSICION.md regla 5, ubicacion 4): grande, con aire, sin superficie
+   detras. Va en Lucide. Un emoji no es un icono — falla `H4`.
+   font-size se conserva solo por compatibilidad con markup viejo que mete un
+   glifo; el markup correcto es un <svg>. */
+.empty-state-icon {
+  width: 48px; height: 48px;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--on-surface-variant);
+  font-size: 48px;  /* ds-allow: es la caja del glifo heredado, no tipografia — el SVG manda abajo */
+}
+.empty-state-icon svg { width: 48px; height: 48px; stroke-width: var(--icon-stroke, 2); }
+.empty-state-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-heading-md); font-weight: 600;
+  color: var(--on-surface-variant);
+  margin-bottom: 8px;
+}
+.empty-state-desc {
+  font-size: var(--font-size-body-lg); color: var(--on-surface-variant);
+  max-width: 400px; margin: 0 auto 20px;
+  line-height: var(--line-height-prose);
+}

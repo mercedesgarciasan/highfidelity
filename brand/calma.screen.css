@@ -1,0 +1,13 @@
+/* ═══════════════════════════════════════
+   calma — ajuste de la capa de pantalla nativa (MOBILE.md §6e)
+   Escrito a mano a propósito: es la superficie que el DS declara ajustable por
+   proyecto, no parte del tema generado. Carga después de brand/calma.css.
+
+   Decisión: todas las tarjetas de una pantalla tienen el mismo relleno.
+   El ancla (18) se iguala a los grupos (16), así ancla, grupos y divisores
+   insetados comparten el mismo borde interno.
+═══════════════════════════════════════ */
+
+[data-platform="native"] {
+  --screen-block-padding: var(--screen-group-padding);
+}

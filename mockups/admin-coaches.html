@@ -1,0 +1,942 @@
+<title>Estudio Núcleo Admin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: admin operativo — nav horizontal arriba, tablas para listas, tarjetas solo para agrupar */
+:root {
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'DM Sans', system-ui, sans-serif;
+
+  --brand: #2F4BD8;
+  --brand-dark: #2238A8;
+  --brand-soft: #EEF1FD;
+  --kpi: #1C3AA9;
+
+  --bg-page: #F7F7F8;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F2F3F5;
+
+  --text-primary: #1B1D21;
+  --text-secondary: #4B5058;
+  --text-muted: #8A9099;
+  --text-on-brand: #FFFFFF;
+
+  --border-light: #E3E5E8;
+  --border-strong: #C9CDD3;
+
+  --success: #13893A;
+  --success-bg: #EDF9F1;
+  --warning: #B57B00;
+  --warning-bg: #FFF7E3;
+  --danger: #D23A3A;
+  --danger-bg: #FDEEEE;
+  --info: #1F7AB8;
+  --info-bg: #EAF4FB;
+
+  --toast-bg: #1B1D21;
+  --toast-fg: #FFFFFF;
+  --backdrop: rgba(20,22,26,.35);
+
+  --shadow: 0 4px 8px rgba(0,0,0,.18);
+  --header-height: 64px;
+  --gutter-l: max(24px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(24px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --brand: #7C93FF; --brand-dark: #9AACFF; --brand-soft: #232A4A; --kpi: #A9B8FF;
+    --bg-page: #121418; --bg-card: #1A1D23; --bg-subtle: #23262E;
+    --text-primary: #ECEEF2; --text-secondary: #B6BBC4; --text-muted: #828894; --text-on-brand: #0E1020;
+    --border-light: #2C3038; --border-strong: #3E434D;
+    --success: #4CC77A; --success-bg: #17301F; --warning: #E7B54A; --warning-bg: #352A12;
+    --danger: #F07272; --danger-bg: #3A1A1C; --info: #63B3E8; --info-bg: #142B3B;
+    --toast-bg: #ECEEF2; --toast-fg: #121418; --backdrop: rgba(0,0,0,.55);
+    --shadow: 0 4px 12px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --brand: #7C93FF; --brand-dark: #9AACFF; --brand-soft: #232A4A; --kpi: #A9B8FF;
+  --bg-page: #121418; --bg-card: #1A1D23; --bg-subtle: #23262E;
+  --text-primary: #ECEEF2; --text-secondary: #B6BBC4; --text-muted: #828894; --text-on-brand: #0E1020;
+  --border-light: #2C3038; --border-strong: #3E434D;
+  --success: #4CC77A; --success-bg: #17301F; --warning: #E7B54A; --warning-bg: #352A12;
+  --danger: #F07272; --danger-bg: #3A1A1C; --info: #63B3E8; --info-bg: #142B3B;
+  --toast-bg: #ECEEF2; --toast-fg: #121418; --backdrop: rgba(0,0,0,.55);
+  --shadow: 0 4px 12px rgba(0,0,0,.5);
+  color-scheme: dark;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 11; background: var(--bg-card); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-page);
+  line-height: 1.45;
+}
+h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
+h1 { font-size: 24px; font-weight: 700; }
+h2 { font-size: 17px; font-weight: 600; }
+h3 { font-size: 14px; font-weight: 600; }
+button { font: inherit; cursor: pointer; }
+
+/* Header */
+header {
+  height: var(--header-height);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+}
+.header-inner {
+  max-width: 1240px; margin: 0 auto; height: 100%;
+  display: flex; align-items: center; gap: 32px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+}
+.logo { font-family: var(--font-heading); font-weight: 700; font-size: 18px; white-space: nowrap; }
+.logo span { color: var(--brand); }
+nav.tabs { display: flex; gap: 4px; height: 100%; overflow-x: auto; flex: 1; }
+nav.tabs button {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: 0 12px; height: 100%; color: var(--text-secondary); font-weight: 500; white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--text-primary); }
+nav.tabs button.active { color: var(--brand); border-bottom-color: var(--brand); }
+.user-chip { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.avatar {
+  width: 32px; height: 32px; border-radius: 8px; background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; font-weight: 600; font-size: 13px;
+}
+.user-chip small { display: block; color: var(--text-muted); font-size: 12px; }
+
+main { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.page-head p { margin: 4px 0 0; color: var(--text-secondary); }
+section.view { display: none; }
+section.view.active { display: block; }
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 20px;
+}
+.card + .card, .grid + .card, .card + .grid, .grid + .grid { margin-top: 16px; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.card-head p { margin: 2px 0 0; color: var(--text-muted); font-size: 13px; }
+.grid { display: grid; gap: 16px; }
+.grid.kpis { grid-template-columns: repeat(4, 1fr); }
+.grid.two { grid-template-columns: 3fr 2fr; }
+@media (max-width: 980px) { .grid.kpis { grid-template-columns: repeat(2, 1fr); } .grid.two { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  :root { --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px)); }
+  .grid.kpis { grid-template-columns: 1fr; } main { padding-block: 20px 48px; } .header-inner { gap: 16px; }
+  .user-chip div, .logo span { display: none; }
+}
+.grid > * { min-width: 0; }
+.grid > .card { margin-top: 0; }
+.grid.kpis > .card { display: flex; flex-direction: column; }
+.grid.kpis .kpi-sub { margin-top: auto; }
+
+.kpi-label { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+.kpi-value { font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--kpi); margin: 6px 0 4px; font-variant-numeric: tabular-nums; }
+.kpi-sub { font-size: 13px; color: var(--text-muted); }
+.delta-good { color: var(--success); font-weight: 600; }
+.delta-bad { color: var(--danger); font-weight: 600; }
+
+.btn {
+  border-radius: 4px; padding: 8px 14px; border: 1px solid var(--border-strong);
+  background: var(--bg-card); color: var(--text-primary); font-weight: 500;
+}
+.btn:hover { background: var(--bg-subtle); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--text-on-brand); }
+.btn.primary:hover { background: var(--brand-dark); }
+.btn.small { padding: 4px 10px; font-size: 13px; }
+.btn.link { border: 0; background: none; color: var(--brand); padding: 4px 6px; }
+.btn.link:hover { text-decoration: underline; background: none; }
+
+select, input[type=text], input[type=number], input[type=search], input[type=email], input[type=tel], input[type=date] {
+  font: inherit; border: 1px solid var(--border-strong); border-radius: 5px; padding: 7px 10px;
+  background: var(--bg-card); color: var(--text-primary);
+}
+select {
+  appearance: none; -webkit-appearance: none; padding-right: 36px; cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 55%, calc(100% - 14px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em;
+  padding: 8px 12px; border-bottom: 1px solid var(--border-light); white-space: nowrap;
+}
+td { padding: 11px 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr.clickable { cursor: pointer; }
+tbody tr.clickable:hover td { background: var(--bg-subtle); }
+tbody tr.selected td { background: var(--brand-soft); }
+.muted { color: var(--text-muted); }
+.stack { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.name-cell { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.badge.ok { background: var(--success-bg); color: var(--success); }
+.badge.warn { background: var(--warning-bg); color: var(--warning); }
+.badge.bad { background: var(--danger-bg); color: var(--danger); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+
+.bar { height: 6px; background: var(--bg-subtle); border-radius: 3px; overflow: hidden; min-width: 70px; }
+.bar > i { display: block; height: 100%; background: var(--brand); }
+.bar.good > i { background: var(--success); }
+.bar.warn > i { background: var(--warning); }
+
+/* Attendance */
+.seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 4px; overflow: hidden; }
+.seg button { border: 0; background: var(--bg-card); padding: 5px 11px; font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+.seg button + button { border-left: 1px solid var(--border-strong); }
+.seg button.on-present { background: var(--success); color: var(--text-on-brand); }
+.seg button.on-absent { background: var(--danger); color: var(--text-on-brand); }
+.att-summary { display: flex; gap: 20px; flex-wrap: wrap; padding: 12px 0 4px; color: var(--text-secondary); }
+.att-summary b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.event { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
+.event:last-child { border-bottom: 0; }
+.event .dot { width: 8px; height: 8px; border-radius: 2px; margin-top: 6px; flex: none; }
+.event p { margin: 0; }
+.event small { color: var(--text-muted); }
+
+/* Filters */
+.form { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label, .field legend { font-weight: 600; font-size: 14px; }
+.field label.sub { font-weight: 400; color: var(--text-secondary); font-size: 13px; }
+fieldset.field { border: 0; padding: 0; margin: 0; min-width: 0; }
+fieldset.field legend { padding: 0; margin-bottom: 6px; }
+fieldset.field.invalid input { border-color: var(--danger); }
+fieldset.field.invalid > .error { display: block; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 16px 0 0; }
+.facts dt { font-size: 13px; color: var(--text-muted); }
+.facts dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-row > .field { min-width: 0; }
+.field .hint { font-size: 13px; color: var(--text-muted); }
+.field .error { font-size: 13px; color: var(--danger); display: none; }
+.field.invalid input { border-color: var(--danger); }
+.field.invalid .error { display: block; }
+.field input, .field select { width: 100%; }
+.form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border-light); margin-bottom: 4px; overflow-x: auto; }
+.filter-tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; color: var(--text-secondary); white-space: nowrap; }
+.filter-tabs button.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+
+/* Drawer */
+.drawer-backdrop { position: fixed; inset: 0; background: var(--backdrop); display: none; z-index: 20; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; padding-top: max(24px, env(safe-area-inset-top, 0px)) !important; padding-right: max(24px, env(safe-area-inset-right, 0px)) !important; width: min(440px, 100%); background: var(--bg-card);
+  border-left: 1px solid var(--border-light); box-shadow: var(--shadow); z-index: 21;
+  transform: translateX(100%); transition: transform .2s ease; overflow-y: auto; padding: 24px;
+}
+.drawer.open { transform: none; }
+.drawer-backdrop.open { display: block; }
+.drawer .close { position: absolute; top: 16px; right: 16px; }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.stat-row div { border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; }
+.stat-row b { display: block; font-family: var(--font-heading); font-size: 20px; color: var(--kpi); }
+.stat-row span { font-size: 12px; color: var(--text-muted); }
+.history { list-style: none; padding: 0; margin: 0; }
+.history li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-light); }
+
+/* Rules */
+.rules-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .rules-grid { grid-template-columns: 1fr; } }
+.rule { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; padding: 16px 0; border-bottom: 1px solid var(--border-light); align-items: center; }
+.rule:last-child { border-bottom: 0; }
+.rule label { font-weight: 600; }
+.rule p { margin: 0; grid-column: 1; color: var(--text-muted); font-size: 13px; }
+.rule .control { grid-row: 1 / span 2; grid-column: 2; display: flex; align-items: center; gap: 8px; }
+.rule input[type=number] { width: 76px; text-align: right; }
+.rule-group-title { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 600; margin: 22px 0 0; }
+.rule-group-title:first-of-type { margin-top: 0; }
+.switch { position: relative; width: 38px; height: 22px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span { position: absolute; inset: 0; background: var(--border-strong); border-radius: 11px; transition: .15s; cursor: pointer; }
+.switch span::after { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: var(--bg-card); border-radius: 50%; transition: .15s; }
+.switch input:checked + span { background: var(--brand); }
+.switch input:checked + span::after { transform: translateX(16px); }
+.preview { background: var(--bg-subtle); border-radius: 8px; padding: 16px; }
+.preview ul { margin: 8px 0 0; padding-left: 18px; }
+.preview li { margin: 6px 0; }
+.phone-note {
+  background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13px;
+}
+.phone-note b { display: block; margin-bottom: 2px; }
+
+/* Chart */
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); opacity: 0;
+  background: var(--toast-bg); color: var(--toast-fg); padding: 12px 18px; border-radius: 6px;
+  box-shadow: var(--shadow); transition: .2s; z-index: 30; max-width: calc(100% - 32px); pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%); }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .drawer, .toast, .switch span, .switch span::after { transition: none; } }
+</style>
+<header>
+  <div class="header-inner">
+    <div class="logo">Estudio Núcleo <span>· Admin</span></div>
+    <nav class="tabs" id="tabs">
+      <button data-view="dashboard" class="active">Tablero</button>
+      <button data-view="attendance">Asistencia</button>
+      <button data-view="classes">Clases</button>
+      <button data-view="members">Socios</button>
+      <button data-view="rules">Reglas</button>
+    </nav>
+    <div class="user-chip"><span class="avatar">VR</span><div>Vicky Romero<small>Dueña · Coach</small></div></div>
+  </div>
+</header>
+
+<main>
+  <!-- TABLERO -->
+  <section class="view active" id="view-dashboard">
+    <div class="page-head">
+      <div><h1>Tablero</h1><p>Cómo vienen la asistencia y la ocupación del estudio.</p></div>
+      <select aria-label="Período"><option>Últimos 30 días</option><option>Últimos 7 días</option><option>Este trimestre</option></select>
+    </div>
+    <div class="grid kpis">
+      <div class="card">
+        <div class="kpi-label">Tasa de no-show</div>
+        <div class="kpi-value">8,4%</div>
+        <div class="kpi-sub"><span class="delta-good">▼ 12,9 pts</span> vs. antes de la app (21,3%)</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Ocupación real</div>
+        <div class="kpi-value">86%</div>
+        <div class="kpi-sub">Reservada: 97% · <span class="delta-good">▲ 14 pts</span></div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Lugares recuperados</div>
+        <div class="kpi-value">64</div>
+        <div class="kpi-sub">de 81 liberados (79%) vía lista de espera</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Ingresos recuperados</div>
+        <div class="kpi-value">$512.000</div>
+        <div class="kpi-sub">64 lugares × $8.000 por clase</div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><div><h2>Tasa de no-show por semana</h2><p>Últimas 8 semanas</p></div></div>
+        <div class="chart" id="chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Qué pasó con las reservas</h2><p>Últimos 30 días · 1.152 reservas</p></div></div>
+        <div class="table-wrap"><table>
+          <tbody>
+            <tr><td>Asistió</td><td class="num"><b>991</b></td><td style="width:40%"><div class="bar good"><i style="width:86%"></i></div></td></tr>
+            <tr><td>Canceló a tiempo</td><td class="num"><b>81</b></td><td><div class="bar"><i style="width:7%"></i></div></td></tr>
+            <tr><td>Canceló tarde</td><td class="num"><b>23</b></td><td><div class="bar warn"><i style="width:2%"></i></div></td></tr>
+            <tr><td>No-show</td><td class="num"><b>57</b></td><td><div class="bar warn"><i style="width:5%"></i></div></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><div><h2>Clases con más no-shows</h2><p>Dónde mirar primero</p></div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Clase</th><th>Coach</th><th class="num">No-show</th><th class="num">Ocupación real</th></tr></thead>
+          <tbody>
+            <tr><td>Lun / Mié / Vie 07:00 · Reformer</td><td>Vicky</td><td class="num"><span class="badge bad">17%</span></td><td class="num">74%</td></tr>
+            <tr><td>Mar / Jue 08:30 · Funcional</td><td>Tomás</td><td class="num"><span class="badge warn">12%</span></td><td class="num">81%</td></tr>
+            <tr><td>Sáb 10:00 · Yoga</td><td>Lucía</td><td class="num"><span class="badge warn">11%</span></td><td class="num">79%</td></tr>
+            <tr><td>Lun / Mié 19:00 · Reformer</td><td>Vicky</td><td class="num"><span class="badge ok">3%</span></td><td class="num">98%</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Socios en riesgo</h2><p>Están a 1 falta de perder su lugar</p></div><button class="btn link" data-goto="members" data-filter="risk">Ver todos</button></div>
+        <div class="table-wrap"><table>
+          <tbody id="risk-list"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASISTENCIA -->
+  <section class="view" id="view-attendance">
+    <div class="page-head">
+      <div><h1>Asistencia</h1><p>Hoy, jueves 19 de noviembre. Marcá quién vino a cada clase.</p></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Clases de hoy</h2></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Hora</th><th>Clase</th><th>Coach</th><th class="num">Reservas</th><th class="num">Confirmados</th><th class="num">Lista de espera</th><th>Estado</th></tr></thead>
+        <tbody id="today-classes"></tbody>
+      </table></div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head">
+          <div><h2 id="roster-title"></h2><p id="roster-sub"></p></div>
+          <div class="filters">
+            <button class="btn small" id="mark-all">Marcar todos presentes</button>
+            <button class="btn primary small" id="close-att">Cerrar asistencia</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Socio</th><th>Recordatorio</th><th class="num">Faltas seguidas</th><th>Asistencia</th></tr></thead>
+          <tbody id="roster"></tbody>
+        </table></div>
+        <div class="att-summary" id="att-summary"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Movimientos de la clase</h2><p>Lugares liberados y lista de espera</p></div></div>
+        <div id="events"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASES -->
+  <section class="view" id="view-classes">
+    <div class="page-head">
+      <div><h1>Clases</h1><p>Grilla semanal fija. Los socios reservan su horario una vez y queda guardado.</p></div>
+      <button class="btn primary" data-toast="En el prototipo no se pueden crear clases todavía.">+ Nueva clase</button>
+    </div>
+    <div class="card">
+      <div class="filter-tabs" id="class-filter">
+        <button class="active" data-f="all">Todas</button>
+        <button data-f="Vicky">Vicky</button>
+        <button data-f="Tomás">Tomás</button>
+        <button data-f="Lucía">Lucía</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Días</th><th>Hora</th><th>Clase</th><th>Coach</th><th class="num">Cupo</th><th class="num">Slots fijos</th><th class="num">Lista de espera</th><th>Ocupación real (30 d)</th><th></th></tr></thead>
+        <tbody id="classes"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- SOCIOS -->
+  <section class="view" id="view-members">
+    <div class="page-head">
+      <div><h1>Socios</h1><p>148 socios activos · membresía mensual con horario fijo.</p></div>
+      <div class="filters">
+        <input type="search" id="member-search" placeholder="Buscar socio…" aria-label="Buscar socio">
+        <button class="btn primary" id="new-member">+ Nuevo socio</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="filter-tabs" id="member-filter">
+        <button class="active" data-f="all">Todos</button>
+        <button data-f="risk">En riesgo</button>
+        <button data-f="lost">Perdieron su lugar</button>
+        <button data-f="waitlist">En lista de espera</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Socio</th><th>Horario fijo</th><th>Asistencia (30 d)</th><th class="num">Faltas seguidas</th><th class="num">Cambios del mes</th><th class="num">Puntos</th><th>Estado</th></tr></thead>
+        <tbody id="members"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- REGLAS -->
+  <section class="view" id="view-rules">
+    <div class="page-head">
+      <div><h1>Reglas</h1><p>Lo que se configura acá es lo que ven los socios en la app.</p></div>
+      <button class="btn primary" id="save-rules">Guardar cambios</button>
+    </div>
+    <div class="rules-grid">
+      <div class="card">
+        <h3 class="rule-group-title">Cancelaciones</h3>
+        <div class="rule">
+          <label for="r-window">Plazo para cancelar sin penalidad</label>
+          <p>Después de este plazo, la cancelación cuenta como tarde.</p>
+          <div class="control"><input type="number" id="r-window" value="6" min="1" max="48"> h antes</div>
+        </div>
+        <div class="rule">
+          <label for="r-early">Plazo especial para clases temprano</label>
+          <p>Clases antes de las 9:00: se puede cancelar hasta las <b id="r-early-time-label">21:00</b> del día anterior.</p>
+          <div class="control"><label class="switch"><input type="checkbox" id="r-early" checked><span></span></label></div>
+        </div>
+        <div class="rule">
+          <label for="r-changes">Cambios de horario por mes</label>
+          <p>Mover una clase a otro horario con lugar libre. Cancelar a tiempo no consume cambios.</p>
+          <div class="control"><input type="number" id="r-changes" value="5" min="0" max="20"> por mes</div>
+        </div>
+
+        <h3 class="rule-group-title">Penalidades</h3>
+        <div class="rule">
+          <label for="r-late">Cancelación tarde</label>
+          <p>Puntos que se descuentan si cancela fuera de plazo.</p>
+          <div class="control">−<input type="number" id="r-late" value="10" min="0"> pts</div>
+        </div>
+        <div class="rule">
+          <label for="r-noshow">No-show</label>
+          <p>Puntos que se descuentan si no cancela y no viene.</p>
+          <div class="control">−<input type="number" id="r-noshow" value="30" min="0"> pts</div>
+        </div>
+        <div class="rule">
+          <label for="r-lose">Faltas seguidas para perder el lugar</label>
+          <p>Solo cuentan los no-shows. Al socio se le avisa una falta antes.</p>
+          <div class="control"><input type="number" id="r-lose" value="3" min="1" max="10"> faltas</div>
+        </div>
+        <div class="rule">
+          <label for="r-justify">Faltas justificadas por mes</label>
+          <p>El coach puede justificar una falta (enfermedad, viaje) y no suma penalidad.</p>
+          <div class="control"><input type="number" id="r-justify" value="1" min="0" max="5"> por mes</div>
+        </div>
+
+        <h3 class="rule-group-title">Recompensas y avisos</h3>
+        <div class="rule">
+          <label for="r-points">Puntos por asistir</label>
+          <p>Se acreditan al cerrar la asistencia de la clase.</p>
+          <div class="control">+<input type="number" id="r-points" value="10" min="0"> pts</div>
+        </div>
+        <div class="rule">
+          <label for="r-reminder">Recordatorio para confirmar</label>
+          <p>Se envía antes de que cierre el plazo, para que pueda liberar el lugar a tiempo.</p>
+          <div class="control"><input type="number" id="r-reminder" value="12" min="1" max="72"> h antes</div>
+        </div>
+        <div class="rule">
+          <label for="r-wait">Tiempo para aceptar un lugar de la lista de espera</label>
+          <p>Si no acepta, el lugar pasa al siguiente de la lista.</p>
+          <div class="control"><input type="number" id="r-wait" value="30" min="5" max="240"> min</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Así lo ve el socio</h2>
+        <div class="preview">
+          <b>Reglas de tu membresía</b>
+          <ul id="rules-preview"></ul>
+        </div>
+        <div class="phone-note" id="reminder-preview"></div>
+        <p class="muted" id="rules-warning" style="margin:12px 0 0"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="drawer-backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Detalle del socio"></aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const members = [
+  { id: 1, name: 'Camila Ferreyra', slot: 'Lun/Mié/Vie 07:00 · Reformer', att: 94, miss: 0, changes: 1, points: 420, status: 'ok' },
+  { id: 2, name: 'Martín Ocampo', slot: 'Lun/Mié/Vie 07:00 · Reformer', att: 61, miss: 2, changes: 4, points: 130, status: 'risk' },
+  { id: 3, name: 'Julieta Paz', slot: 'Mar/Jue 08:30 · Funcional', att: 88, miss: 0, changes: 2, points: 360, status: 'ok' },
+  { id: 4, name: 'Nicolás Herrera', slot: 'Mar/Jue 08:30 · Funcional', att: 72, miss: 1, changes: 5, points: 210, status: 'ok' },
+  { id: 5, name: 'Sofía Benítez', slot: 'Lun/Mié 19:00 · Reformer', att: 100, miss: 0, changes: 0, points: 510, status: 'ok' },
+  { id: 6, name: 'Agustina Molina', slot: 'Mar/Jue 19:00 · Reformer', att: 55, miss: 2, changes: 3, points: 90, status: 'risk' },
+  { id: 7, name: 'Federico Ríos', slot: 'Mar/Jue 08:30 · Funcional', att: 40, miss: 3, changes: 5, points: 20, status: 'lost' },
+  { id: 8, name: 'Valentina Sosa', slot: 'Sáb 10:00 · Yoga', att: 90, miss: 0, changes: 1, points: 300, status: 'ok' },
+  { id: 9, name: 'Lucas Domínguez', slot: '—', att: null, miss: 0, changes: 0, points: 60, status: 'waitlist' },
+  { id: 10, name: 'Carolina Vega', slot: 'Mar/Jue 12:30 · Yoga', att: 83, miss: 0, changes: 2, points: 280, status: 'ok' },
+  { id: 11, name: 'Tomás Aguirre', slot: 'Mar/Jue 20:15 · Funcional', att: 79, miss: 1, changes: 3, points: 240, status: 'ok' },
+  { id: 12, name: 'Florencia Ibarra', slot: 'Mar/Jue 12:30 · Yoga', att: 67, miss: 2, changes: 2, points: 150, status: 'risk' },
+  { id: 13, name: 'Diego Castro', slot: '—', att: null, miss: 0, changes: 0, points: 40, status: 'waitlist' },
+  { id: 14, name: 'Paula Medina', slot: 'Mar/Jue 08:30 · Funcional', att: 86, miss: 0, changes: 3, points: 330, status: 'ok' },
+  { id: 15, name: 'Bruno Salas', slot: 'Mar/Jue 19:00 · Reformer', att: 92, miss: 0, changes: 1, points: 390, status: 'ok' },
+  { id: 16, name: 'Rocío Navarro', slot: 'Mar/Jue 08:30 · Funcional', att: 77, miss: 1, changes: 2, points: 260, status: 'ok' },
+];
+
+const classes = [
+  { days: 'Lun / Mié / Vie', time: '07:00', name: 'Reformer', coach: 'Vicky', cap: 10, fixed: 10, wait: 4, occ: 74 },
+  { days: 'Mar / Jue', time: '08:30', name: 'Funcional', coach: 'Tomás', cap: 12, fixed: 12, wait: 3, occ: 81 },
+  { days: 'Mar / Jue', time: '12:30', name: 'Yoga', coach: 'Lucía', cap: 12, fixed: 9, wait: 0, occ: 70 },
+  { days: 'Lun / Mié', time: '19:00', name: 'Reformer', coach: 'Vicky', cap: 10, fixed: 10, wait: 6, occ: 98 },
+  { days: 'Mar / Jue', time: '19:00', name: 'Reformer', coach: 'Vicky', cap: 10, fixed: 10, wait: 5, occ: 93 },
+  { days: 'Mar / Jue', time: '20:15', name: 'Funcional', coach: 'Tomás', cap: 12, fixed: 11, wait: 1, occ: 88 },
+  { days: 'Sáb', time: '10:00', name: 'Yoga', coach: 'Lucía', cap: 14, fixed: 12, wait: 2, occ: 79 },
+];
+
+// Clases de hoy (jueves) con su lista
+const today = [
+  { id: 'c1', time: '08:30', name: 'Funcional', coach: 'Tomás', cap: 12, wait: 3, done: true,
+    roster: [
+      ['Julieta Paz', 'confirmed', 'present'], ['Nicolás Herrera', 'confirmed', 'present'], ['Paula Medina', 'confirmed', 'present'],
+      ['Rocío Navarro', 'confirmed', 'present'], ['Diego Castro', 'waitlist', 'present'], ['Federico Ríos', 'none', 'absent'],
+      ['Gonzalo Peralta', 'confirmed', 'present'], ['Mariana Quiroga', 'confirmed', 'present'], ['Ezequiel Funes', 'confirmed', 'present'],
+      ['Lorena Gil', 'confirmed', 'present'], ['Andrés Luna', 'late', null], ['Celeste Ortiz', 'confirmed', 'present'],
+    ],
+    events: [
+      ['info', 'Paula Medina liberó un lugar', 'Ayer 21:40 · a tiempo, sin penalidad'],
+      ['good', 'Diego Castro tomó el lugar desde la lista de espera', 'Ayer 21:52 · aceptó en 12 min'],
+      ['warn', 'Andrés Luna canceló tarde', 'Hoy 06:10 · −10 pts · el lugar quedó vacío'],
+      ['bad', 'Federico Ríos no vino (3.ª falta seguida)', 'Perdió su horario fijo · se le avisó por la app'],
+    ] },
+  { id: 'c2', time: '12:30', name: 'Yoga', coach: 'Lucía', cap: 12, wait: 0, done: false,
+    roster: [
+      ['Carolina Vega', 'confirmed', null], ['Florencia Ibarra', 'none', null], ['Inés Carrizo', 'confirmed', null],
+      ['Pablo Godoy', 'confirmed', null], ['Lara Méndez', 'confirmed', null], ['Sergio Bustos', 'none', null],
+      ['Milagros Ruiz', 'confirmed', null], ['Hernán Soria', 'confirmed', null], ['Abril Torres', 'confirmed', null],
+    ],
+    events: [
+      ['info', '3 lugares libres en esta clase', 'No hay nadie en lista de espera · se ofrecieron a socios con cambios disponibles'],
+      ['warn', '2 socios todavía no confirmaron', 'El recordatorio salió hoy a las 00:30'],
+    ] },
+  { id: 'c3', time: '19:00', name: 'Reformer', coach: 'Vicky', cap: 10, wait: 5, done: false,
+    roster: [
+      ['Agustina Molina', 'none', null], ['Bruno Salas', 'confirmed', null], ['Natalia Ponce', 'confirmed', null],
+      ['Ramiro Vidal', 'confirmed', null], ['Micaela Cabrera', 'confirmed', null], ['Lucas Domínguez', 'waitlist', null],
+      ['Jimena Arias', 'confirmed', null], ['Facundo Rey', 'confirmed', null], ['Antonella Giménez', 'confirmed', null],
+      ['Marcos Pereyra', 'confirmed', null],
+    ],
+    events: [
+      ['info', 'Sofía Benítez cambió su clase al lunes', 'Hoy 09:15 · usó 1 de 5 cambios'],
+      ['good', 'Lucas Domínguez tomó el lugar desde la lista de espera', 'Hoy 09:21 · aceptó en 6 min'],
+      ['warn', 'Agustina Molina tiene 2 faltas seguidas y no confirmó', 'Si no viene, pierde su horario fijo'],
+    ] },
+  { id: 'c4', time: '20:15', name: 'Funcional', coach: 'Tomás', cap: 12, wait: 1, done: false,
+    roster: [
+      ['Tomás Aguirre', 'confirmed', null], ['Leandro Ferrari', 'confirmed', null], ['Victoria Lagos', 'confirmed', null],
+      ['Esteban Rojas', 'none', null], ['Clara Duarte', 'confirmed', null], ['Joaquín Mena', 'confirmed', null],
+      ['Belén Acosta', 'confirmed', null], ['Ignacio Paredes', 'confirmed', null], ['Daniela Correa', 'confirmed', null],
+      ['Matías Herrera', 'confirmed', null], ['Sol Villalba', 'confirmed', null],
+    ],
+    events: [['info', '1 lugar libre', 'Se le ofreció a la lista de espera hace 10 min']] },
+];
+
+const missByName = Object.fromEntries(members.map(m => [m.name, m.miss]));
+const $ = s => document.querySelector(s);
+const initials = n => n.split(' ').map(p => p[0]).slice(0, 2).join('');
+const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 3200); };
+
+/* Navegación */
+function go(view) {
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  document.querySelectorAll('section.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + view));
+  window.scrollTo(0, 0);
+}
+$('#tabs').addEventListener('click', e => { if (e.target.dataset.view) go(e.target.dataset.view); });
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]');
+  if (g) { go(g.dataset.goto); if (g.dataset.filter) setMemberFilter(g.dataset.filter); }
+  const t = e.target.closest('[data-toast]');
+  if (t) toast(t.dataset.toast);
+});
+
+/* Gráfico */
+(function chart() {
+  const data = [21.3, 19.8, 17.5, 14.2, 12.9, 10.6, 9.1, 8.4];
+  const W = 560, H = 220, pl = 34, pb = 26, pt = 14, max = 25;
+  const bw = (W - pl) / data.length;
+  const y = v => pt + (H - pt - pb) * (1 - v / max);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tasa de no-show semanal, de 21,3% a 8,4%">`;
+  [0, 5, 10, 15, 20, 25].forEach(v => {
+    s += `<line x1="${pl}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border-light)"/>`;
+    s += `<text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+  });
+  data.forEach((v, i) => {
+    const x = pl + i * bw + bw * 0.22, w = bw * 0.56;
+    const fill = i < 2 ? 'var(--border-strong)' : 'var(--brand)';
+    s += `<rect x="${x}" y="${y(v)}" width="${w}" height="${y(0) - y(v)}" rx="3" fill="${fill}"><title>Semana ${i + 1}: ${String(v).replace('.', ',')}%</title></rect>`;
+    s += `<text x="${x + w / 2}" y="${y(v) - 5}" text-anchor="middle" style="fill:var(--text-secondary)">${String(v).replace('.', ',')}</text>`;
+    s += `<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle">S${i + 1}</text>`;
+  });
+  s += `</svg><p class="muted" style="margin:8px 0 0;font-size:12px">Gris: antes de activar recordatorios y lista de espera.</p>`;
+  $('#chart').innerHTML = s;
+})();
+
+/* Socios en riesgo (tablero) */
+$('#risk-list').innerHTML = members.filter(m => m.status === 'risk').map(m => `
+  <tr><td><div class="name-cell"><span class="avatar">${initials(m.name)}</span>
+    <div class="stack">${m.name}<span class="badge warn">${m.miss} faltas seguidas</span></div></div></td>
+  <td class="muted" style="white-space:nowrap">${m.slot}</td></tr>`).join('');
+
+/* Asistencia */
+let current = today.find(c => !c.done);
+function renderToday() {
+  $('#today-classes').innerHTML = today.map(c => {
+    const conf = c.roster.filter(r => r[1] === 'confirmed' || r[1] === 'waitlist').length;
+    const booked = c.roster.filter(r => r[1] !== 'late').length;
+    const status = c.done ? '<span class="badge ok">Asistencia cerrada</span>' : '<span class="badge neutral">Pendiente</span>';
+    return `<tr class="clickable ${c === current ? 'selected' : ''}" data-id="${c.id}">
+      <td><b>${c.time}</b></td><td>${c.name}</td><td>${c.coach}</td>
+      <td class="num">${booked}/${c.cap}</td><td class="num">${conf}</td><td class="num">${c.wait}</td><td>${status}</td></tr>`;
+  }).join('');
+}
+$('#today-classes').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-id]'); if (!tr) return;
+  current = today.find(c => c.id === tr.dataset.id); renderToday(); renderRoster();
+});
+const confirmBadge = {
+  confirmed: '<span class="badge ok">Confirmó</span>',
+  none: '<span class="badge warn">Sin confirmar</span>',
+  waitlist: '<span class="badge info">Desde lista de espera</span>',
+  late: '<span class="badge bad">Canceló tarde</span>',
+};
+function renderRoster() {
+  const c = current;
+  $('#roster-title').textContent = `${c.time} · ${c.name} con ${c.coach}`;
+  $('#roster-sub').textContent = c.done ? 'Asistencia cerrada. Podés corregirla hasta las 23:59.' : `${c.roster.length} reservas · cupo ${c.cap}`;
+  $('#roster').innerHTML = c.roster.map((r, i) => {
+    const miss = missByName[r[0]] ?? 0;
+    const missCell = miss >= 2 ? `<span class="badge warn">${miss}</span>` : miss;
+    const ctrl = r[1] === 'late' ? '<span class="muted">No cuenta</span>' : `
+      <div class="seg" role="group" aria-label="Asistencia de ${r[0]}">
+        <button data-i="${i}" data-v="present" class="${r[2] === 'present' ? 'on-present' : ''}">Vino</button>
+        <button data-i="${i}" data-v="absent" class="${r[2] === 'absent' ? 'on-absent' : ''}">No vino</button>
+      </div>`;
+    return `<tr><td><div class="name-cell"><span class="avatar">${initials(r[0])}</span>${r[0]}</div></td>
+      <td>${confirmBadge[r[1]]}</td><td class="num">${missCell}</td><td>${ctrl}</td></tr>`;
+  }).join('');
+  const p = c.roster.filter(r => r[2] === 'present').length;
+  const a = c.roster.filter(r => r[2] === 'absent').length;
+  const pending = c.roster.filter(r => r[1] !== 'late' && !r[2]).length;
+  $('#att-summary').innerHTML = `<span>Vinieron <b>${p}</b></span><span>No vinieron <b>${a}</b></span><span>Sin marcar <b>${pending}</b></span><span>Ocupación real <b>${Math.round(p / c.cap * 100)}%</b></span>`;
+  const colors = { info: 'var(--info)', good: 'var(--success)', warn: 'var(--warning)', bad: 'var(--danger)' };
+  $('#events').innerHTML = c.events.map(e => `<div class="event"><span class="dot" style="background:${colors[e[0]]}"></span><div><p>${e[1]}</p><small>${e[2]}</small></div></div>`).join('');
+  $('#close-att').textContent = c.done ? 'Actualizar asistencia' : 'Cerrar asistencia';
+}
+$('#roster').addEventListener('click', e => {
+  const b = e.target.closest('button[data-i]'); if (!b) return;
+  const r = current.roster[+b.dataset.i];
+  r[2] = r[2] === b.dataset.v ? null : b.dataset.v;
+  renderRoster();
+});
+$('#mark-all').addEventListener('click', () => {
+  current.roster.forEach(r => { if (r[1] !== 'late' && !r[2]) r[2] = 'present'; });
+  renderRoster();
+});
+$('#close-att').addEventListener('click', () => {
+  const c = current;
+  const pending = c.roster.filter(r => r[1] !== 'late' && !r[2]).length;
+  if (pending) { toast(`Faltan marcar ${pending} socios.`); return; }
+  const p = c.roster.filter(r => r[2] === 'present').length;
+  const absent = c.roster.filter(r => r[2] === 'absent');
+  const lost = absent.filter(r => (missByName[r[0]] ?? 0) + 1 >= rules.lose).map(r => r[0]);
+  c.done = true; renderToday(); renderRoster();
+  let msg = `Asistencia cerrada: +${rules.points} pts a ${p} socios`;
+  if (absent.length) msg += ` · ${absent.length} no-show (−${rules.noshow} pts)`;
+  if (lost.length) msg += ` · ${lost.join(', ')} pierde su horario`;
+  toast(msg + '.');
+});
+
+/* Clases */
+function renderClasses(f = 'all') {
+  $('#classes').innerHTML = classes.filter(c => f === 'all' || c.coach === f).map(c => {
+    const cls = c.occ >= 90 ? 'good' : c.occ < 75 ? 'warn' : '';
+    return `<tr><td>${c.days}</td><td><b>${c.time}</b></td><td>${c.name}</td><td>${c.coach}</td>
+      <td class="num">${c.cap}</td><td class="num">${c.fixed}/${c.cap}</td>
+      <td class="num">${c.wait ? `<span class="badge info">${c.wait}</span>` : '<span class="muted">0</span>'}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar ${cls}" style="flex:1"><i style="width:${c.occ}%"></i></div><span style="width:36px;text-align:right">${c.occ}%</span></div></td>
+      <td><button class="btn link" data-toast="La edición de clases queda para la próxima iteración.">Editar</button></td></tr>`;
+  }).join('');
+}
+$('#class-filter').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('#class-filter').querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+  renderClasses(b.dataset.f);
+});
+
+/* Socios */
+let memberFilter = 'all';
+const statusBadge = {
+  ok: '<span class="badge ok">Al día</span>',
+  risk: '<span class="badge warn">En riesgo</span>',
+  lost: '<span class="badge bad">Perdió su lugar</span>',
+  waitlist: '<span class="badge info">En lista de espera</span>',
+};
+function renderMembers() {
+  const q = $('#member-search').value.trim().toLowerCase();
+  const rows = members.filter(m => (memberFilter === 'all' || m.status === memberFilter) && m.name.toLowerCase().includes(q));
+  $('#members').innerHTML = rows.length ? rows.map(m => {
+    const barCls = m.att == null ? '' : m.att >= 85 ? 'good' : m.att < 70 ? 'warn' : '';
+    const att = m.att == null ? '<span class="muted">—</span>' :
+      `<div style="display:flex;align-items:center;gap:8px"><div class="bar ${barCls}" style="flex:1"><i style="width:${m.att}%"></i></div><span style="width:36px;text-align:right">${m.att}%</span></div>`;
+    return `<tr class="clickable" data-id="${m.id}">
+      <td><div class="name-cell"><span class="avatar">${initials(m.name)}</span>${m.name}${m.isNew ? ' <span class="badge info">Nuevo</span>' : ''}</div></td>
+      <td class="muted">${m.isNew && m.slot === '—' ? 'Todavía no eligió' : m.slot}</td><td style="min-width:150px">${att}</td>
+      <td class="num">${m.miss >= 2 ? `<span class="badge ${m.miss >= rules.lose ? 'bad' : 'warn'}">${m.miss}</span>` : m.miss}</td>
+      <td class="num">${m.changes}/${rules.changes}</td><td class="num">${m.points}</td><td>${statusBadge[m.status]}</td></tr>`;
+  }).join('') : '<tr><td colspan="7" class="muted" style="padding:24px 12px">No hay socios que coincidan.</td></tr>';
+}
+function setMemberFilter(f) {
+  memberFilter = f;
+  $('#member-filter').querySelectorAll('button').forEach(x => x.classList.toggle('active', x.dataset.f === f));
+  renderMembers();
+}
+$('#member-filter').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMemberFilter(b.dataset.f); });
+$('#member-search').addEventListener('input', renderMembers);
+$('#members').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-id]'); if (tr) openMember(+tr.dataset.id);
+});
+
+function openMember(id) {
+  const m = members.find(x => x.id === id);
+  const hist = m.isNew
+    ? [[m.status === 'waitlist' ? 'Se sumó al estudio · en lista de espera' : 'Se dio de alta · todavía no eligió sus horarios', 'Hoy', 'info']]
+    : m.status === 'waitlist'
+    ? [['Se anotó en lista de espera · Lun/Mié 19:00 Reformer', 'Hace 9 días', 'info'], ['Tomó un lugar liberado', 'Hoy 09:21', 'ok']]
+    : [['Vino · ' + m.slot.split(' · ')[1], 'Mar 17/11', 'ok'],
+       [m.miss >= 1 ? 'No vino' : 'Vino', 'Jue 12/11', m.miss >= 1 ? 'bad' : 'ok'],
+       [m.miss >= 2 ? 'No vino' : 'Canceló a tiempo', 'Mar 10/11', m.miss >= 2 ? 'bad' : 'neutral'],
+       ['Cambió de horario al lunes', 'Lun 09/11', 'info'],
+       ['Vino', 'Jue 05/11', 'ok']];
+  const left = rules.lose - m.miss;
+  const alert = m.status === 'lost'
+    ? `<p class="badge bad" style="display:block;padding:10px;margin-top:12px">Perdió su horario fijo por ${m.miss} faltas seguidas. Está primero en la lista de espera.</p>`
+    : m.status === 'risk' ? `<p class="badge warn" style="display:block;padding:10px;margin-top:12px">Le ${left === 1 ? 'queda 1 falta' : `quedan ${left} faltas`} antes de perder su horario.</p>` : '';
+  $('#drawer').innerHTML = `
+    <button class="btn small close" id="close-drawer" aria-label="Cerrar">✕</button>
+    <div class="name-cell" style="margin-right:40px"><span class="avatar" style="width:44px;height:44px;font-size:16px">${initials(m.name)}</span>
+      <div><h2>${m.name}</h2><span class="muted">${m.slot === '—' ? (m.isNew ? 'Todavía no eligió sus horarios' : 'Sin horario fijo') : m.slot}</span></div></div>
+    ${alert}
+    ${m.isNew ? `<dl class="facts">
+      <div><dt>DNI</dt><dd>${m.dni}</dd></div><div><dt>Nacimiento</dt><dd>${fmtDate(m.birth)}</dd></div>
+      <div><dt>Email</dt><dd>${m.email}</dd></div><div><dt>Mes pago</dt><dd>${fmtDate(m.paidFrom)} al ${fmtDate(m.paidTo)}</dd></div>
+      <div><dt>Clases</dt><dd>${m.plan} por semana</dd></div></dl>` : ''}
+    <div class="stat-row">
+      <div><b>${m.att == null ? '—' : m.att + '%'}</b><span>Asistencia 30 d</span></div>
+      <div><b>${m.changes}/${rules.changes}</b><span>Cambios del mes</span></div>
+      <div><b>${m.points}</b><span>Puntos</span></div>
+    </div>
+    <h3 style="margin:18px 0 6px">Últimas clases</h3>
+    <ul class="history">${hist.map(h => `<li><span>${h[0]}</span><span class="badge ${h[2]}">${h[1]}</span></li>`).join('')}</ul>
+    <h3 style="margin:22px 0 10px">Acciones del coach</h3>
+    <div class="filters">
+      ${m.miss ? '<button class="btn" data-act="justify">Justificar última falta</button>' : ''}
+      ${m.status === 'lost' ? '<button class="btn primary" data-act="restore">Devolverle su horario</button>' : ''}
+      <button class="btn" data-act="msg">Enviar mensaje</button>
+    </div>`;
+  $('#drawer').dataset.id = id;
+  $('#drawer').classList.add('open'); $('#backdrop').classList.add('open');
+}
+const fmtDate = iso => { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}`; };
+function openNewMember() {
+  const plans = [1, 2, 3, 4, 5].map(n => `<option value="${n}"${n === 2 ? ' selected' : ''}>${n} por semana · ${n * 4} al mes</option>`).join('');
+  $('#drawer').innerHTML = `
+    <button class="btn small close" id="close-drawer" aria-label="Cerrar">✕</button>
+    <h2 style="margin-right:40px">Nuevo alumno</h2>
+    <p class="muted" style="margin:4px 0 0">Le llega un mail para entrar a la app y elegir sus horarios.</p>
+    <form class="form" id="new-member-form" novalidate>
+      <div class="field"><label for="nm-name">Nombre y apellido</label>
+        <input type="text" id="nm-name" autocomplete="off"><span class="error">Escribí el nombre del alumno.</span></div>
+      <div class="field-row">
+        <div class="field"><label for="nm-birth">Fecha de nacimiento</label>
+          <input type="date" id="nm-birth" max="2026-11-19"><span class="error">Elegí la fecha de nacimiento.</span></div>
+        <div class="field"><label for="nm-dni">DNI</label>
+          <input type="text" id="nm-dni" inputmode="numeric" placeholder="Sin puntos" autocomplete="off"><span class="error">Tiene que tener 7 u 8 números.</span></div>
+      </div>
+      <div class="field"><label for="nm-email">Email</label>
+        <input type="email" id="nm-email" autocomplete="off"><span class="error">Revisá el email: tiene que ser como nombre@mail.com.</span></div>
+      <fieldset class="field">
+        <legend>Mes pago</legend>
+        <div class="field-row">
+          <div class="field"><label for="nm-from" class="sub">Inicio</label><input type="date" id="nm-from" value="2026-11-01"></div>
+          <div class="field"><label for="nm-to" class="sub">Fin</label><input type="date" id="nm-to" value="2026-11-30"></div>
+        </div>
+        <span class="hint">El fin se calcula solo: 30 días desde el inicio.</span>
+        <span class="error">El fin tiene que ser después del inicio.</span>
+      </fieldset>
+      <div class="field"><label for="nm-plan">Cantidad de clases</label>
+        <select id="nm-plan">${plans}</select>
+        <span class="hint">Define cuántos horarios fijos puede elegir en la app.</span></div>
+      <div class="form-actions">
+        <button type="button" class="btn" id="close-drawer-2">Cancelar</button>
+        <button type="submit" class="btn primary">Dar de alta</button>
+      </div>
+    </form>`;
+  delete $('#drawer').dataset.id;
+  $('#drawer').classList.add('open'); $('#backdrop').classList.add('open');
+  $('#nm-name').focus();
+  const form = $('#new-member-form');
+  $('#nm-from').addEventListener('change', e => {
+    if (!e.target.value) return;
+    const d = new Date(e.target.value + 'T12:00:00');
+    d.setDate(d.getDate() + 29);
+    $('#nm-to').value = d.toISOString().slice(0, 10);
+  });
+  form.addEventListener('input', e => (e.target.closest('fieldset') || e.target.closest('.field')).classList.remove('invalid'));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = id => $(id).value.trim();
+    const checks = [
+      ['#nm-name', v('#nm-name').length > 1],
+      ['#nm-birth', !!v('#nm-birth')],
+      ['#nm-dni', /^\d{7,8}$/.test(v('#nm-dni').replace(/\./g, ''))],
+      ['#nm-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('#nm-email'))],
+      ['#nm-from', !!v('#nm-from') && !!v('#nm-to') && v('#nm-to') > v('#nm-from')],
+    ];
+    checks.forEach(([id, ok]) => (id === '#nm-from' ? form.querySelector('fieldset') : $(id).closest('.field')).classList.toggle('invalid', !ok));
+    const bad = checks.find(c => !c[1]);
+    if (bad) return $(bad[0]).focus();
+    const plan = +v('#nm-plan');
+    const m = { id: Math.max(...members.map(x => x.id)) + 1, name: v('#nm-name'), slot: '—',
+      birth: v('#nm-birth'), dni: v('#nm-dni').replace(/\./g, ''), email: v('#nm-email'), paidFrom: v('#nm-from'), paidTo: v('#nm-to'), plan,
+      att: null, miss: 0, changes: 0, points: 0, status: 'ok', isNew: true };
+    members.unshift(m);
+    closeDrawer();
+    $('#member-search').value = '';
+    setMemberFilter('all');
+    toast(`${m.name} quedó dado de alta. Le mandamos la invitación a ${m.email}.`);
+  });
+}
+$('#new-member').addEventListener('click', openNewMember);
+function closeDrawer() { $('#drawer').classList.remove('open'); $('#backdrop').classList.remove('open'); }
+$('#backdrop').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+$('#drawer').addEventListener('click', e => {
+  if (e.target.id === 'close-drawer' || e.target.id === 'close-drawer-2') return closeDrawer();
+  const act = e.target.dataset.act; if (!act) return;
+  const m = members.find(x => x.id === +$('#drawer').dataset.id);
+  if (act === 'justify') { m.miss = Math.max(0, m.miss - 1); m.points += rules.noshow; if (m.status === 'risk' && m.miss < 2) m.status = 'ok'; toast(`Falta justificada: ${m.name} recupera ${rules.noshow} pts.`); }
+  if (act === 'restore') { m.miss = 0; m.status = 'ok'; toast(`${m.name} recuperó su horario fijo.`); }
+  if (act === 'msg') { toast(`Mensaje a ${m.name}: en el prototipo no se envía.`); return; }
+  missByName[m.name] = m.miss;
+  renderMembers(); openMember(m.id);
+});
+
+/* Reglas */
+const rules = {};
+const fields = ['window', 'changes', 'late', 'noshow', 'lose', 'justify', 'points', 'reminder', 'wait'];
+function readRules() {
+  fields.forEach(f => rules[f] = Math.max(0, parseInt($('#r-' + f).value, 10) || 0));
+  rules.early = $('#r-early').checked;
+}
+function renderRules() {
+  readRules();
+  const li = [
+    `Cancelá hasta <b>${rules.window} h antes</b> sin penalidad${rules.early ? ' (clases antes de las 9:00: hasta las <b>21:00 del día anterior</b>)' : ''}.`,
+    `Tenés <b>${rules.changes} cambios de horario</b> por mes. Cancelar a tiempo no consume cambios.`,
+    `Sumás <b>+${rules.points} pts</b> por cada clase a la que vas.`,
+    `Cancelar tarde descuenta <b>${rules.late} pts</b>; no avisar y no venir descuenta <b>${rules.noshow} pts</b>.`,
+    `Con <b>${rules.lose} faltas seguidas</b> sin avisar perdés tu horario fijo. Te avisamos antes.`,
+    rules.justify ? `Podés justificar <b>${rules.justify} falta${rules.justify > 1 ? 's' : ''} por mes</b> hablando con tu coach.` : null,
+    `Si se libera un lugar y estás en lista de espera, tenés <b>${rules.wait} min</b> para aceptarlo.`,
+  ].filter(Boolean);
+  $('#rules-preview').innerHTML = li.map(x => `<li>${x}</li>`).join('');
+  $('#reminder-preview').innerHTML = `<b>Notificación · ${rules.reminder} h antes de la clase</b>"Vicky te espera mañana a las 07:00 en Reformer. ¿Venís?" <span class="muted">[Voy] [Liberar mi lugar]</span>`;
+  const warn = rules.reminder <= rules.window
+    ? `⚠ El recordatorio sale cuando ya cerró el plazo para cancelar (${rules.reminder} h ≤ ${rules.window} h): el socio no va a poder liberar su lugar sin penalidad.`
+    : '';
+  $('#rules-warning').innerHTML = warn;
+  $('#rules-warning').style.color = warn ? 'var(--danger)' : '';
+  renderMembers();
+}
+document.querySelectorAll('#view-rules input').forEach(i => i.addEventListener('input', renderRules));
+$('#save-rules').addEventListener('click', () => toast('Reglas guardadas. Se aplican desde la próxima clase.'));
+
+renderRules();
+renderToday();
+renderRoster();
+renderClasses();
+</script>

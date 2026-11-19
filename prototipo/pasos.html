@@ -1,0 +1,1350 @@
+<title>Problemas paso a paso</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: phone mock on the left (the member app, always light, white-label brand color),
+   flow map + demo controls on the right; stacks to one column on narrow screens. */
+:root {
+  --bg: #EDEFF2;
+  --panel: #FFFFFF;
+  --fg: #15171C;
+  --muted: #5B6270;
+  --line: #D9DCE2;
+  --chip: #E4E7EC;
+  --frame: #0D0E11;
+  --brand: #2F5DDB;
+  --brand-soft: color-mix(in srgb, var(--brand) 12%, transparent);
+  --tag-fb-bg: #E6F2EC; --tag-fb-fg: #1D6B43;
+  /* member app: deliberately light, like a real phone screen */
+  --a-bg: #F5F6F8;
+  --a-card: #FFFFFF;
+  --a-fg: #14161A;
+  --a-muted: #646B78;
+  --a-line: #E3E6EB;
+  --good: #1D7F47;
+  --warn: #A8620C;
+  --bad: #BE3226;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1115; --panel: #171A20; --fg: #E7E9ED; --muted: #9AA1AD; --line: #2A2F38; --chip: #222731; --frame: #000000;
+    --brand-soft: color-mix(in srgb, var(--brand) 22%, transparent);
+    --tag-fb-bg: #16342A; --tag-fb-fg: #7FD3A8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1115; --panel: #171A20; --fg: #E7E9ED; --muted: #9AA1AD; --line: #2A2F38; --chip: #222731; --frame: #000000;
+  --brand-soft: color-mix(in srgb, var(--brand) 22%, transparent);
+  --tag-fb-bg: #16342A; --tag-fb-fg: #7FD3A8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+button { font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 920px) { .wrap { grid-template-columns: minmax(0, 1fr); justify-items: center; } .side { width: 100%; } }
+
+/* ---------- Phone ---------- */
+.phone-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+@media (max-width: 920px) { .phone-col { position: static; width: 100%; display: flex; flex-direction: column; align-items: center; } }
+.proto { display: flex; justify-content: center; align-items: flex-start; gap: 32px; }
+.proto .phone { flex: none; width: 390px; }
+.plist { flex: none; width: 280px; display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
+@media (max-width: 760px) { .proto { flex-direction: column; align-items: center; gap: 20px; } .proto .phone, .plist { width: min(390px, 100%); } .plist { position: static; } }
+.prow { display: flex; align-items: center; gap: 8px; }
+.pbtn-p { flex: 1; min-width: 0; text-align: left; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 14px; padding: 12px 14px; }
+.pbtn-p small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.pbtn-p b { display: block; font-weight: 600; font-size: 15px; margin-top: 2px; }
+.pbtn-p.on { border-color: var(--brand); background: var(--brand-soft); }
+.pbtn-p.on small { color: var(--brand); }
+.preset { flex: none; background: none; border: 0; color: var(--muted); font-weight: 600; font-size: 13px; padding: 10px 8px; border-radius: 10px; }
+.preset:hover { color: var(--brand); }
+.plist .seg { margin: -2px 0 4px; }
+.personas { display: flex; gap: 4px; background: var(--chip); padding: 4px; border-radius: 14px; margin-bottom: 12px; width: min(390px, 100%); }
+.personas button { flex: 1; border: 0; background: none; padding: 8px 6px; border-radius: 10px; color: var(--muted); font-weight: 600; font-size: 13px; position: relative; line-height: 1.2; }
+.personas button small { display: block; font-weight: 500; font-size: 11px; }
+.personas button b { display: block; font-weight: 600; font-size: 13px; }
+/* storyboard page */
+.sb { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.sb-head h1 { font-family: var(--font-display); font-size: 28px; line-height: 1.1; margin: 0; letter-spacing: -0.015em; }
+.flowrow { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px 0 20px 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.flowrow h2 { font-family: var(--font-display); font-size: 20px; margin: 0; padding-right: 20px; }
+.flowrow h2 span { color: var(--brand); }
+.flowrow .sub { margin: -8px 0 0; color: var(--muted); padding-right: 20px; }
+.flowrow h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .06em; }
+.frames { display: flex; gap: 14px; overflow-x: auto; padding: 4px 20px 8px 0; align-items: flex-start; }
+.frame { flex: none; width: 250px; display: flex; flex-direction: column; gap: 10px; }
+.miniwrap { width: 250px; height: 500px; position: relative; }
+.miniwrap .phone { position: absolute; top: 0; left: 0; transform: scale(0.641); transform-origin: top left; width: 390px; height: 780px; pointer-events: none; box-shadow: 0 16px 30px -18px rgba(0,0,0,.45); }
+.cap { display: flex; gap: 10px; font-size: 13.5px; }
+.cap b { font-family: var(--font-display); color: var(--brand); font-size: 16px; line-height: 1.2; flex: none; width: 16px; }
+.cap.key span { font-weight: 600; }
+.step-arrow { flex: none; align-self: center; margin-top: -60px; color: var(--muted); font-size: 22px; }
+.personas button.on { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.personas .badge { position: absolute; top: 7px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--bad); }
+.phone { width: min(390px, 100%); height: 780px; background: var(--frame); border-radius: 46px; padding: 12px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+.screen { position: relative; height: 100%; border-radius: 36px; overflow: hidden; background: var(--a-bg); color: var(--a-fg); display: flex; flex-direction: column; color-scheme: light; }
+.statusbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 26px 6px; font-weight: 600; font-size: 13px; flex: none; }
+.statusbar .dots { display: flex; gap: 4px; align-items: center; }
+.statusbar .dots i { width: 16px; height: 9px; border: 1.5px solid currentColor; border-radius: 3px; display: block; }
+.scr { flex: 1; overflow-y: auto; padding: 8px 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.scr.center { justify-content: center; }
+.a-h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.15; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.a-h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin: 0; }
+.a-h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; margin: 0; }
+.a-p { margin: 0; color: var(--a-muted); }
+.a-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--a-muted); font-weight: 600; }
+.logo { width: 40px; height: 40px; border-radius: 12px; background: var(--brand); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .04em; flex: none; }
+.topbar { display: flex; align-items: center; gap: 12px; }
+.topbar .who { flex: 1; min-width: 0; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--a-line); display: grid; place-items: center; font-weight: 600; font-size: 13px; color: var(--a-muted); }
+.back { background: none; border: 0; padding: 6px 0; color: var(--a-muted); font-weight: 500; align-self: flex-start; }
+
+.card { background: var(--a-card); border: 1px solid var(--a-line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.card.tint { background: color-mix(in srgb, var(--brand) 6%, #fff); border-color: color-mix(in srgb, var(--brand) 18%, #fff); }
+.next-card { border-color: transparent; box-shadow: 0 1px 0 var(--a-line), 0 10px 24px -18px rgba(20,22,26,.35); }
+.next-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.class-name { font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.1; }
+.class-meta { color: var(--a-muted); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; white-space: nowrap; background: var(--a-bg); color: var(--a-muted); }
+.pill.brand { background: color-mix(in srgb, var(--brand) 12%, #fff); color: var(--brand); }
+.pill.good { background: #E5F3EA; color: var(--good); }
+.pill.warn { background: #FBF0DF; color: var(--warn); }
+.pill.bad { background: #FBE7E4; color: var(--bad); }
+.timing { display: flex; align-items: center; gap: 8px; font-size: 13px; flex-wrap: wrap; }
+
+.btn { border: 0; border-radius: 14px; padding: 14px 16px; font-weight: 600; font-size: 15px; width: 100%; text-align: center; }
+.btn.primary { background: var(--brand); color: #fff; }
+.btn.secondary { background: var(--a-bg); color: var(--a-fg); border: 1px solid var(--a-line); }
+.btn.ghost { background: none; color: var(--a-muted); padding: 10px; }
+.btn.danger { background: var(--bad); color: #fff; }
+.btn.left { text-align: left; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-row { display: flex; flex-direction: column; gap: 10px; }
+.btn-row .btn { flex: 1; }
+.btn small { display: block; font-weight: 500; font-size: 12px; opacity: .8; margin-top: 2px; }
+.caption { font-size: 12px; color: var(--a-muted); text-align: center; margin-top: -4px; }
+.link { background: none; border: 0; padding: 4px 0; color: var(--brand); font-weight: 600; align-self: center; }
+
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.stat { background: var(--a-card); border: 1px solid var(--a-line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat .v { font-family: var(--font-display); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat .v span { font-size: 13px; color: var(--a-muted); font-weight: 500; }
+.stat .k { font-size: 11.5px; color: var(--a-muted); line-height: 1.25; }
+.stat.alert .v { color: var(--bad); }
+
+.bar { height: 8px; border-radius: 99px; background: var(--a-line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand); border-radius: 99px; }
+.bar.good i { background: var(--good); }
+.strikes { display: flex; gap: 6px; }
+.strikes i { flex: 1; height: 8px; border-radius: 99px; background: var(--a-line); }
+.strikes i.on { background: var(--bad); }
+.dots-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.dots-row i { width: 22px; height: 22px; border-radius: 50%; background: var(--a-line); display: grid; place-items: center; font-style: normal; font-size: 11px; color: #fff; font-weight: 700; }
+.dots-row i.on { background: var(--good); }
+.dots-row i.miss { background: var(--bad); }
+
+.week { display: flex; flex-direction: column; }
+.week-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid var(--a-line); gap: 8px; }
+.week-row:first-child { border-top: 0; padding-top: 0; }
+.week-row.lost { color: var(--a-muted); text-decoration: line-through; }
+.row-split { display: flex; align-items: center; gap: 12px; }
+.row-split > div { flex: 1; min-width: 0; }
+.mini { border: 1px solid var(--a-line); background: var(--a-bg); color: var(--a-fg); border-radius: 10px; padding: 8px 12px; font-weight: 600; font-size: 13px; flex: none; }
+
+/* rules table on the reminders screen */
+.rlist { display: flex; flex-direction: column; }
+.rrow { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--a-line); align-items: flex-start; }
+.rrow:first-child { border-top: 0; padding-top: 2px; }
+.rnum { width: 26px; height: 26px; border-radius: 8px; background: var(--a-bg); border: 1px solid var(--a-line); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 13px; flex: none; font-variant-numeric: tabular-nums; }
+.rrow .rt { flex: 1; min-width: 0; }
+.rrow .rt small { display: block; color: var(--a-muted); margin-top: 2px; }
+.rrow.cta { background: var(--brand); color: #fff; border-radius: 12px; padding: 12px; border: 0; margin-top: 4px; }
+.rrow.cta .rnum { background: rgba(255,255,255,.18); border-color: transparent; color: #fff; }
+
+.banner { border-radius: 14px; padding: 12px 14px; background: #FBE7E4; color: #7A1F16; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+.banner b { display: block; font-size: 14px; }
+.banner.warn { background: #FBF0DF; color: #6B3D06; }
+
+.days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.day { flex: none; border: 1px solid var(--a-line); background: var(--a-card); border-radius: 12px; padding: 8px 12px; font-weight: 600; color: var(--a-muted); }
+.day.on { background: var(--a-fg); color: #fff; border-color: var(--a-fg); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); row-gap: 4px; }
+.cal .wh { text-align: center; font-size: 11px; color: var(--a-muted); font-weight: 600; padding-bottom: 4px; }
+.cday { height: 40px; border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-weight: 600; color: var(--a-fg); font-variant-numeric: tabular-nums; padding: 0; }
+.cday i { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
+.cday i.has { background: var(--brand); }
+.cday:disabled { color: #B9BEC7; cursor: not-allowed; }
+.cday.in { background: color-mix(in srgb, var(--brand) 14%, #fff); }
+.cday.edge { background: var(--brand); color: #fff; border-radius: 12px; }
+.cday.edge i.has { background: #fff; }
+.cday.taken { background: var(--a-bg); color: var(--a-muted); text-decoration: line-through; }
+.daygrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.dchip { border: 1.5px solid var(--a-line); background: var(--a-card); border-radius: 12px; padding: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--a-fg); }
+.dchip small { color: var(--a-muted); font-size: 11px; font-weight: 600; }
+.dchip b { font-family: var(--font-display); font-size: 17px; font-variant-numeric: tabular-nums; }
+.dchip i { width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+.dchip i.has { background: var(--brand); }
+.dchip.on { border-color: var(--brand); background: var(--brand); color: #fff; }
+.dchip.on small { color: rgba(255,255,255,.8); }
+.dchip.on i.has { background: #fff; }
+.slot { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--a-card); border: 1.5px solid var(--a-line); border-radius: 14px; padding: 12px 14px; color: var(--a-fg); }
+.slot .t { font-family: var(--font-display); font-weight: 600; font-size: 17px; width: 54px; font-variant-numeric: tabular-nums; flex: none; }
+.slot .n { flex: 1; min-width: 0; }
+.slot .n small { display: block; color: var(--a-muted); }
+.slot.on { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 7%, #fff); }
+.slot:disabled { opacity: .45; cursor: not-allowed; }
+.slot .check { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--a-line); flex: none; display: grid; place-items: center; color: #fff; font-size: 13px; }
+.slot.on .check { background: var(--brand); border-color: var(--brand); }
+.slots { display: flex; flex-direction: column; gap: 8px; }
+.day-label { font-weight: 600; margin-top: 4px; }
+.cal-ev { display: flex; gap: 12px; align-items: center; }
+.cal-ev .date { width: 44px; border-radius: 10px; overflow: hidden; border: 1px solid var(--a-line); text-align: center; flex: none; }
+.cal-ev .date span { display: block; background: var(--brand); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 2px 0; text-transform: uppercase; }
+.cal-ev .date b { display: block; font-family: var(--font-display); font-size: 15px; padding: 4px 0; }
+.cal-ev .txt { flex: 1; min-width: 0; }
+.cal-ev .txt small { display: block; color: var(--a-muted); }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 13px; font-weight: 600; }
+.field input { border: 1px solid var(--a-line); background: var(--a-card); border-radius: 12px; padding: 12px 14px; font: inherit; color: var(--a-fg); }
+.toggle-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--a-line); }
+.toggle-row:first-child { border-top: 0; padding-top: 0; }
+.toggle-row:last-child { padding-bottom: 0; }
+.toggle-row .txt { flex: 1; }
+.toggle-row .txt small { display: block; color: var(--a-muted); }
+.sw { width: 46px; height: 28px; border-radius: 99px; background: var(--brand); position: relative; flex: none; border: 0; }
+.sw::after { content: ""; position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: right .15s; }
+.sw.off { background: var(--a-line); }
+.sw.off::after { right: 21px; }
+
+.result { align-items: flex-start; text-align: left; }
+.result-icon { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.result-icon.good { background: #E5F3EA; color: var(--good); }
+.result-icon.bad { background: #FBE7E4; color: var(--bad); }
+.result-icon.warn { background: #FBF0DF; color: var(--warn); }
+.result-icon.brand { background: color-mix(in srgb, var(--brand) 12%, #fff); color: var(--brand); }
+.spacer { flex: 1; }
+
+/* overlays */
+.dim { position: absolute; inset: 0; background: rgba(12,13,16,.42); display: flex; align-items: flex-end; z-index: 5; }
+.sheet { background: var(--a-card); width: 100%; border-radius: 26px 26px 0 0; padding: 10px 20px 24px; display: flex; flex-direction: column; gap: 12px; animation: up .22s ease-out; }
+.sheet .grab { width: 40px; height: 5px; border-radius: 99px; background: var(--a-line); align-self: center; }
+@keyframes up { from { transform: translateY(30px); opacity: .6; } to { transform: none; opacity: 1; } }
+.push { position: absolute; left: 10px; right: 10px; top: 44px; z-index: 6; background: rgba(250,250,252,.97); border-radius: 22px; padding: 14px; box-shadow: 0 18px 40px -12px rgba(0,0,0,.4); display: flex; flex-direction: column; gap: 10px; animation: drop .28s ease-out; border: 1px solid var(--a-line); }
+@keyframes drop { from { transform: translateY(-24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.push-head { display: flex; gap: 10px; align-items: center; }
+.push-head .logo { width: 28px; height: 28px; border-radius: 8px; font-size: 9px; }
+.push-head .app { flex: 1; font-size: 12px; color: var(--a-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.push-head .when { font-size: 12px; color: var(--a-muted); }
+.push .btn { padding: 10px; font-size: 14px; border-radius: 12px; }
+.toast { position: absolute; left: 16px; right: 16px; bottom: 22px; z-index: 7; background: var(--a-fg); color: #fff; border-radius: 14px; padding: 12px 14px; font-weight: 500; animation: drop .22s ease-out; }
+@media (prefers-reduced-motion: reduce) { .sheet, .push, .toast { animation: none; } }
+/* lock screen with push notification (fixed device wallpaper, same in both themes) */
+.lock { position: absolute; inset: 0; z-index: 6; background: linear-gradient(165deg, #33466B 0%, #1A2233 55%, #0E121B 100%); color: #fff; display: flex; flex-direction: column; align-items: center; padding: 0 12px 28px; }
+.lock-bar { align-self: stretch; display: flex; justify-content: space-between; padding: 14px 14px 0; }
+.lock-bar .dots i { width: 16px; height: 9px; border: 1.5px solid #fff; border-radius: 3px; display: block; }
+.lock-date { margin-top: 40px; font-size: 15px; font-weight: 500; opacity: .85; }
+.lock-time { font-family: var(--font-display); font-size: 72px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.lock-note { margin-top: 36px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 12px 14px; background: rgba(245,246,248,.9); color: var(--a-fg); display: flex; flex-direction: column; gap: 8px; animation: drop .28s ease-out; }
+.lock-note .class-meta { color: var(--a-muted); }
+.lock-hint { margin-top: auto; font-size: 12px; opacity: .7; }
+@media (prefers-reduced-motion: reduce) { .lock-note { animation: none; } }
+
+/* owner board */
+.crow { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-top: 1px solid var(--a-line); }
+.crow:first-of-type { border-top: 0; padding-top: 0; }
+.crow .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.crow .occ { font-family: var(--font-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+.crow.hl { background: color-mix(in srgb, var(--brand) 6%, #fff); margin: 0 -10px; padding: 12px 10px; border-radius: 12px; border-top-color: transparent; }
+.feed { display: flex; flex-direction: column; gap: 10px; }
+.feed div { display: flex; gap: 10px; font-size: 13px; }
+.feed time { color: var(--a-muted); font-variant-numeric: tabular-nums; width: 40px; flex: none; }
+.feed div.new { font-weight: 600; }
+
+/* circuit map in the side panel */
+.chead { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.csteps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .csteps { grid-template-columns: minmax(0, 1fr); } }
+.cstep { border: 1px solid var(--line); background: var(--panel); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.cstep b { font-family: var(--font-display); color: var(--brand); font-size: 15px; }
+.cstep span { color: var(--fg); font-weight: 600; }
+.cstep.done { border-color: var(--brand); }
+.cstep.on { background: var(--brand); border-color: var(--brand); color: rgba(255,255,255,.85); }
+.cstep.on b, .cstep.on span { color: #fff; }
+
+/* ---------- Side panel ---------- */
+.side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.intro h1 { font-family: var(--font-display); font-size: 28px; line-height: 1.1; margin: 0 0 6px; letter-spacing: -0.015em; text-wrap: balance; }
+.intro p { margin: 0; color: var(--muted); max-width: 62ch; }
+.eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.box h2 { font-family: var(--font-display); font-size: 17px; margin: 0; }
+.flows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .flows { grid-template-columns: minmax(0, 1fr); } }
+.flow { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--panel); transition: border-color .15s, background .15s; min-width: 0; }
+.flow.active { border-color: var(--brand); background: var(--brand-soft); }
+.flow-head { display: flex; gap: 10px; align-items: baseline; }
+.flow-num { font-family: var(--font-display); font-weight: 700; color: var(--brand); font-variant-numeric: tabular-nums; }
+.flow-title { font-weight: 600; flex: 1; min-width: 0; }
+.flow ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; counter-reset: s; flex: 1; }
+.flow li { counter-increment: s; display: flex; gap: 8px; padding: 4px 6px; border-radius: 8px; color: var(--muted); font-size: 13px; }
+.flow li::before { content: counter(s); font-variant-numeric: tabular-nums; font-weight: 600; width: 14px; flex: none; }
+.flow li.on { background: var(--brand); color: #fff; }
+.flow-go { align-self: flex-start; background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 10px; padding: 7px 12px; font-weight: 600; font-size: 13px; }
+.flow-go:hover { border-color: var(--brand); color: var(--brand); }
+.flow-sub { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.ctrl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 640px) { .ctrl-grid { grid-template-columns: minmax(0, 1fr); } }
+.ctrl { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ctrl-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.ctrl-note { font-size: 12.5px; color: var(--muted); }
+.seg { display: flex; background: var(--chip); border-radius: 12px; padding: 3px; gap: 3px; }
+.seg button { flex: 1; border: 0; background: none; padding: 8px 6px; border-radius: 9px; color: var(--muted); font-weight: 600; font-size: 13px; }
+.seg button.on { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.pbtns { display: flex; gap: 8px; flex-wrap: wrap; }
+.pbtn { border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 10px; padding: 8px 12px; font-weight: 600; font-size: 13px; }
+.pbtn:hover { border-color: var(--brand); }
+.pbtn.warn { color: var(--bad); }
+.stepper { display: flex; align-items: center; gap: 10px; }
+.stepper button { width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font-weight: 700; }
+.stepper b { font-variant-numeric: tabular-nums; min-width: 48px; text-align: center; }
+.swatches { display: flex; gap: 10px; }
+.swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--panel); box-shadow: 0 0 0 1px var(--line); }
+.swatch.on { box-shadow: 0 0 0 2px var(--fg); }
+.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.rules li { display: flex; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.rules li:first-child { border-top: 0; padding-top: 0; }
+.rules .r { flex: 1; min-width: 0; }
+.tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--chip); color: var(--muted); white-space: nowrap; align-self: flex-start; }
+.tag.def { background: var(--brand-soft); color: var(--brand); }
+.tag.fb { background: var(--tag-fb-bg); color: var(--tag-fb-fg); }
+</style>
+
+<div class="sb" id="story"></div>
+
+<script>
+const DAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const DAYS_FULL = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const PREV_DAY = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
+/* November 2026: paid from the 1st to the 30th, today is the 19th. Nov 1 is a Sunday. */
+const FIRST_FREE = 20;
+const WEEK_START = 23; /* Monday of the class week shown in the app */
+const DAYS7 = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const wdOf = d => (d + 5) % 7; /* 0 = Monday */
+const classTimes = d => S.slots.filter(id => byId(id).day === wdOf(d)).map(id => byId(id).time);
+const rangeText = (a, b) => (a === b ? `el ${a} de noviembre` : `del ${a} al ${b} de noviembre`);
+const WEEK7 = [['Lun', 23], ['Mar', 24], ['Mié', 25], ['Jue', 26], ['Vie', 27], ['Sáb', 28], ['Dom', 29]];
+const CLASSES = [
+  ['lun-0700', 0, '07:00', 'Pilates', 'Vicky', 3], ['lun-0800', 0, '08:00', 'Pilates', 'Vicky', 1], ['lun-1230', 0, '12:30', 'Yoga', 'Caro', 5], ['lun-1900', 0, '19:00', 'Yoga', 'Tomi', 0], ['lun-2000', 0, '20:00', 'Pilates', 'Juli', 4],
+  ['mar-0700', 1, '07:00', 'Yoga', 'Tomi', 2], ['mar-0900', 1, '09:00', 'Pilates', 'Juli', 6], ['mar-1800', 1, '18:00', 'Pilates', 'Vicky', 0], ['mar-1930', 1, '19:30', 'Yoga', 'Caro', 3],
+  ['mie-0800', 2, '08:00', 'Pilates', 'Vicky', 2], ['mie-1230', 2, '12:30', 'Pilates', 'Juli', 4], ['mie-1900', 2, '19:00', 'Yoga', 'Tomi', 1], ['mie-2000', 2, '20:00', 'Yoga', 'Caro', 6],
+  ['jue-0700', 3, '07:00', 'Pilates', 'Vicky', 5], ['jue-1800', 3, '18:00', 'Pilates', 'Juli', 2], ['jue-1900', 3, '19:00', 'Pilates', 'Tomi', 3],
+  ['vie-0800', 4, '08:00', 'Yoga', 'Caro', 4], ['vie-1830', 4, '18:30', 'Yoga', 'Tomi', 0], ['vie-1930', 4, '19:30', 'Pilates', 'Vicky', 2],
+  ['sab-1000', 5, '10:00', 'Pilates', 'Vicky', 7], ['sab-1100', 5, '11:00', 'Yoga', 'Caro', 5],
+].map(([id, day, time, name, coach, left]) => ({ id, day, time, name, coach, left }));
+const byId = id => CLASSES.find(c => c.id === id);
+const order = id => CLASSES.findIndex(c => c.id === id);
+const short = c => `${DAYS[c.day]} ${c.time}`;
+const full = c => `${DAYS_FULL[c.day]} ${c.time}`;
+const isMorning = c => parseInt(c.time, 10) < 12;
+/* Morning classes: until 21:00 the day before. Later classes: until 6 h before. */
+function deadline(c) {
+  if (isMorning(c)) return `${PREV_DAY[c.day]} 21:00`;
+  const [h, m] = c.time.split(':').map(Number);
+  return `${DAYS[c.day]} ${String(h - 6).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+const PREV_DAY_FULL = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes'];
+/* "el domingo a las 21 h" */
+function deadlineLong(c) {
+  if (isMorning(c)) return `el ${PREV_DAY_FULL[c.day]} a las 21 h`;
+  const [h, m] = c.time.split(':').map(Number);
+  return `el ${DAYS_FULL[c.day].toLowerCase()} a las ${h - 6}${m ? `:${String(m).padStart(2, '0')}` : ''} h`;
+}
+
+const RULES = { max: 5, plan: 2, strikes: 3, excuses: 2, off: 7, recover: 3, monthTotal: 8, nextMonth: 'diciembre' };
+const BRANDS = [['#2F5DDB', 'Azul'], ['#0E7C66', 'Verde'], ['#C2471F', 'Naranja'], ['#1E1F24', 'Negro']];
+const DEFAULT_SLOTS = ['lun-0800', 'mie-0800'];
+const OPEN = ['reservada', 'confirmada'];
+const CALS = { google: 'Google Calendar', apple: 'Calendario de Apple', outlook: 'Outlook' };
+
+const FLOWS = [
+  { id: 'f1', title: 'Me inscribo y voy', steps: ['Se loguea', 'Ve los horarios disponibles', 'Elige sus horarios según su plan', 'Conoce las reglas y activa recordatorios', 'Agrega sus clases al calendario', 'Recibe el recordatorio y confirma', 'Va a clase', `Si va a todas sus clases del mes, gana una clase gratis en ${RULES.nextMonth}`] },
+  { id: 'f2', title: 'Avisa antes del plazo', steps: ['Indica que no puede ir', 'Acción principal: Cambiar. Ve horarios y cambios restantes', 'Elige otro horario (no puede cancelar)'] },
+  { id: 'f3', title: 'Avisa después del plazo', steps: ['Indica que no puede ir', 'Solo puede cancelar: cuenta como falta'] },
+  { id: 'f4', title: 'No va y no avisa', steps: ['Falta sin avisar', '2.ª falta: "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', '3.ª falta: pierde su horario fijo y sus clases del mes; puede reservar clases sueltas', `Al renovar en ${RULES.nextMonth}, vuelve a elegir su horario si sigue disponible`] },
+  { id: 'f5', title: 'Tiene un motivo justificado', steps: ['Avisa que no puede ir, o ya faltó', 'Elige "Tengo un motivo": enfermedad', 'No cuenta como falta'] },
+  { id: 'f6', title: 'Se toma días off', steps: ['Desde su perfil entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige un rango de fechas dentro del mes que ya pagó', 'Sus clases quedan en pausa y conserva su horario'] },
+];
+
+const fresh = () => ({
+  screen: 'login', clock: 'far', slots: [], next: null, changesUsed: 0, noShows: 0,
+  monthAttended: 5, bonusOk: true, bonusLostAt: null, calendar: null,
+  lostSlot: false, lostId: null, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, waitlist: [], waitJoined: null, justFrom: null, lastFault: null,
+  reminders: true, confirmAsk: true, push: false, sheet: null, changeMode: 'once',
+  changeDay: 0, picked: null, lateCancel: false, toast: null, brand: S?.brand ?? 0,
+  persona: 'socia',
+  circ: { cls: 'lun-0800', released: false, taken: null, luSeen: false, boardSeen: false, confirmed: false, events: [['19:00', 'Recordatorio enviado a las 12 personas de Pilates Lun 08:00']] },
+});
+/* Circuit: Sofi frees her spot in a full class -> the waitlist (Lu) gets it -> the owner sees it recovered. */
+function release(how) {
+  if (!S.next || S.next.id !== S.circ.cls || S.circ.released) return;
+  S.circ.released = true;
+  S.circ.events.push(['20:14', `Sofi ${how} Pilates Lun 08:00. Se ofreció su lugar a la lista de espera.`]);
+}
+let S = null;
+S = fresh();
+let toastTimer = null;
+
+function set(patch) { Object.assign(S, patch); render(); }
+function toast(msg) {
+  S.toast = msg; render();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { S.toast = null; render(); }, 2600);
+}
+function onboarded(extra = {}) {
+  const slots = [...DEFAULT_SLOTS];
+  Object.assign(S, fresh(), { slots, next: { id: slots[0], status: 'reservada', kind: 'fijo' }, screen: 'home', calendar: 'google' }, extra);
+}
+function nextFixed(afterId) {
+  const sorted = [...S.slots].filter(id => !(S.lostSlot && id === S.lostId)).sort((a, b) => order(a) - order(b));
+  if (!sorted.length) return null;
+  const i = sorted.indexOf(afterId);
+  const id = i === -1 ? sorted[0] : sorted[(i + 1) % sorted.length];
+  return { id, status: S.offDays.includes(byId(id).day) ? 'off' : 'reservada', kind: 'fijo' };
+}
+const changesLeft = () => RULES.max - S.changesUsed;
+const excusesLeft = () => RULES.excuses - S.excusesUsed;
+const offLeft = () => RULES.off - S.offUsed;
+const bonusWon = () => S.bonusOk && S.monthAttended >= RULES.monthTotal;
+/* A fault = no-show or late cancellation. Counts toward losing the slot and breaks the free class. */
+function addFault(kind) {
+  const n = S.noShows + 1;
+  S.lastFault = { kind, wasBonusOk: S.bonusOk };
+  if (S.bonusOk) { S.bonusOk = false; S.bonusLostAt = S.next.id; }
+  S.noShows = n;
+  if (n >= RULES.strikes) { S.lostSlot = true; S.lostId = S.next.id; S.recover = 0; }
+  return n;
+}
+
+/* ---------- the 4 problems (FigJam "Problemas a atacar en el proto") ---------- */
+const PROBS = [
+  ['p1', 'Empezar'], ['p2', 'Cambiar a tiempo'], ['p3', 'Cancelar tarde'], ['p4', 'Clase gratis'],
+];
+let P = { id: 'p1', v: 'a' };
+let pushTimer = null;
+const SAVED = {}; /* where each problem was left, so switching tabs doesn't lose it */
+function openProblem(id) {
+  if (id === P.id) return;
+  SAVED[P.id] = { S, v: P.v };
+  clearTimeout(pushTimer);
+  const saved = SAVED[id];
+  if (saved) { P = { id, v: saved.v }; S = saved.S; S.toast = null; render(); } else startProblem(id);
+}
+function startProblem(id, v = 'a') {
+  P = { id, v };
+  clearTimeout(pushTimer);
+  const brand = S.brand;
+  S = fresh(); /* new object, so the state saved for other problems isn't overwritten */
+  if (id === 'p2') {
+    onboarded({ clock: 'far' });
+    pushTimer = setTimeout(() => { if (P.id === 'p2' && S.screen === 'home' && !S.sheet && S.changesUsed === 0) set({ push: true }); }, 1500);
+  }
+  if (id === 'p3') onboarded(v === 'b' ? { clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800' } : { clock: 'near' });
+  if (id === 'p4') onboarded({ clock: 'near', monthAttended: RULES.monthTotal - 1 });
+  S.brand = brand;
+  render();
+}
+
+/* ---------- actions ---------- */
+const A = {
+  problem: id => openProblem(id),
+  restart: id => { if (id !== P.id) SAVED[P.id] = { S, v: P.v }; startProblem(id, id === P.id ? P.v : SAVED[id]?.v || 'a'); },
+  variant: v => startProblem('p3', v),
+  login: () => set({ screen: 'pick' }),
+  toggleSlot: id => {
+    if (S.slots.includes(id)) return set({ slots: S.slots.filter(s => s !== id) });
+    if (S.slots.some(s => byId(s).day === byId(id).day)) return;
+    if (S.slots.length >= RULES.plan) return toast(`Tu plan es de ${RULES.plan} clases por semana. Sacá una para elegir otra.`);
+    set({ slots: [...S.slots, id] });
+  },
+  pickDone: () => set({ screen: 'reminders' }),
+  toggleRem: k => set({ [k]: !S[k] }),
+  finishReminders: on => {
+    const sorted = [...S.slots].sort((a, b) => order(a) - order(b));
+    set({ reminders: on === '1' ? S.reminders : false, slots: sorted, next: { id: sorted[0], status: 'reservada', kind: 'fijo' }, screen: 'calendar', clock: 'far' });
+  },
+  addCal: k => {
+    S.calendar = k === 'skip' ? null : k;
+    S.screen = 'home';
+    if (k === 'skip') render(); else toast(`Agregamos tus ${S.slots.length} clases semanales a ${CALS[k]}.`);
+    if (S.reminders) setTimeout(() => { if (S.screen === 'home' && !S.sheet) set({ push: true }); }, 1500);
+  },
+  confirm: () => {
+    S.next.status = 'confirmada'; S.push = false;
+    if (S.next.id === S.circ.cls && !S.circ.confirmed) { S.circ.confirmed = true; S.circ.events.push(['19:05', 'Sofi confirmó que va a Pilates Lun 08:00.']); }
+    toast(`Confirmaste tu clase del ${short(byId(S.next.id))}. ${byId(S.next.id).coach} te espera.`); },
+  cantGo: () => {
+    if (S.clock === 'far' && changesLeft() > 0) return set({ push: false, sheet: null, screen: 'change', changeMode: 'once', picked: null, changeDay: byId(S.next.id).day });
+    set({ push: false, sheet: 'cantgo' });
+  },
+  closeSheet: () => set({ sheet: null }),
+  goChange: () => set({ sheet: null, screen: 'change', changeMode: 'once', picked: null, changeDay: byId(S.next.id).day }),
+  seekBetter: () => set({ screen: 'change', changeMode: 'fixed', picked: null, changeDay: byId(S.next.id).day }),
+  changeDay: d => set({ changeDay: +d }),
+  pick: id => set({ picked: id }),
+  joinWait: () => {
+    if (!S.picked) return;
+    set({ waitlist: [...S.waitlist, S.picked], waitJoined: S.picked, picked: null, screen: 'waitJoined' });
+  },
+  confirmChange: () => {
+    if (!S.picked) return;
+    if (S.changeMode === 'once') {
+      release(`cambió su clase de`);
+      set({ changesUsed: S.changesUsed + 1, next: { id: S.picked, status: 'reservada', kind: 'cambio' }, clock: 'far', screen: 'changed' });
+    } else {
+      const old = S.next.id;
+      const slots = S.slots.map(s => (s === old ? S.picked : s)).sort((a, b) => order(a) - order(b));
+      set({ slots, next: { id: S.picked, status: 'reservada', kind: 'fijo' }, clock: 'far', screen: 'changed' });
+    }
+  },
+  askCancel: () => set({ sheet: 'confirmFar' }),
+  cancelFar: () => { release('canceló'); S.next.status = 'cancelada'; set({ sheet: null, lateCancel: false, screen: 'cancelled' }); },
+  cancelLate: () => {
+    release('canceló fuera de plazo');
+    S.next.status = 'cancelada';
+    const n = addFault('late');
+    set({ sheet: null, lateCancel: true, screen: n >= RULES.strikes ? 'noshow' : 'cancelled' });
+  },
+  reason: () => set({ sheet: 'reason', push: false }),
+  justify: () => {
+    if (excusesLeft() <= 0) return;
+    release('avisó que está enferma y liberó');
+    S.next.status = 'justificada';
+    set({ sheet: null, excusesUsed: S.excusesUsed + 1, justFrom: 'aviso', screen: 'justified' });
+  },
+  justifyNoShow: () => {
+    if (excusesLeft() <= 0) return;
+    const n = S.noShows - 1;
+    const restore = S.lastFault?.wasBonusOk && S.bonusLostAt === S.next.id;
+    S.next.status = 'justificada';
+    set({ noShows: n, lostSlot: n >= RULES.strikes, recover: 0, excusesUsed: S.excusesUsed + 1, justFrom: 'falta', screen: 'justified', ...(restore ? { bonusOk: true, bonusLostAt: null } : {}) });
+  },
+  goOff: () => {
+    const pre = S.sheet && S.next ? WEEK_START + byId(S.next.id).day : null;
+    set({ sheet: null, push: false, screen: 'off', offStart: pre, offEnd: pre, offPhase: pre ? 'end' : 'start' });
+  },
+  /* Range picker: first tap sets the start, second tap the end; a third tap starts over. */
+  toggleOff: d => {
+    d = +d;
+    if (d < FIRST_FREE || S.offTaken.includes(d)) return;
+    let start = S.offStart, end = S.offEnd, phase = S.offPhase;
+    if (phase === 'end' && d >= start) { end = d; phase = 'done'; }
+    else { start = d; end = d; phase = 'end'; }
+    for (let x = start; x <= end; x++) if (S.offTaken.includes(x)) return toast('Ese rango incluye días que ya tomaste.');
+    if (end - start + 1 > offLeft()) return toast(`Te quedan ${offLeft()} días off este trimestre.`);
+    set({ offStart: start, offEnd: end, offPhase: phase });
+  },
+  confirmOff: () => {
+    if (!S.offStart) return;
+    const dates = [];
+    for (let x = S.offStart; x <= S.offEnd; x++) dates.push(x);
+    const offTaken = [...S.offTaken, ...dates];
+    /* weekday indices of the current class week (Mon 23 to Sat 28) that are now off */
+    const offDays = [...new Set([...S.offDays, ...dates.filter(x => x >= WEEK_START && x < WEEK_START + 6).map(x => x - WEEK_START)])].sort((a, b) => a - b);
+    if (S.next && OPEN.includes(S.next.status) && offDays.includes(byId(S.next.id).day)) { release('se tomó días off y liberó'); S.next.status = 'off'; }
+    set({ offDays, offTaken, offUsed: S.offUsed + dates.length, offLast: [S.offStart, S.offEnd], offStart: null, offEnd: null, offPhase: 'start', screen: 'offDone' });
+  },
+  home: () => set({ screen: 'home', sheet: null }),
+  manage: () => set({ screen: 'manage', sheet: null }),
+  profile: () => set({ screen: 'profile', sheet: null, push: false }),
+  nextClass: () => set({ next: nextFixed(S.next?.kind === 'fijo' ? S.next.id : null), clock: 'far', screen: 'home', sheet: null }),
+  dropin: () => set({ screen: 'dropin', sheet: null }),
+  reserve: id => { set({ next: { id, status: 'reservada', kind: 'suelta' }, clock: 'far', screen: 'home' }); toast(`Reservaste ${byId(id).name} del ${short(byId(id))}.`); },
+
+  /* panel */
+  clock: c => set({ clock: c, sheet: null, push: false }),
+  sendPush: () => {
+    if (!S.next || !OPEN.includes(S.next.status)) return toast('No hay una clase reservada para recordar.');
+    set({ screen: 'home', sheet: null, push: true, clock: S.clock === 'past' ? 'far' : S.clock });
+  },
+  attend: () => {
+    if (!S.next || !OPEN.includes(S.next.status)) return toast('No hay una clase reservada.');
+    S.next.status = 'asistió';
+    const base = { clock: 'past', sheet: null, push: false, monthAttended: Math.min(RULES.monthTotal, S.monthAttended + (S.next.kind === 'suelta' ? 0 : 1)) };
+    set({ ...base, screen: 'attended' });
+  },
+  noshow: () => {
+    if (!S.next || !OPEN.includes(S.next.status)) return toast('No hay una clase reservada.');
+    S.next.status = 'faltó';
+    addFault('noshow');
+    set({ clock: 'past', lateCancel: false, screen: 'noshow', sheet: null, push: false });
+  },
+  changes: d => set({ changesUsed: Math.min(RULES.max, Math.max(0, S.changesUsed + +d)) }),
+  persona: p => {
+    if (p === 'espera') S.circ.luSeen = true;
+    if (p === 'estudio') S.circ.boardSeen = true;
+    set({ persona: p, toast: null });
+  },
+  openPush: () => set({ push: false, screen: 'home', sheet: null }),
+  openLu: () => { S.circ.luOpened = true; render(); },
+  takeSpot: () => {
+    S.circ.taken = 'Lu';
+    S.circ.events.push(['20:16', 'Lu tomó el lugar desde la lista de espera. La clase vuelve a estar llena.']);
+    S.circ.boardSeen = false;
+    toast('Listo, reservaste Pilates del lunes 23 a las 08:00 con Vicky.');
+  },
+  declineSpot: () => {
+    S.circ.taken = 'Mati';
+    S.circ.events.push(['20:20', 'Lu dejó pasar el lugar.'], ['20:23', 'Mati tomó el lugar desde la lista de espera. La clase vuelve a estar llena.']);
+    S.circ.boardSeen = false;
+    render();
+  },
+  circuit: () => {
+    onboarded({ clock: 'far', push: true });
+    render();
+  },
+  brand: i => { S.brand = +i; applyBrand(); render(); },
+  reset: () => { S = fresh(); render(); },
+  flow: id => {
+    if (id === 'f1') S = fresh();
+    if (id === 'f2') { onboarded({ clock: 'far' }); return A.cantGo(); }
+    if (id === 'f3') onboarded({ clock: 'near', sheet: 'cantgo' });
+    if (id === 'f5') onboarded({ clock: 'near', sheet: 'reason' });
+    if (id === 'f6') onboarded({ screen: 'off' });
+    render();
+  },
+  winDemo: () => {
+    onboarded({ monthAttended: RULES.monthTotal - 1, clock: 'past' });
+    render();
+    toast('Le falta 1 clase para completar el mes. Tocá "Fue a clase" en el panel.');
+  },
+  strike: n => {
+    n = +n;
+    onboarded({ clock: 'past', noShows: n - 1, bonusOk: n === 1, bonusLostAt: n === 1 ? null : 'lun-0800' });
+    A.noshow();
+  },
+  recoverDemo: () => {
+    onboarded({ lostSlot: true, noShows: RULES.strikes, bonusOk: false, recover: RULES.recover - 1, next: { id: 'sab-1000', status: 'reservada', kind: 'suelta' }, clock: 'past' });
+    render();
+    toast('Le falta 1 clase para recuperar su horario. Tocá "Fue a clase" en el panel.');
+  },
+};
+
+/* ---------- views ---------- */
+const statusPill = st => ({
+  reservada: '<span class="pill">Reservada</span>',
+  confirmada: '<span class="pill good">Confirmada</span>',
+  cancelada: '<span class="pill">Cancelada</span>',
+  justificada: '<span class="pill">Justificada</span>',
+  off: '<span class="pill brand">Días off</span>',
+  'asistió': '<span class="pill good">Fuiste</span>',
+  'faltó': '<span class="pill bad">Faltaste</span>',
+}[st] || '');
+
+function timing(c) {
+  if (S.clock === 'far') return `<div class="timing"><span class="pill brand">Podés cambiarla</span><span class="class-meta">hasta el ${deadline(c)}</span></div>`;
+  if (S.clock === 'near') return `<div class="timing"><span class="pill warn">Venció el plazo</span><span class="class-meta">era hasta el ${deadline(c)}</span></div>`;
+  return '<div class="timing"><span class="pill">La clase ya terminó</span></div>';
+}
+
+function nextCard() {
+  if (!S.next) {
+    return `<div class="card next-card"><span class="a-label">Tu próxima clase</span>
+      <div class="a-h2">No tenés clases reservadas</div>
+      <p class="a-p">Reservá una clase suelta entre los lugares que quedan libres esta semana.</p>
+      <button class="btn primary" data-act="dropin">Ver clases sueltas</button></div>`;
+  }
+  const c = byId(S.next.id);
+  const kind = S.next.kind === 'suelta' ? ' · clase suelta' : '';
+  const st = S.next.status;
+  let actions = '';
+  if (OPEN.includes(st)) {
+    if (S.clock === 'past') actions = '<p class="a-p">Estamos registrando tu asistencia.</p>';
+    else actions = `<div class="btn-row">
+        <button class="btn secondary" data-act="cantGo">No puedo ir</button></div>
+        <div class="caption">${S.clock === 'far' ? `Tenés hasta ${deadlineLong(c)} para gestionarla` : `Ya pasó el plazo para cambiarla (era ${deadlineLong(c)})`}</div>`;
+  } else if (st === 'off') {
+    actions = `<p class="a-p">Estás de días off: esta clase no cuenta y tu horario sigue siendo tuyo.</p><button class="btn secondary" data-act="nextClass">Ver mi próxima clase</button>`;
+  } else {
+    actions = `<button class="btn secondary" data-act="nextClass">Ver mi próxima clase</button>`;
+  }
+  return `<div class="card next-card">
+    <div class="next-title"><span class="a-label">Tu próxima clase${kind}</span>${statusPill(st)}</div>
+    <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
+    ${actions}
+  </div>`;
+}
+
+function monthDots() {
+  return `<div class="dots-row" aria-label="${S.monthAttended} de ${RULES.monthTotal} clases">${Array.from({ length: RULES.monthTotal }, (_, i) => `<i class="${i < S.monthAttended ? 'on' : ''}">${i < S.monthAttended ? '✓' : ''}</i>`).join('')}</div>`;
+}
+
+function bonusBlock() {
+  if (bonusWon()) return `<div class="card tint"><span class="a-label">Clase gratis</span><div class="a-h3">Ganaste una clase gratis para ${RULES.nextMonth}</div>${monthDots()}<div class="class-meta">Fuiste a todas tus clases de noviembre en tiempo y forma.</div></div>`;
+  if (!S.bonusOk) {
+    const c = S.bonusLostAt ? byId(S.bonusLostAt) : null;
+    return `<div class="card"><span class="a-label">Clase gratis</span><div>Este mes ya no aplica${c ? `: tuviste una falta el ${short(c)}` : ''}.</div><div class="class-meta">En ${RULES.nextMonth} arrancás de nuevo. Si vas a todas tus clases, la ganás.</div></div>`;
+  }
+  const left = RULES.monthTotal - S.monthAttended;
+  return `<div class="card"><div class="next-title"><span class="a-label">Clase gratis en ${RULES.nextMonth}</span><span class="class-meta">${S.monthAttended} / ${RULES.monthTotal}</span></div>
+    ${monthDots()}
+    <div>Te ${left === 1 ? 'falta <b>1 clase</b>' : `faltan <b>${left} clases</b>`}. Si vas a todas las que tenés este mes, la próxima va por nuestra cuenta.</div></div>`;
+}
+
+function offBlock() {
+  return `<div class="card"><div class="row-split"><div><span class="a-label">Días off</span>
+    <div>Te quedan <b>${offLeft()} de ${RULES.off}</b> este trimestre</div><div class="class-meta">Para viajes o vacaciones, sin perder tu horario.</div></div>
+    <button class="mini" data-act="goOff" ${offLeft() ? '' : 'disabled'}>Tomarme días</button></div></div>`;
+}
+
+function weekBlock() {
+  if (!S.slots.length) return '';
+  const rows = S.slots.map(id => {
+    const c = byId(id);
+    const off = S.offDays.includes(c.day);
+    const lost = S.lostSlot && (!S.lostId || id === S.lostId);
+    return `<div class="week-row ${lost ? 'lost' : ''}"><span><b>${DAYS_FULL[c.day]}</b> ${c.time}</span><span class="class-meta">${lost ? `Hasta ${RULES.nextMonth}` : off ? 'En pausa · días off' : `${c.name} · ${c.coach}`}</span></div>`;
+  }).join('');
+  const cal = S.calendar ? `<div class="class-meta">En tu ${CALS[S.calendar]}</div>` : '';
+  return `<div class="card"><span class="a-label">Tu horario fijo</span><div class="week">${rows}</div>${cal}</div>`;
+}
+
+function keptText() {
+  const kept = S.slots.filter(id => id !== S.lostId);
+  return kept.length ? kept.map(id => `el ${full(byId(id)).toLowerCase()}`).join(' y ') : 'ninguna clase fija';
+}
+function strikesBar(n) {
+  return `<div class="strikes" aria-label="${n} de ${RULES.strikes} faltas">${Array.from({ length: RULES.strikes }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>`;
+}
+function recoverBar() {
+  return `<div class="bar good"><i style="width:${(S.recover / RULES.recover) * 100}%"></i></div>`;
+}
+function justifyLink() {
+  return excusesLeft() > 0 ? `<button class="link" data-act="justifyNoShow">Tuve un motivo justificado</button>` : '';
+}
+function circLine() {
+  return '';
+}
+function bonusLostLine() {
+  return S.lastFault?.wasBonusOk ? `<p class="a-p">Este mes ya no aplica la clase gratis de ${RULES.nextMonth}.</p>` : '';
+}
+
+const V = {
+  login: () => `<div class="scr center">
+      <div class="logo">LOGO</div>
+      <div><span class="a-label">Te invitó tu estudio</span><h1 class="a-h1">Creá tu contraseña</h1><p class="a-p">Con tu cuenta reservás tus clases y llevás tu horario fijo.</p></div>
+      <div class="card"><span class="a-label">Tu email</span><div>sofi@mail.com</div></div>
+      <div class="field"><label for="pw">Contraseña</label><input id="pw" type="password" value="demo1234" autocomplete="new-password"></div>
+      <button class="btn primary" data-act="login">Crear contraseña</button>
+    </div>`,
+
+  pick: () => {
+    const groups = DAYS.map((d, i) => {
+      const list = CLASSES.filter(c => c.day === i).map(c => {
+        const on = S.slots.includes(c.id);
+        return `<button class="slot ${on ? 'on' : ''}" data-act="toggleSlot" data-arg="${c.id}" ${!on && (c.left === 0 || S.slots.some(s => byId(s).day === c.day)) ? 'disabled' : ''}>
+          <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${c.left === 0 ? 'Completa' : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`}</small></span>
+          <span class="check">${on ? '✓' : ''}</span></button>`;
+      }).join('');
+      return `<div class="day-label">${DAYS_FULL[i]}</div><div class="slots">${list}</div>`;
+    }).join('');
+    return `<div class="scr">
+      <div><span class="a-label">Plan ${RULES.plan} clases por semana</span><h1 class="a-h1">Elegí tu horario fijo</h1>
+      <p class="a-p">Te guardamos el lugar todas las semanas.</p></div>
+      ${groups}
+      <div style="position:sticky;bottom:0;padding-top:8px;background:linear-gradient(transparent, var(--a-bg) 30%)">
+        <button class="btn primary" data-act="pickDone" ${S.slots.length === RULES.plan ? '' : 'disabled'}>${S.slots.length === RULES.plan ? 'Continuar' : `Elegiste ${S.slots.length} de ${RULES.plan}`}</button>
+      </div></div>`;
+  },
+
+  reminders: () => `<div class="scr">
+      <div><h1 class="a-h1">Gestioná tus cambios con tiempo</h1>
+      <p class="a-p">Tenés ${RULES.max} cambios para hacer en el mes. Te ayudamos a gestionar tu tiempo para no perder tu lugar.</p></div>
+      <div class="card">
+        <div class="toggle-row"><div class="txt">Avisarme antes del plazo<small>Con tiempo para cambiar de horario</small></div><button class="sw ${S.reminders ? '' : 'off'}" data-act="toggleRem" data-arg="reminders" aria-label="Avisarme antes del plazo"></button></div>
+        <div class="toggle-row"><div class="txt">Pedirme que confirme<small>Un toque para decir "voy"</small></div><button class="sw ${S.confirmAsk ? '' : 'off'}" data-act="toggleRem" data-arg="confirmAsk" aria-label="Pedirme que confirme"></button></div>
+      </div>
+      <button class="btn primary" data-act="finishReminders" data-arg="1">Activar recordatorios</button>
+      <button class="btn ghost" data-act="finishReminders" data-arg="0">Ahora no</button>
+      <div class="card tint">
+        <div class="a-h3">¿Por qué son importantes los recordatorios?</div>
+        <p class="a-p">Te avisamos antes de que venza el plazo. Si no podés ir, cambiás o cancelás a tiempo: no perdés tu lugar y otra persona puede aprovechar ese horario.</p>
+      </div>
+    </div>`,
+
+  calendar: () => {
+    const evs = S.slots.map(id => { const c = byId(id); return `<div class="cal-ev"><div class="date"><span>${DAYS[c.day]}</span><b>${c.time}</b></div><div class="txt"><b>${c.name}</b><small>Todos los ${DAYS_FULL[c.day].toLowerCase()} · con ${c.coach}</small></div></div>`; }).join('');
+    return `<div class="scr">
+      <div class="spacer"></div>
+      <div><span class="a-label">Último paso</span><h1 class="a-h1">Sumá tus clases a tu calendario</h1>
+      <p class="a-p">Así las ves junto al resto de tus planes y no se te superponen. Si cambiás un horario, lo actualizamos solo.</p></div>
+      <div class="card">${evs}</div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="addCal" data-arg="google">Agregar a Google Calendar</button>
+      <div class="btn-row"><button class="btn secondary" data-act="addCal" data-arg="apple">Apple</button><button class="btn secondary" data-act="addCal" data-arg="outlook">Outlook</button></div>
+      <button class="btn ghost" data-act="addCal" data-arg="skip">Ahora no</button>
+    </div>`;
+  },
+
+  home: () => {
+    const left = changesLeft();
+    const warn = !S.lostSlot && S.noShows === RULES.strikes - 1;
+    return `<div class="scr">
+      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Sofi</div></div><button class="avatar" style="border:0" data-act="profile" aria-label="Mi perfil">SG</button></div>
+      ${S.lostSlot ? `<div class="banner warn"><div><b>Este mes te queda ${keptText()}</b>Perdiste tu horario del ${S.lostId ? full(byId(S.lostId)).toLowerCase() : 'mes'} por el resto de noviembre. En ${RULES.nextMonth} podés volver a elegirlo si sigue disponible.</div></div>` : ''}
+      ${warn ? `<div class="banner"><b>Te queda 1 falta</b>Si faltás o cancelás sin anticipación una vez más este mes, perdés tu lugar. Si no podés ir, avisá antes del plazo.</div>` : ''}
+      ${nextCard()}
+      ${weekBlock()}
+      ${bonusBlock()}
+    </div>`;
+  },
+
+  change: () => {
+    const cur = byId(S.next.id);
+    const fixed = S.changeMode === 'fixed';
+    const tabs = DAYS.map((d, i) => `<button class="day ${S.changeDay === i ? 'on' : ''}" data-act="changeDay" data-arg="${i}">${d}</button>`).join('');
+    /* Only classes with free spots can be picked: there is no waitlist. */
+    const list = CLASSES.filter(c => c.day === S.changeDay && c.id !== cur.id && !S.slots.includes(c.id)).map(c => {
+      const full0 = c.left === 0;
+      const note = full0 ? 'Completa' : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`;
+      return `<button class="slot ${S.picked === c.id ? 'on' : ''}" data-act="pick" data-arg="${c.id}" ${full0 ? 'disabled' : ''}>
+        <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${note}</small></span><span class="check">${S.picked === c.id ? '✓' : ''}</span></button>`;
+    }).join('') || '<p class="a-p">No hay otros horarios este día.</p>';
+    return `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div>${fixed ? '<span class="a-label">Cambiar tu horario fijo</span>' : `<span class="a-label">Te quedan ${changesLeft()} de ${RULES.max} cambios</span>`}
+        <h1 class="a-h1">${fixed ? 'Buscá un horario que te quede mejor' : `Cambiá tu clase del ${short(cur)}`}</h1>
+        ${fixed ? `<p class="a-p">Reemplaza tu ${full(cur)} desde la semana que viene.</p>` : ''}</div>
+      <div class="days">${tabs}</div>
+      <div class="slots">${list}</div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>
+    </div>`;
+  },
+
+  changed: () => {
+    const c = byId(S.next.id);
+    const fixed = S.changeMode === 'fixed';
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">${fixed ? 'Tu nuevo horario fijo' : 'Listo, cambiaste tu clase'}</h1>
+      <p class="a-p">${c.name} el <b>${full(c)}</b> con ${c.coach}.${S.calendar ? ` Lo actualizamos en tu ${CALS[S.calendar]}.` : ''}</p></div>
+      <div class="card">${fixed ? '<div>Arranca la semana que viene. No usa tus cambios del mes.</div>' : `<div>Te quedan <b>${changesLeft()} de ${RULES.max}</b> cambios este mes.</div><div class="class-meta">No cuenta como falta y seguís en carrera por la clase gratis.</div>`}</div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="home">Volver al inicio</button>
+    </div>`;
+  },
+
+  cancelled: () => {
+    const c = byId(S.next.id);
+    const n = S.noShows;
+    return S.lateCancel ? `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon bad">${n}/${RULES.strikes}</div>
+      <div><h1 class="a-h1">Le avisamos a ${c.coach}</h1>
+      <p class="a-p">${RULES.strikes - n === 1 ? 'Te queda una cancelación disponible' : `Te quedan ${['', 'una', 'dos', 'tres'][RULES.strikes - n] || RULES.strikes - n} cancelaciones disponibles`}</p></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Ver mi próxima clase</button>
+    </div>` : `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">Cancelaste tu clase del ${short(c)}</h1>
+      <p class="a-p">Avisaste a tiempo: no cuenta como falta. Tu lugar queda libre para otra persona.</p></div>
+      ${circLine()}
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Ver mi próxima clase</button>
+    </div>`;
+  },
+
+  justified: () => {
+    const c = byId(S.next.id);
+    const fromFalta = S.justFrom === 'falta';
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">${fromFalta ? 'Sacamos la falta' : `Listo, le avisamos a ${c.coach}`}</h1>
+      <p class="a-p">Tu clase del ${short(c)} queda justificada: no cuenta como falta. Que te mejores.</p></div>
+      ${S.justFrom === 'aviso' ? circLine() : ''}
+      <div class="card"><div>Te quedan <b>${excusesLeft()} de ${RULES.excuses}</b> motivos justificados este mes.</div><div class="class-meta">El estudio puede pedirte un comprobante.</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Ver mi próxima clase</button>
+    </div>`;
+  },
+
+  attended: () => {
+    const c = byId(S.next.id);
+    const won = bonusWon();
+    const left = RULES.monthTotal - S.monthAttended;
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">${won ? `¡Ganaste una clase gratis para ${RULES.nextMonth}!` : `Fuiste a ${c.name}`}</h1>
+      <p class="a-p">${won ? 'Fuiste a todas tus clases del mes en tiempo y forma. La sumamos a tu plan del mes que viene.' : `${full(c)} con ${c.coach}.`}</p></div>
+      ${!S.lostSlot ? `<div class="card">${monthDots()}<div>${won ? `Fuiste a ${RULES.monthTotal} de ${RULES.monthTotal} clases.` : S.bonusOk ? `Vas ${S.monthAttended} de ${RULES.monthTotal}. Te ${left === 1 ? 'falta 1' : `faltan ${left}`} para la clase gratis.` : `Vas ${S.monthAttended} de ${RULES.monthTotal} clases este mes.`}</div></div>` : ''}
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="${S.lostSlot ? 'dropin' : 'nextClass'}">${S.lostSlot ? 'Reservar otra clase' : 'Ver mi próxima clase'}</button>
+    </div>`;
+  },
+
+  recovered: () => {
+    const rows = S.slots.map(id => `<div class="week-row"><span><b>${DAYS_FULL[byId(id).day]}</b> ${byId(id).time}</span><span class="class-meta">${byId(id).name}</span></div>`).join('');
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">Recuperaste tu horario fijo</h1>
+      <p class="a-p">Fuiste a ${RULES.recover} clases sin faltar. Tu lugar vuelve a ser tuyo desde la semana que viene y tus faltas vuelven a cero.</p></div>
+      <div class="card"><div class="week">${rows}</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Ver mi próxima clase</button>
+    </div>`;
+  },
+
+  noshow: () => {
+    const c = byId(S.next.id);
+    const n = S.noShows;
+    if (n >= RULES.strikes) return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon warn">${n}/${RULES.strikes}</div>
+      <div><h1 class="a-h1">Perdiste tu horario del ${full(c).toLowerCase()}</h1>
+      <p class="a-p">${S.lateCancel ? 'Cancelaste sin anticipación' : 'Faltaste sin avisar'} y es tu ${n}.ª falta del mes, así que perdés ese horario por el resto de noviembre.</p></div>
+      <div class="card"><div>Este mes te queda <b>${keptText()}</b>.</div><div class="class-meta">En ${RULES.nextMonth}, cuando se renueve tu suscripción, podés volver a elegir el ${full(c).toLowerCase()} si sigue disponible.</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Ver mi app</button>
+    </div>`;
+    if (n === RULES.strikes - 1) return `<div class="scr result">
+      <div class="spacer"></div>
+      <span class="pill bad">Te queda 1 falta</span>
+      <div><h1 class="a-h1">¿Querés buscar un hueco que te quede mejor?</h1>
+      <p class="a-p">Es la segunda falta del mes en ${c.name} del ${short(c)}. Capaz este horario no te está funcionando.</p></div>
+      ${strikesBar(n)}
+      <p class="a-p">Si faltás o cancelás sin anticipación una vez más este mes, perdés tu lugar.</p>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="seekBetter">Ver otros horarios</button>
+      <button class="btn ghost" data-act="nextClass">Por ahora no</button>
+      ${S.lateCancel ? '' : justifyLink()}
+    </div>`;
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon bad">${n}/${RULES.strikes}</div>
+      <div><h1 class="a-h1">Faltaste a ${c.name} del ${short(c)}</h1>
+      <p class="a-p">No avisaste que no ibas y tu lugar quedó vacío.</p></div>
+      ${strikesBar(n)}
+      ${bonusLostLine()}
+      <p class="a-p">Si no podés ir, avisá antes del plazo y cambiala sin perder nada.</p>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="nextClass">Entendido</button>
+    </div>`;
+  },
+
+  dropin: () => {
+    const list = CLASSES.filter(c => c.left > 0).map(c => `
+      <div class="slot" style="cursor:default"><span class="t">${c.time}</span><span class="n">${c.name} · ${DAYS[c.day]}<small>${c.coach} · ${c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`}</small></span>
+      <button class="pill brand" style="border:0" data-act="reserve" data-arg="${c.id}">Reservar</button></div>`).join('');
+    return `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div><span class="a-label">Esta semana</span><h1 class="a-h1">Clases sueltas</h1><p class="a-p">Lugares que quedaron libres. Reservás de a una clase.</p></div>
+      <div class="slots">${list}</div>
+    </div>`;
+  },
+
+  off: () => {
+    const head = ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(x => `<span class="wh">${x}</span>`).join('');
+    const blanks = '<span></span>'.repeat(wdOf(1));
+    let cells = '';
+    for (let d = 1; d <= 30; d++) {
+      const past = d < FIRST_FREE;
+      const taken = S.offTaken.includes(d);
+      const inR = S.offStart && d >= S.offStart && d <= S.offEnd;
+      const edge = inR && (d === S.offStart || d === S.offEnd);
+      const has = !past && classTimes(d).length;
+      cells += `<button class="cday ${inR ? 'in' : ''} ${edge ? 'edge' : ''} ${taken ? 'taken' : ''}" data-act="toggleOff" data-arg="${d}" ${past || taken ? 'disabled' : ''} aria-pressed="${!!inR}" aria-label="${d} de noviembre">${d}<i class="${has ? 'has' : ''}"></i></button>`;
+    }
+    const k = S.offStart ? S.offEnd - S.offStart + 1 : 0;
+    const paused = [];
+    for (let d = S.offStart || 1; S.offStart && d <= S.offEnd; d++) classTimes(d).forEach(t => paused.push(`${DAYS7[wdOf(d)]} ${d} · ${t}`));
+    return `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div><span class="a-label">Te quedan ${offLeft()} de ${RULES.off} días este trimestre</span><h1 class="a-h1">Tomate unos días</h1>
+      <p class="a-p">Tu plan está pago hasta el 30 de noviembre. Elegí desde qué día hasta qué día no vas a estar: tus clases quedan en pausa y no cuentan como faltas.</p></div>
+      <div class="card"><div class="next-title"><span class="a-h3">Noviembre 2026</span><span class="class-meta">${k ? `${k} ${k === 1 ? 'día' : 'días'}` : ''}</span></div>
+        <div class="cal">${head}${blanks}${cells}</div>
+        <div class="class-meta">Tocá el primer y el último día. Los días que ya pasaron no se pueden elegir. El punto marca tus clases.</div></div>
+      ${paused.length ? `<div class="card"><div><b>Quedan en pausa</b></div><div class="class-meta">${paused.join('<br>')}</div></div>` : ''}
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="confirmOff" ${k ? '' : 'disabled'}>${k ? `Tomar días off ${rangeText(S.offStart, S.offEnd)}` : 'Elegí desde qué día'}</button>
+    </div>`;
+  },
+
+  profile: () => `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div class="topbar"><div class="avatar" style="width:56px;height:56px;font-size:18px">SG</div><div class="who"><h1 class="a-h1">Sofi García</h1><div class="class-meta">Plan ${RULES.plan} clases por semana</div></div></div>
+      <div><span class="a-label">Noviembre</span></div>
+      <div class="stats">
+        <div class="stat"><div class="v">${S.monthAttended}<span>/${RULES.monthTotal}</span></div><div class="k">Clases este mes</div></div>
+        <div class="stat ${S.noShows ? 'alert' : ''}"><div class="v">${Math.min(S.noShows, RULES.strikes)}<span>/${RULES.strikes}</span></div><div class="k">Faltas este mes</div></div>
+      </div>
+      <div class="card"><div class="row-split"><div><span class="a-label">Calendario</span><div>${S.calendar ? `Conectado a ${CALS[S.calendar]}` : 'Sin conectar'}</div></div></div></div>
+      <button class="link" data-act="manage">Gestionar mis horarios y días off →</button>
+    </div>`,
+
+  lu: () => {
+    const c = byId(S.circ.cls);
+    const t = S.circ.taken;
+    let card;
+    if (t === 'Lu') {
+      card = `<div class="card next-card"><div class="next-title"><span class="a-label">Clase suelta</span><span class="pill good">Reservada</span></div>
+        <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
+        <p class="a-p">Entraste desde la lista de espera, solo por el lunes 23. Vicky ya sabe que vas. Seguís en la lista para pasar tu horario fijo a esta clase.</p></div>`;
+    } else if (t === 'Mati') {
+      card = `<div class="card"><span class="a-label">Lista de espera</span><div class="a-h3">Le pasamos el lugar a la siguiente persona</div>
+        <p class="a-p">Seguís en la lista de ${c.name} del ${short(c)}. Te avisamos si se libera otro lugar.</p></div>`;
+    } else if (S.circ.released) {
+      card = `<div class="card next-card"><div class="next-title"><span class="a-label">Lista de espera</span><span class="pill brand">Se liberó un lugar</span></div>
+        <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
+        <p class="a-p">Alguien no puede ir el lunes 23, así que el lugar es solo por ese día. Sos la primera de la lista y tenés 30 minutos para tomarlo. Tu horario fijo no cambia.</p>
+        <button class="btn primary" data-act="takeSpot">Tomar el lugar</button>
+        <button class="btn ghost" data-act="declineSpot">No, gracias</button></div>`;
+    } else {
+      card = `<div class="card next-card"><div class="next-title"><span class="a-label">Lista de espera</span><span class="pill">1.ª en la lista</span></div>
+        <div><div class="class-name">${c.name}</div><div class="class-meta">${full(c)} · con ${c.coach}</div></div>
+        <p class="a-p">Te sumaste cuando quisiste cambiar tu horario fijo y esta clase estaba llena. Si se libera un lugar, sos la primera en enterarte.</p></div>`;
+    }
+    const own = byId('mar-1930');
+    const ownCard = `<div class="card"><div class="next-title"><span class="a-label">Tu horario fijo</span><span class="pill">Todas las semanas</span></div>
+        <div><div class="class-name">${own.name}</div><div class="class-meta">${full(own)} · con ${own.coach}</div></div></div>`;
+    return `<div class="scr">
+      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Lu</div></div><div class="avatar">LP</div></div>
+      ${ownCard}
+      ${card}
+      <div class="card tint"><div class="a-h3">¿Cómo funciona la lista de espera?</div><p class="a-p">Siempre tenés tu horario fijo para ir. Si querés cambiarlo a una clase que está llena, te sumás a su lista de espera desde "Cambiar mi horario fijo". Si alguien no puede ir un día, te ofrecemos su lugar solo por ese día. Si no lo tomás en 30 minutos, pasa a la siguiente persona.</p></div>
+    </div>`;
+  },
+
+  board: () => {
+    const cap = 12;
+    const rows = CLASSES.filter(c => c.day === 0).map((c, i) => {
+      const isC = c.id === S.circ.cls;
+      const conf = [9, 7, 5, 10, 6][i] + (isC && S.circ.confirmed ? 1 : 0);
+      let occ = cap - c.left;
+      let pill = c.left === 0 ? '<span class="pill">Llena</span>' : `<span class="pill">${c.left} libres</span>`;
+      if (isC) {
+        occ = S.circ.released && !S.circ.taken ? cap - 1 : cap;
+        pill = S.circ.taken ? `<span class="pill good">1 lugar recuperado</span>`
+          : S.circ.released ? '<span class="pill warn">1 libre · avisando a la lista</span>'
+          : `<span class="pill">Llena · ${3} en espera</span>`;
+      }
+      return `<div class="crow ${isC ? 'hl' : ''}"><div class="top"><span><b>${c.time}</b> ${c.name} · ${c.coach}</span><span class="occ">${occ}/${cap}</span></div>
+        <div class="bar ${isC && S.circ.taken ? 'good' : ''}"><i style="width:${(occ / cap) * 100}%"></i></div>
+        <div class="top"><span class="class-meta">${conf} confirmaron</span>${pill}</div></div>`;
+    }).join('');
+    const ev = S.circ.events.slice().reverse().map((e, i) => `<div class="${i === 0 && S.circ.events.length > 1 ? 'new' : ''}"><time>${e[0]}</time><span>${e[1]}</span></div>`).join('');
+    const recovered = 6 + (S.circ.taken ? 1 : 0);
+    return `<div class="scr">
+      <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Tu estudio</div><div class="class-meta">Panel del dueño</div></div></div>
+      <div class="stats">
+        <div class="stat"><div class="v">${recovered}</div><div class="k">Lugares recuperados esta semana</div></div>
+        <div class="stat ${S.circ.released && !S.circ.taken ? 'alert' : ''}"><div class="v">${S.circ.released && !S.circ.taken ? '1' : '0'}</div><div class="k">Lugares liberados sin ocupar</div></div>
+      </div>
+      <div class="card"><span class="a-label">Mañana · lunes 23</span>${rows}</div>
+      <div class="card"><span class="a-label">Actividad</span><div class="feed">${ev}</div></div>
+    </div>`;
+  },
+
+  manage: () => {
+    const canFixed = S.next && S.next.kind === 'fijo' && !S.lostSlot;
+    return `<div class="scr">
+      <button class="back" data-act="home">← Volver</button>
+      <div><h1 class="a-h1">Gestionar mis horarios</h1><p class="a-p">Cambiá tu horario fijo o avisá cuándo no vas a estar.</p></div>
+      <button class="btn secondary left" data-act="seekBetter" ${canFixed ? '' : 'disabled'}>Cambiar mi horario fijo<small>${S.slots.map(id => short(byId(id))).join(' y ')}</small></button>
+      <button class="btn secondary left" data-act="goOff" ${offLeft() ? '' : 'disabled'}>Avisar días off<small>Para viajes o vacaciones. Te quedan ${offLeft()} de ${RULES.off} este trimestre.</small></button>
+    </div>`;
+  },
+
+  waitJoined: () => {
+    const c = byId(S.waitJoined);
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon brand">✓</div>
+      <div><h1 class="a-h1">Te sumamos a la lista de espera</h1>
+      <p class="a-p">${c.name} del ${full(c)} con ${c.coach} está llena. Si se libera un lugar, te avisamos primero para que lo tomes como tu nuevo horario fijo.</p></div>
+      <div class="card"><div><b>Mientras tanto, seguís con tu horario de siempre</b></div><div class="class-meta">${S.slots.map(id => `${byId(id).name} · ${full(byId(id))}`).join('<br>')}</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="home">Volver al inicio</button>
+    </div>`;
+  },
+
+  offDone: () => {
+    const [a, b] = S.offLast || [0, 0];
+    let n = 0;
+    for (let d = a; a && d <= b; d++) n += classTimes(d).length;
+    return `<div class="scr result">
+      <div class="spacer"></div>
+      <div class="result-icon good">✓</div>
+      <div><h1 class="a-h1">Listo, que lo disfrutes</h1>
+      <p class="a-p">Estás de días off ${rangeText(a, b)}. ${n ? `Pusimos en pausa ${n === 1 ? 'tu clase' : `tus ${n} clases`} de esos días. ` : ''}Tu horario fijo te espera a la vuelta.</p></div>
+      <div class="card"><div>Te quedan <b>${offLeft()} de ${RULES.off}</b> días off este trimestre.</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" data-act="home">Volver al inicio</button>
+    </div>`;
+  },
+};
+
+function sheetView() {
+  if (!S.sheet || !S.next) return '';
+  const c = byId(S.next.id);
+  const reasonLink = '';
+  let body = '';
+  if (S.sheet === 'cantgo' && S.clock === 'far' && changesLeft() > 0) {
+    body = `<h2 class="a-h2">No puedo asistir a la clase del ${DAYS_FULL[c.day]} ${WEEK7[c.day][1]} a las ${c.time} hrs</h2>
+      <button class="btn primary" data-act="goChange">Cambiar de horario<small>Te quedan ${changesLeft()} de ${RULES.max} cambios este mes</small></button>${reasonLink}`;
+  } else if (S.sheet === 'cantgo' && S.clock === 'far') {
+    body = `<div><h2 class="a-h2">Ya usaste tus ${RULES.max} cambios de este mes</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
+      <button class="btn danger" data-act="cancelFar">Cancelar la clase</button>
+      <button class="btn secondary" data-act="closeSheet">Mejor voy</button>${reasonLink}`;
+  } else if (S.sheet === 'cantgo') {
+    const n = S.noShows + 1;
+    const left = RULES.monthTotal - S.monthAttended;
+    body = `<div><h2 class="a-h2">Ya pasó el plazo para cambiarla</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
+      <div class="card">
+        <div><b>${n >= RULES.strikes ? `Es tu ${n}.ª falta del mes` : `Cuenta como falta: ya vas ${n} de ${RULES.strikes}`}</b></div>
+        ${strikesBar(n)}
+        ${n >= RULES.strikes ? `<div class="class-meta">Perdés tu horario del ${full(c).toLowerCase()} por el resto de noviembre.</div>` : ''}
+        ${S.bonusOk ? `<div class="class-meta">Perdés la clase gratis de ${RULES.nextMonth}: te ${left === 1 ? 'faltaba 1 clase' : `faltaban ${left} clases`} para ganarla.</div>` : ''}
+      </div>
+      <button class="btn danger" data-act="cancelLate">Avisarle a ${c.coach} y cancelar</button>
+      <button class="btn secondary" data-act="closeSheet">Mejor voy</button>`;
+  } else if (S.sheet === 'confirmFar') {
+    body = `<div><h2 class="a-h2">¿Cancelar tu clase del ${short(c)}?</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
+      <button class="btn primary" data-act="cancelFar">Sí, cancelar</button>
+      <button class="btn secondary" data-act="goChange">Mejor la cambio</button>`;
+  } else if (S.sheet === 'reason') {
+    body = `<div><h2 class="a-h2">¿Qué pasó?</h2><p class="a-p">Con un motivo justificado, tu clase del ${short(c)} no cuenta como falta.</p></div>
+      <button class="btn secondary left" data-act="justify" ${excusesLeft() ? '' : 'disabled'}>Estoy enferma o enfermo<small>${excusesLeft() ? `Te quedan ${excusesLeft()} de ${RULES.excuses} este mes` : `Ya usaste los ${RULES.excuses} de este mes`}</small></button>
+      <button class="btn secondary left" data-act="goOff" ${offLeft() ? '' : 'disabled'}>Me voy de viaje<small>Usá tus días off: te quedan ${offLeft()} este trimestre</small></button>
+      <button class="btn ghost" data-act="cantGo">Volver</button>`;
+  }
+  return `<div class="dim" data-act="closeSheet"><div class="sheet" data-stop="1"><div class="grab"></div>${body}</div></div>`;
+}
+
+/* Push notifications live on the phone's lock screen, outside the app. Tapping one opens the app. */
+function lockView(time, title, text, act) {
+  return `<div class="lock" role="alert">
+    <div class="lock-bar"><span></span><span class="dots"><i></i></span></div>
+    <div class="lock-date">Domingo 22 de noviembre</div>
+    <div class="lock-time">${time}</div>
+    <button class="lock-note" data-act="${act}">
+      <div class="push-head"><div class="logo">LOGO</div><span class="app">Tu estudio</span><span class="when">ahora</span></div>
+      <div><b>${title}</b><div class="class-meta">${text}</div></div>
+    </button>
+    <div class="lock-hint">Tocá la notificación para abrir la app</div>
+  </div>`;
+}
+
+function pushView() {
+  if (!S.push || !S.next) return '';
+  const c = byId(S.next.id);
+  const when = S.clock === 'near' ? 'hoy' : 'mañana';
+  return lockView('20:00', `${c.coach} te espera ${when} a las ${c.time}`, `${c.name} · ¿Vas a ir? Si no podés, cambiala hasta el ${deadline(c)}.`, 'openPush');
+}
+
+function luPush() {
+  if (!S.circ.released || S.circ.taken || S.circ.luOpened) return '';
+  const c = byId(S.circ.cls);
+  return lockView('20:14', '¡Se liberó un lugar!', `${c.name} · mañana lunes 23 a las ${c.time} con ${c.coach}, solo por ese día. Tenés 30 min para tomarlo.`, 'openLu');
+}
+
+/* circuit steps: 0 reminder, 1 confirm/release, 2 waitlist takes it, 3 owner sees it */
+function circTags() {
+  const t = new Set();
+  const onC = S.next && S.next.id === S.circ.cls;
+  if (S.persona === 'socia') {
+    if (S.push && onC) t.add(0);
+    if ((S.sheet && onC) || (S.screen === 'change' && onC) || (S.circ.released && ['cancelled', 'changed', 'justified', 'offDone'].includes(S.screen)) || (onC && S.next.status === 'confirmada' && S.screen === 'home')) t.add(1);
+  }
+  if (S.persona === 'espera') t.add(2);
+  if (S.persona === 'estudio') t.add(3);
+  return t;
+}
+
+/* which flow steps the current state represents */
+function tags() {
+  const t = new Set();
+  if (S.persona !== 'socia') return t;
+  const sc = S.screen;
+  if (sc === 'login') t.add('f1-0');
+  if (sc === 'pick') { t.add('f1-1'); t.add('f1-2'); }
+  if (sc === 'reminders') t.add('f1-3');
+  if (sc === 'calendar') t.add('f1-4');
+  if (S.push) t.add('f1-5');
+  if (sc === 'home' && !S.push && !S.sheet && S.next?.status === 'confirmada' && S.clock !== 'past') t.add('f1-5');
+  if (sc === 'home' && S.clock === 'past' && S.next && OPEN.includes(S.next.status)) { t.add('f1-6'); t.add('f4-0'); }
+  if (sc === 'attended') { t.add('f1-6'); if (bonusWon()) t.add('f1-7'); if (S.lostSlot) t.add('f4-3'); }
+  if ((sc === 'home' && S.lostSlot) || (sc === 'dropin' && S.lostSlot)) t.add('f4-3');
+  if (S.sheet === 'cantgo') t.add('f5-0');
+  if (S.sheet === 'cantgo' && S.clock === 'far') { t.add('f2-0'); if (changesLeft() > 0) t.add('f2-1'); }
+  if (S.sheet === 'cantgo' && S.clock === 'near') { t.add('f3-0'); t.add('f3-1'); }
+  if (S.sheet === 'confirmFar') t.add('f2-2');
+  if (S.sheet === 'reason') { t.add('f5-1'); t.add('f6-0'); }
+  if (sc === 'justified') t.add('f5-2');
+  if (sc === 'change') { if (S.changeMode === 'fixed') t.add('f4-1'); else { t.add('f2-0'); t.add('f2-1'); } }
+  if (sc === 'changed') t.add(S.changeMode === 'fixed' ? 'f4-1' : 'f2-2');
+  if (sc === 'cancelled') t.add(S.lateCancel ? 'f3-1' : 'f2-2');
+  if (sc === 'noshow') { t.add(S.noShows >= RULES.strikes ? 'f4-2' : S.noShows === RULES.strikes - 1 ? 'f4-1' : 'f4-0'); if (!S.lateCancel) t.add('f5-0'); else t.add('f3-1'); }
+  if (sc === 'manage' || sc === 'profile') t.add('f6-0');
+  if (sc === 'off') { t.add('f6-0'); t.add('f6-1'); }
+  if (sc === 'offDone' || (sc === 'home' && S.next?.status === 'off')) t.add('f6-2');
+  return t;
+}
+
+function sideView() {
+  const t = tags();
+  const flows = FLOWS.map((f, fi) => {
+    const active = f.steps.some((_, i) => t.has(`${f.id}-${i}`));
+    const steps = f.steps.map((s, i) => `<li class="${t.has(`${f.id}-${i}`) ? 'on' : ''}">${s}</li>`).join('');
+    let go = `<button class="flow-go" data-act="flow" data-arg="${f.id}">Arrancar este flujo</button>`;
+    if (f.id === 'f1') go = `<div class="flow-sub"><button class="flow-go" data-act="flow" data-arg="f1">Empezar desde el login</button><button class="flow-go" data-act="winDemo">Ganar la clase gratis</button></div>`;
+    if (f.id === 'f4') go = `<div class="flow-sub"><button class="flow-go" data-act="strike" data-arg="1">1.ª falta</button><button class="flow-go" data-act="strike" data-arg="2">2.ª falta</button><button class="flow-go" data-act="strike" data-arg="3">3.ª falta</button></div>`;
+    return `<div class="flow ${active ? 'active' : ''}"><div class="flow-head"><span class="flow-num">${fi + 1}</span><span class="flow-title">${f.title}</span></div><ol>${steps}</ol>${go}</div>`;
+  }).join('');
+  const seg = [['far', 'Antes del plazo'], ['near', 'Pasó el plazo'], ['past', 'Ya fue la clase']].map(([k, l]) => `<button class="${S.clock === k ? 'on' : ''}" data-act="clock" data-arg="${k}">${l}</button>`).join('');
+  const sw = BRANDS.map(([c, n], i) => `<button class="swatch ${S.brand === i ? 'on' : ''}" style="background:${c}" data-act="brand" data-arg="${i}" aria-label="Color de marca ${n}"></button>`).join('');
+  const nc = S.next ? byId(S.next.id) : null;
+  const ct = circTags();
+  const cdone = [S.circ.confirmed || S.circ.released, S.circ.confirmed || S.circ.released, !!S.circ.taken, !!S.circ.taken && S.circ.boardSeen];
+  const csteps = [
+    ['socia', 'Recordatorio antes de que cierre el plazo', 'Sofi recibe el aviso para su clase del lunes 8:00.'],
+    ['socia', 'Confirma o libera su lugar', 'Abre la app desde la notificación y toca "Confirmar que voy" o "No puedo ir".'],
+  ].map(([p, title, sub], i) => `<button class="cstep ${ct.has(i) ? 'on' : cdone[i] ? 'done' : ''}" data-act="persona" data-arg="${p}"><b>${i + 1}</b><span>${title}</span>${sub}</button>`).join('');
+  const rule = (txt, tag) => `<li><span class="r">${txt}</span><span class="tag ${tag === 'A definir' ? 'def' : tag === 'Feedback' ? 'fb' : ''}">${tag}</span></li>`;
+  return `
+    <div class="intro"><span class="eyebrow">Hackathon High Fidelity · prototipo en marca blanca</span>
+      <h1>Menos no-shows en clases grupales</h1>
+      <p>Tocá el teléfono como si fueras una socia, o saltá directo a un flujo. El paso en el que estás se marca en el mapa de abajo.</p></div>
+    <div class="box">
+      <div class="chead"><h2>Circuito de la demo</h2><button class="flow-go" data-act="circuit">Arrancar el circuito</button></div>
+      <p style="margin:0;color:var(--muted)">Un recorrido completo, para contar en 2 minutos.</p>
+      <div class="csteps">${csteps}</div>
+    </div>
+    <div class="box"><h2>Todos los flujos</h2><div class="flows">${flows}</div></div>
+    <div class="box"><h2>Simular</h2>
+      <div class="ctrl-grid">
+        <div class="ctrl"><span class="ctrl-label">Momento de la próxima clase</span><div class="seg">${seg}</div>
+          <span class="ctrl-note">${nc ? `Plazo de ${nc.name} del ${short(nc)}: hasta el ${deadline(nc)}.` : 'No hay clase reservada.'}</span></div>
+        <div class="ctrl"><span class="ctrl-label">Qué pasó en la clase</span><div class="pbtns"><button class="pbtn" data-act="attend">Fue a clase</button><button class="pbtn warn" data-act="noshow">No fue y no avisó</button></div></div>
+        <div class="ctrl"><span class="ctrl-label">Cambios usados este mes</span><div class="stepper"><button data-act="changes" data-arg="-1" aria-label="Menos">−</button><b>${S.changesUsed} / ${RULES.max}</b><button data-act="changes" data-arg="1" aria-label="Más">+</button></div></div>
+        <div class="ctrl"><span class="ctrl-label">Notificación</span><div class="pbtns"><button class="pbtn" data-act="sendPush">Mandar recordatorio</button><button class="pbtn" data-act="reset">Reiniciar todo</button></div></div>
+      </div>
+    </div>
+    <div class="box"><h2>Color de marca</h2><p style="margin:0;color:var(--muted)">Cambialo para ver la app con la marca de cada estudio.</p><div class="swatches">${sw}</div></div>
+    <div class="box"><h2>Reglas del demo</h2>
+      <ul class="rules">
+        ${rule('Plazo según el horario: clases antes de las 12, hasta las 21 h del día anterior. El resto, hasta 6 h antes.', 'Feedback')}
+        ${rule(`Antes del plazo: solo puede <b>cambiar</b> la clase (usa 1 de ${RULES.max} cambios), no cancelarla.`, 'Definido')}
+        ${rule('Después del plazo: solo se puede cancelar, y cuenta como falta.', 'Definido')}
+        ${rule('2.ª falta en el mes: aviso "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', 'Definido')}
+        ${rule(`${RULES.strikes} faltas en el mes (sin avisar o cancelando sin anticipación): pierde su lugar en el mes y puede reservar clases sueltas.`, 'Definido')}
+        ${rule('Si va a todas sus clases del mes en tiempo y forma, gana una clase gratis el mes siguiente. No hay puntos.', 'Definido')}
+        ${rule('Antes de empezar, conoce las reglas, activa recordatorios y agrega sus clases al calendario.', 'Definido')}
+        ${rule(`Si pierde su horario fijo, puede volver a elegirlo al renovar la suscripción en ${RULES.nextMonth}, si sigue disponible.`, 'Feedback')}
+        ${rule('Motivo justificado (enfermedad): no cuenta como falta. Se puede usar al avisar o después de faltar.', 'Feedback')}
+        ${rule('Días off según la membresía, para viajes o vacaciones: las clases quedan en pausa y conserva su horario.', 'Feedback')}
+        ${rule('Cambiar, cancelar antes del plazo, motivos justificados y días off no hacen perder la clase gratis.', 'A definir')}
+        ${rule(`Hasta ${RULES.excuses} motivos justificados por mes. El estudio puede pedir un comprobante.`, 'A definir')}
+        ${rule(`${RULES.off} días off por trimestre en el plan de ${RULES.plan} clases por semana.`, 'A definir')}
+        ${rule(`Con los ${RULES.max} cambios usados y antes del plazo: solo puede cancelar, sin que cuente como falta.`, 'A definir')}
+        ${rule('Cambiar el horario fijo después de la 2.ª falta no usa los cambios del mes.', 'A definir')}
+      </ul>
+    </div>`;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  const scrollEl = app.querySelector('.scr');
+  const keep = scrollEl && app.dataset.screen === S.screen ? scrollEl.scrollTop : 0;
+  app.dataset.screen = S.screen;
+  const p = S.persona;
+  const body = p === 'espera' ? V.lu() + luPush() : p === 'estudio' ? V.board() : V[S.screen]() + pushView() + sheetView();
+  app.innerHTML = `<div class="statusbar"><span>${p === 'socia' ? '9:41' : '20:15'}</span><span class="dots"><i></i></span></div>${body}${S.toast ? `<div class="toast" role="status">${S.toast}</div>` : ''}`;
+  const ns = app.querySelector('.scr'); if (ns) ns.scrollTop = keep;
+  document.getElementById('tabs').innerHTML = PROBS.map(([k, t], i) => `<div class="prow"><button role="tab" aria-selected="${P.id === k}" class="pbtn-p ${P.id === k ? 'on' : ''}" data-act="problem" data-arg="${k}"><small>Problema 0${i + 1}</small><b>${t}</b></button><button class="preset" data-act="restart" data-arg="${k}" aria-label="Reiniciar problema ${i + 1}">Reset</button></div>${k === 'p3' && P.id === 'p3' ? `<div class="seg">${[['a', '1.ª cancelación'], ['b', '3.ª cancelación']].map(([v, l]) => `<button class="${P.v === v ? 'on' : ''}" data-act="variant" data-arg="${v}">${l}</button>`).join('')}</div>` : ''}`).join('');
+}
+function applyBrand() { document.documentElement.style.setProperty('--brand', BRANDS[S.brand][0]); }
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  if (el.dataset.act === 'closeSheet' && e.target.closest('[data-stop]') && !e.target.closest('button')) return;
+  if (['attend', 'noshow', 'clock', 'sendPush', 'strike', 'recoverDemo', 'winDemo', 'changes'].includes(el.dataset.act)) S.persona = 'socia';
+  A[el.dataset.act]?.(el.dataset.arg);
+});
+
+/* ---------- storyboard (pasos.html) ---------- */
+const CANC = { id: 'lun-0800', status: 'cancelada', kind: 'fijo' };
+const STORY = [
+  ['Problema 1', 'Empezar con horario fijo', 'Se registra, elige sus clases y deja todo listo para no olvidarse.', [[
+    [{ screen: 'login', slots: [], next: null, calendar: null }, 'Llega por una invitación por mail y crea su contraseña.'],
+    [{ screen: 'pick', slots: ['lun-0800', 'mie-0800'], next: null, calendar: null }, 'Elige sus 2 clases por semana.'],
+    [{ screen: 'reminders', calendar: null }, 'Activa las notificaciones.', true],
+    [{ screen: 'calendar', calendar: null }, 'Sincroniza sus clases con su calendario.', true],
+    [{}, 'Ve sus horarios fijos.'],
+  ]]],
+  ['Problema 2', 'Cambiar una clase a tiempo', 'Le llega el recordatorio antes del plazo y cambia la clase sin problemas.', [[
+    [{ clock: 'far' }, 'Tiene sus horarios fijos.'],
+    [{ clock: 'far', push: true }, 'Le llega una notificación antes del plazo.'],
+    [{ clock: 'far', screen: 'change', changeMode: 'once', changeDay: 0, picked: 'lun-1900' }, 'Entra y elige otro horario.'],
+    [{ screen: 'changed', changesUsed: 1, next: { id: 'lun-1900', status: 'reservada', kind: 'cambio' } }, 'La cambia sin problemas.', true],
+  ]]],
+  ['Problema 3', 'Cancelar fuera de plazo', 'Ya no puede cambiarla. Le mostramos las consecuencias y la empujamos a avisar en vez de faltar.', [
+    ['1.ª cancelación', [
+      [{ clock: 'near' }, 'Entra para cambiarla, pero se le pasó el plazo.'],
+      [{ clock: 'near', sheet: 'cantgo' }, 'Le mostramos las consecuencias y la empujamos a avisarle a Vicky.', true],
+      [{ clock: 'near', noShows: 1, bonusOk: false, bonusLostAt: 'lun-0800', lastFault: { wasBonusOk: true }, lateCancel: true, screen: 'cancelled', next: CANC }, 'Pierde 1 de sus 3 cancelaciones.'],
+    ]],
+    ['3.ª cancelación', [
+      [{ clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800' }, 'Entra para cambiarla: ya tiene 2 faltas.'],
+      [{ clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800', sheet: 'cantgo' }, 'Es la 3.ª vez: le avisamos que pierde ese horario.', true],
+      [{ noShows: 3, bonusOk: false, lostSlot: true, lostId: 'lun-0800', lateCancel: true, screen: 'noshow', next: CANC }, 'Pierde su horario fijo por el resto del mes.'],
+      [{ noShows: 3, bonusOk: false, lostSlot: true, lostId: 'lun-0800', next: { id: 'mie-0800', status: 'reservada', kind: 'fijo' } }, 'En su app ve que le queda 1 día el resto del mes.'],
+    ]],
+  ]],
+  ['Problema 4', 'Cuidar la clase gratis', 'Está por ganar la clase gratis. Si cancela, le mostramos lo que pierde.', [[
+    [{ clock: 'near', monthAttended: RULES.monthTotal - 1 }, 'Entra y ve que, si va a todas, gana una clase gratis.'],
+    [{ clock: 'near', monthAttended: RULES.monthTotal - 1, sheet: 'cantgo' }, 'Quiere cancelar: le avisamos que pierde la clase gratis.', true],
+    [{ monthAttended: RULES.monthTotal - 1, noShows: 1, bonusOk: false, bonusLostAt: 'lun-0800', lastFault: { wasBonusOk: true }, lateCancel: true, screen: 'cancelled', next: CANC }, 'Pierde 1 de sus 3 cancelaciones y la clase gratis.'],
+  ]]],
+];
+function frameHTML([state, caption, key], i) {
+  onboarded(state);
+  const screen = `<div class="statusbar"><span>9:41</span><span class="dots"><i></i></span></div>${V[S.screen]()}${pushView()}${sheetView()}`;
+  return `${i ? '<span class="step-arrow" aria-hidden="true">→</span>' : ''}<div class="frame">
+    <div class="miniwrap"><div class="phone"><div class="screen">${screen}</div></div></div>
+    <div class="cap ${key ? 'key' : ''}"><b>${i + 1}</b><span>${caption}</span></div>
+  </div>`;
+}
+function renderStory() {
+  document.getElementById('story').innerHTML = `<div class="sb-head"><h1>Los 4 problemas, pantalla por pantalla</h1></div>` +
+    STORY.map(([num, title, sub, rows], pi) => `<section class="flowrow"><h2><span>Problema 0${pi + 1}</span> · ${title}</h2>
+      ${rows.map(row => {
+        const labeled = typeof row[0] === 'string'; /* ['1.ª cancelación', frames] or just frames */
+        const frames = labeled ? row[1] : row;
+        return `${labeled ? `<h3>${row[0]}</h3>` : ''}<div class="frames">${frames.map(frameHTML).join('')}</div>`;
+      }).join('')}</section>`).join('');
+}
+
+applyBrand();
+if (document.getElementById('story')) renderStory(); else startProblem('p1');
+</script>

@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Placeholder Panel
+   Panel centrado para mensajes o contenido vacio.
+
+   Cuándo usar: panel para secciones/features en construcción.
+   Cuándo no: listas sin datos (usar Empty State).
+   Reemplaza a: textos "próximamente" sueltos.
+
+   Dependencia: variables.css
+   Requiere: (ninguno)
+
+   Uso:
+   <div class="placeholder-panel">
+     <i data-lucide="mouse-pointer-click" class="placeholder-icon" aria-hidden="true"></i>
+     <p>Selecciona una vacante para ver los detalles.</p>
+   </div>
+═══════════════════════════════════════ */
+
+.placeholder-panel {
+  background: var(--surface-container);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+  color: var(--on-surface-variant);
+  font-size: var(--font-size-body-lg);
+}
+.placeholder-panel .placeholder-icon { font-size: 32px; margin-bottom: 12px; }  /* ds-allow: caja del glifo heredado, no tipografia */
+.placeholder-panel p { line-height: var(--line-height-prose); }

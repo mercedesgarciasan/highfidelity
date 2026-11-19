@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="es">
+<!-- ds-allow: A5, B1, C1 — esta página es un catálogo de tema: muestra la rampa de primitivas a propósito, las clases .pv-* solo ordenan la página de revisión y cada teléfono y tarjeta es un contexto propio con su primario -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calma — preview de tema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Orden de carga: variables → MARCA → base → composition → components → preview-native -->
+<link rel="stylesheet" href="vendor/embassy/css/variables.css">
+<link rel="stylesheet" href="brand/calma.css">
+<link rel="stylesheet" href="brand/calma.screen.css">
+<link rel="stylesheet" href="vendor/embassy/css/base.css">
+<link rel="stylesheet" href="vendor/embassy/css/composition.css">
+<link rel="stylesheet" href="vendor/embassy/css/components.css">
+<link rel="stylesheet" href="vendor/embassy/css/preview-native.css">
+<style>
+  /* Solo la página de revisión: dónde se paran los teléfonos y cómo se ordena el kit.
+     Ningún color ni tamaño de componente se define acá — todo sale de los tokens. */
+  body { margin: 0; background: var(--surface-container-low); color: var(--on-surface); font-family: var(--font-body); }
+  .pv-wrap { max-width: 1280px; margin: 0 auto; padding: var(--space-10) var(--space-4) var(--space-16); }
+  .pv-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-10); }
+  .pv-title { font-family: var(--font-heading); font-weight: 400; font-size: var(--font-size-display); line-height: 1; margin: 0; }
+  .pv-title em { color: var(--secondary); font-style: italic; }
+  .pv-lead { color: var(--on-surface-variant); font-size: var(--font-size-body-lg); max-width: 52ch; margin: var(--space-3) 0 0; }
+  .pv-h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--font-size-heading-xl); margin: var(--space-16) 0 var(--space-5); }
+  .pv-kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); }
+  .pv-card { background: var(--surface-container-lowest); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+  .pv-card h3 { margin: 0; font-size: var(--font-size-caption); font-weight: 600; color: var(--on-surface-variant); }
+  .pv-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .pv-swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-1); }
+  .pv-sw { aspect-ratio: 1; border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: var(--space-1); font-size: var(--font-size-badge); }
+  .pv-wordmark { font-family: var(--font-heading); font-size: var(--font-size-heading-lg); }
+  .pv-serif { font-family: var(--font-heading); font-weight: 400; }
+  .phone-row { gap: var(--space-8); }
+  .pv-scroll { flex: 1; overflow-y: auto; padding-bottom: var(--space-6); }
+  .pv-note { margin: 0; padding: 0 var(--screen-group-padding); font-size: var(--font-size-caption); line-height: var(--line-height-caption); color: var(--on-surface-variant); }
+</style>
+</head>
+<body>
+<div class="pv-wrap">
+
+  <header class="pv-head">
+    <div>
+      <div class="pv-wordmark">calma.</div>
+      <h1 class="pv-title">Tu clase, <em>tu lugar.</em></h1>
+      <p class="pv-lead">Preview del tema de marca para la app de reservas. Navy de marca para el texto, celeste y lavanda en las superficies, violeta para lo activo. Botones cápsula, mucho aire y movimiento sobrio.</p>
+    </div>
+    <button class="btn-secondary" id="themeToggle" aria-pressed="false">Ver en oscuro</button>
+  </header>
+
+  <div class="phone-row">
+
+    <!-- ── 1 · Inicio ─────────────────────────────────── -->
+    <figure class="phone" data-platform="native">
+      <div class="phone-status"></div>
+      <header class="phone-nav">
+        <span style="flex-grow:1">Hola, Sofi</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </header>
+      <div class="screen pv-scroll">
+          <section class="screen-anchor">
+            <div class="screen-anchor-top">
+              <span class="avatar avatar-lg"><span class="avatar-fallback">SR</span></span>
+              <div class="screen-anchor-id">
+                <div class="screen-anchor-name">Sofía Ruiz</div>
+                <div class="screen-anchor-meta">Plan 3 por semana · Pilates</div>
+              </div>
+              <span class="badge badge-active">Al día</span>
+            </div>
+            <div>
+              <div class="screen-anchor-row">
+                <span class="screen-anchor-figure">9<span> de 12 clases</span></span>
+                <span class="screen-anchor-aside">3 más y ganás una gratis</span>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Clases del mes para la clase gratis">
+                <div class="progress-fill" style="width:75%"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen-section">
+            <div class="screen-section-header"><span>Tu próxima clase</span><button class="screen-inline-action">Cambiar</button></div>
+            <div class="screen-group">
+              <div class="screen-row"><span class="screen-row-label">Clase</span><span class="screen-row-value">Pilates reformer</span></div>
+              <div class="screen-row"><span class="screen-row-label">Cuándo</span><span class="screen-row-value">Hoy · 18:00</span></div>
+              <div class="screen-row"><span class="screen-row-label">Con</span><span class="screen-row-value">Vicky</span></div>
+              <div class="screen-row"><span class="screen-row-label">Cambios del mes</span><span class="screen-row-value">3 de 5</span></div>
+            </div>
+            <p class="pv-note">Si no podés ir, cambiala hasta las 12:00 y no cuenta como falta.</p>
+          </section>
+      </div>
+      <div class="screen-action">
+        <button class="btn-primary" style="width:100%">Confirmar asistencia</button>
+      </div>
+      <nav class="phone-tabbar">
+        <a class="phone-tab" aria-current="page">Inicio</a>
+        <a class="phone-tab">Horarios</a>
+        <a class="phone-tab">Mi mes</a>
+        <a class="phone-tab">Perfil</a>
+      </nav>
+    </figure>
+
+    <!-- ── 2 · Horarios ───────────────────────────────── -->
+    <figure class="phone" data-platform="native">
+      <div class="phone-status"></div>
+      <header class="phone-nav"><span style="flex-grow:1">Horarios</span></header>
+      <div class="screen pv-scroll">
+          <div class="seg-btn-group" role="group" aria-label="Vista">
+            <button class="seg-btn" aria-selected="true">Semana</button>
+            <button class="seg-btn" aria-selected="false">Mes</button>
+          </div>
+          <div class="chip-set pv-row">
+            <button class="chip" aria-pressed="false">Lun 18</button>
+            <button class="chip" aria-pressed="true">Mar 19</button>
+            <button class="chip" aria-pressed="false">Mié 20</button>
+            <button class="chip" aria-pressed="false">Jue 21</button>
+          </div>
+
+          <section class="screen-section">
+            <div class="screen-section-header"><span>Martes 19</span></div>
+            <div class="screen-group">
+              <div class="screen-item">
+                <span class="screen-item-icon" style="background:var(--primary-container)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--on-primary-container)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <span class="screen-item-body">
+                  <span class="screen-item-title">Pilates reformer</span>
+                  <span class="screen-item-sub">08:00 · Vicky · 2 lugares</span>
+                </span>
+                <span class="badge badge-open">Libre</span>
+              </div>
+              <div class="screen-item">
+                <span class="screen-item-icon" style="background:var(--secondary-container)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--on-secondary-container)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <span class="screen-item-body">
+                  <span class="screen-item-title">Yoga flow</span>
+                  <span class="screen-item-sub">12:30 · Juan · completa</span>
+                </span>
+                <span class="badge badge-warning">Espera</span>
+              </div>
+              <div class="screen-item">
+                <span class="screen-item-icon" style="background:var(--primary-container)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--on-primary-container)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <span class="screen-item-body">
+                  <span class="screen-item-title">Pilates reformer</span>
+                  <span class="screen-item-sub">18:00 · Vicky · tu lugar fijo</span>
+                </span>
+                <span class="badge badge-active">Tuya</span>
+              </div>
+            </div>
+          </section>
+      </div>
+      <div class="screen-action">
+        <button class="btn-primary" style="width:100%">Reservar Pilates 08:00</button>
+      </div>
+      <nav class="phone-tabbar">
+        <a class="phone-tab">Inicio</a>
+        <a class="phone-tab" aria-current="page">Horarios</a>
+        <a class="phone-tab">Mi mes</a>
+        <a class="phone-tab">Perfil</a>
+      </nav>
+    </figure>
+
+    <!-- ── 3 · Recordatorios ──────────────────────────── -->
+    <figure class="phone" data-platform="native">
+      <div class="phone-status"></div>
+      <header class="phone-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        <span style="flex-grow:1">Recordatorios</span>
+      </header>
+      <div class="screen pv-scroll">
+          <section class="screen-section">
+            <div class="screen-section-header"><span>Avisame</span></div>
+            <div class="screen-group">
+              <div class="screen-row"><label class="switch-label" style="width:100%;justify-content:space-between">El día anterior <input type="checkbox" role="switch" class="switch" checked></label></div>
+              <div class="screen-row"><label class="switch-label" style="width:100%;justify-content:space-between">Antes del plazo para cambiar <input type="checkbox" role="switch" class="switch" checked></label></div>
+              <div class="screen-row"><label class="switch-label" style="width:100%;justify-content:space-between">Si se libera un lugar <input type="checkbox" role="switch" class="switch"></label></div>
+            </div>
+          </section>
+
+          <div class="field-group">
+            <label class="field-label" for="cal">Sincronizar con</label>
+            <input id="cal" class="field-input" value="sofi@correo.com" readonly>
+            <span class="field-hint">Tus clases aparecen como bloques en tu calendario.</span>
+          </div>
+
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <div class="empty-state-title">Sin clases sueltas</div>
+            <p class="empty-state-desc">Cuando se libere un lugar en tus horarios favoritos, lo vas a ver acá.</p>
+          </div>
+      </div>
+      <div class="screen-action">
+        <button class="btn-primary" style="width:100%">Guardar</button>
+      </div>
+      <nav class="phone-tabbar">
+        <a class="phone-tab">Inicio</a>
+        <a class="phone-tab">Horarios</a>
+        <a class="phone-tab">Mi mes</a>
+        <a class="phone-tab" aria-current="page">Perfil</a>
+      </nav>
+    </figure>
+  </div>
+
+  <h2 class="pv-h2">Componentes</h2>
+  <div class="pv-kit">
+    <div class="pv-card">
+      <h3>Botones · una sola primaria por pantalla</h3>
+      <div class="pv-row">
+        <button class="btn-primary">Reservar</button>
+        <button class="btn-elevated">Ver detalle</button>
+        <button class="btn-secondary">Cambiar horario</button>
+      </div>
+      <div class="pv-row">
+        <button class="btn-tertiary">Cancelar</button>
+        <button class="btn-text">Ver más</button>
+        <button class="icon-btn" aria-label="Favorito"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      </div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Estados y filtros</h3>
+      <div class="pv-row">
+        <span class="badge badge-open">Libre</span>
+        <span class="badge badge-active">Confirmada</span>
+        <span class="badge badge-warning">Lista de espera</span>
+        <span class="badge badge-closed">Cancelada</span>
+        <span class="badge badge-info">Nueva</span>
+      </div>
+      <div class="chip-set pv-row">
+        <button class="chip" aria-pressed="true">Pilates</button>
+        <button class="chip" aria-pressed="false">Yoga</button>
+        <button class="chip" aria-pressed="false">Meditación</button>
+      </div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Tu mes</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Asistencias</div>
+          <div class="stat-value">11</div>
+          <div class="badge stat-change stat-change-positive">+3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Faltas</div>
+          <div class="stat-value">1</div>
+          <div class="badge stat-change stat-change-negative">−2</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cambios</div>
+          <div class="stat-value">3/5</div>
+          <div class="badge stat-change stat-change-neutral">igual</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Formulario</h3>
+      <div class="field-group">
+        <label class="field-label" for="n">Nombre</label>
+        <input id="n" class="field-input" placeholder="Cómo te llamamos">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="m">¿Tenés un motivo?</label>
+        <textarea id="m" class="field-textarea" rows="2" placeholder="Si estás enfermo, contanos: no cuenta como falta"></textarea>
+      </div>
+      <div class="pv-row">
+        <label class="checkbox-label"><input type="checkbox" checked> Recordarme</label>
+        <label class="radio-label"><input type="radio" name="r" checked> Mañana</label>
+        <label class="radio-label"><input type="radio" name="r"> Tarde</label>
+      </div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Avisos</h3>
+      <div class="alert alert-success" role="alert"><div class="alert-body"><div class="alert-title">¡Mes completo!</div><div class="alert-description">Fuiste a todas tus clases: el mes que viene tenés una gratis.</div></div></div>
+      <div class="alert alert-warning" role="alert"><div class="alert-body"><div class="alert-title">Te queda 1 falta</div><div class="alert-description">¿Querés probar otro horario que te quede mejor?</div></div></div>
+      <div class="snackbar snackbar--static" role="status" aria-live="polite">
+            <span class="snackbar-message">Se liberó un lugar el jueves 08:00</span>
+            <button class="snackbar-action">Tomarlo</button>
+          </div>
+      <div class="alert alert-error" role="alert"><div class="alert-body"><div class="alert-title">Cancelaste después del plazo</div><div class="alert-description">Cuenta como falta. Llevás 2 este mes.</div></div></div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Cargando</h3>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text" style="width:70%"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+
+    <div class="pv-card">
+      <h3>Paleta · navy de marca (primary)</h3>
+      <div class="pv-swatches">
+        <div class="pv-sw" style="background:var(--primary-50)">50</div>
+        <div class="pv-sw" style="background:var(--primary-60)">60</div>
+        <div class="pv-sw" style="background:var(--primary-200)">200</div>
+        <div class="pv-sw" style="background:var(--primary-400);color:var(--on-primary)">400</div>
+        <div class="pv-sw" style="background:var(--primary-700);color:var(--on-primary)">700</div>
+        <div class="pv-sw" style="background:var(--primary-900);color:var(--on-primary)">900</div>
+      </div>
+      <h3>Lavanda (secondary)</h3>
+      <div class="pv-swatches">
+        <div class="pv-sw" style="background:var(--secondary-50)">50</div>
+        <div class="pv-sw" style="background:var(--secondary-200)">200</div>
+        <div class="pv-sw" style="background:var(--secondary-400)">400</div>
+        <div class="pv-sw" style="background:var(--secondary-600)">600</div>
+        <div class="pv-sw" style="background:var(--secondary-800)">800</div>
+        <div class="pv-sw" style="background:var(--secondary-900)">900</div>
+      </div>
+      <p class="field-hint">Texto sobre fondo 16.4:1 · blanco sobre navy 17.0:1 · navy sobre celeste 12.8:1 · navy sobre lavanda 11.9:1 · navy sobre violeta 4.6:1. Todos AA.</p>
+    </div>
+
+    <div class="pv-card">
+      <h3>Tipografía</h3>
+      <div class="pv-serif" style="font-size:var(--font-size-heading-xl)">Respirá. Tu lugar te espera.</div>
+      <div style="font-size:var(--font-size-body-md)">Inter para todo lo que se lee y se toca: horarios, botones, avisos.</div>
+      <div style="font-size:var(--font-size-caption);color:var(--on-surface-variant)">EB Garamond solo en títulos grandes y momentos de marca.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('themeToggle');
+  btn.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (dark) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'dark');
+    btn.setAttribute('aria-pressed', String(!dark));
+    btn.textContent = dark ? 'Ver en oscuro' : 'Ver en claro';
+  });
+  document.querySelectorAll('.seg-btn, .chip[aria-pressed]').forEach(b => b.addEventListener('click', () => {
+    const group = b.parentElement;
+    if (b.classList.contains('seg-btn')) group.querySelectorAll('.seg-btn').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    else b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+  }));
+</script>
+</body>
+</html>

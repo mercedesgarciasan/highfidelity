@@ -57,9 +57,39 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 /* ---------- Phone ---------- */
 .phone-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
 @media (max-width: 920px) { .phone-col { position: static; width: 100%; display: flex; flex-direction: column; align-items: center; } }
+.proto { display: flex; justify-content: center; align-items: flex-start; gap: 32px; }
+.proto .phone { flex: none; width: 390px; }
+.plist { flex: none; width: 280px; display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
+@media (max-width: 760px) { .proto { flex-direction: column; align-items: center; gap: 20px; } .proto .phone, .plist { width: min(390px, 100%); } .plist { position: static; } }
+.prow { display: flex; align-items: center; gap: 8px; }
+.pbtn-p { flex: 1; min-width: 0; text-align: left; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 14px; padding: 12px 14px; }
+.pbtn-p small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.pbtn-p b { display: block; font-weight: 600; font-size: 15px; margin-top: 2px; }
+.pbtn-p.on { border-color: var(--brand); background: var(--brand-soft); }
+.pbtn-p.on small { color: var(--brand); }
+.preset { flex: none; background: none; border: 0; color: var(--muted); font-weight: 600; font-size: 13px; padding: 10px 8px; border-radius: 10px; }
+.preset:hover { color: var(--brand); }
+.plist .seg { margin: -2px 0 4px; }
 .personas { display: flex; gap: 4px; background: var(--chip); padding: 4px; border-radius: 14px; margin-bottom: 12px; width: min(390px, 100%); }
 .personas button { flex: 1; border: 0; background: none; padding: 8px 6px; border-radius: 10px; color: var(--muted); font-weight: 600; font-size: 13px; position: relative; line-height: 1.2; }
 .personas button small { display: block; font-weight: 500; font-size: 11px; }
+.personas button b { display: block; font-weight: 600; font-size: 13px; }
+/* storyboard page */
+.sb { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.sb-head h1 { font-family: var(--font-display); font-size: 28px; line-height: 1.1; margin: 0; letter-spacing: -0.015em; }
+.flowrow { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px 0 20px 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.flowrow h2 { font-family: var(--font-display); font-size: 20px; margin: 0; padding-right: 20px; }
+.flowrow h2 span { color: var(--brand); }
+.flowrow .sub { margin: -8px 0 0; color: var(--muted); padding-right: 20px; }
+.flowrow h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .06em; }
+.frames { display: flex; gap: 14px; overflow-x: auto; padding: 4px 20px 8px 0; align-items: flex-start; }
+.frame { flex: none; width: 250px; display: flex; flex-direction: column; gap: 10px; }
+.miniwrap { width: 250px; height: 500px; position: relative; }
+.miniwrap .phone { position: absolute; top: 0; left: 0; transform: scale(0.641); transform-origin: top left; width: 390px; height: 780px; pointer-events: none; box-shadow: 0 16px 30px -18px rgba(0,0,0,.45); }
+.cap { display: flex; gap: 10px; font-size: 13.5px; }
+.cap b { font-family: var(--font-display); color: var(--brand); font-size: 16px; line-height: 1.2; flex: none; width: 16px; }
+.cap.key span { font-weight: 600; }
+.step-arrow { flex: none; align-self: center; margin-top: -60px; color: var(--muted); font-size: 22px; }
 .personas button.on { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
 .personas .badge { position: absolute; top: 7px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--bad); }
 .phone { width: min(390px, 100%); height: 780px; background: var(--frame); border-radius: 46px; padding: 12px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
@@ -302,12 +332,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); out
 .tag.fb { background: var(--tag-fb-bg); color: var(--tag-fb-fg); }
 </style>
 
-<div class="wrap">
-  <div class="phone-col">
-    <div class="personas" id="personas" role="tablist" aria-label="Ver la app como"></div>
-    <div class="phone"><div class="screen" id="app"></div></div>
-  </div>
-  <div class="side" id="side"></div>
+<div class="proto">
+  <div class="phone"><div class="screen" id="app"></div></div>
+  <div class="plist" id="tabs" role="tablist" aria-label="Problemas"></div>
 </div>
 
 <script>
@@ -360,7 +387,7 @@ const FLOWS = [
   { id: 'f1', title: 'Me inscribo y voy', steps: ['Se loguea', 'Ve los horarios disponibles', 'Elige sus horarios según su plan', 'Conoce las reglas y activa recordatorios', 'Agrega sus clases al calendario', 'Recibe el recordatorio y confirma', 'Va a clase', `Si va a todas sus clases del mes, gana una clase gratis en ${RULES.nextMonth}`] },
   { id: 'f2', title: 'Avisa antes del plazo', steps: ['Indica que no puede ir', 'Acción principal: Cambiar. Ve horarios y cambios restantes', 'Elige otro horario (no puede cancelar)'] },
   { id: 'f3', title: 'Avisa después del plazo', steps: ['Indica que no puede ir', 'Solo puede cancelar: cuenta como falta'] },
-  { id: 'f4', title: 'No va y no avisa', steps: ['Falta sin avisar', '2.ª falta: "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', '3.ª falta: pierde su lugar en el mes y reserva clases sueltas', `Recupera su horario yendo a ${RULES.recover} clases`] },
+  { id: 'f4', title: 'No va y no avisa', steps: ['Falta sin avisar', '2.ª falta: "te queda 1 falta" y "¿Querés buscar un hueco que te quede mejor?"', '3.ª falta: pierde su horario fijo y sus clases del mes; puede reservar clases sueltas', `Al renovar en ${RULES.nextMonth}, vuelve a elegir su horario si sigue disponible`] },
   { id: 'f5', title: 'Tiene un motivo justificado', steps: ['Avisa que no puede ir, o ya faltó', 'Elige "Tengo un motivo": enfermedad', 'No cuenta como falta'] },
   { id: 'f6', title: 'Se toma días off', steps: ['Desde su perfil entra a "Gestionar mis horarios", o elige "Me voy de viaje"', 'Elige un rango de fechas dentro del mes que ya pagó', 'Sus clases quedan en pausa y conserva su horario'] },
 ];
@@ -368,7 +395,7 @@ const FLOWS = [
 const fresh = () => ({
   screen: 'login', clock: 'far', slots: [], next: null, changesUsed: 0, noShows: 0,
   monthAttended: 5, bonusOk: true, bonusLostAt: null, calendar: null,
-  lostSlot: false, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, waitlist: [], waitJoined: null, justFrom: null, lastFault: null,
+  lostSlot: false, lostId: null, recover: 0, excusesUsed: 0, offUsed: 0, offDays: [], offTaken: [], offStart: null, offEnd: null, offPhase: 'start', offLast: null, waitlist: [], waitJoined: null, justFrom: null, lastFault: null,
   reminders: true, confirmAsk: true, push: false, sheet: null, changeMode: 'once',
   changeDay: 0, picked: null, lateCancel: false, toast: null, brand: S?.brand ?? 0,
   persona: 'socia',
@@ -395,8 +422,8 @@ function onboarded(extra = {}) {
   Object.assign(S, fresh(), { slots, next: { id: slots[0], status: 'reservada', kind: 'fijo' }, screen: 'home', calendar: 'google' }, extra);
 }
 function nextFixed(afterId) {
-  if (S.lostSlot || !S.slots.length) return null;
-  const sorted = [...S.slots].sort((a, b) => order(a) - order(b));
+  const sorted = [...S.slots].filter(id => !(S.lostSlot && id === S.lostId)).sort((a, b) => order(a) - order(b));
+  if (!sorted.length) return null;
   const i = sorted.indexOf(afterId);
   const id = i === -1 ? sorted[0] : sorted[(i + 1) % sorted.length];
   return { id, status: S.offDays.includes(byId(id).day) ? 'off' : 'reservada', kind: 'fijo' };
@@ -411,15 +438,48 @@ function addFault(kind) {
   S.lastFault = { kind, wasBonusOk: S.bonusOk };
   if (S.bonusOk) { S.bonusOk = false; S.bonusLostAt = S.next.id; }
   S.noShows = n;
-  if (n >= RULES.strikes) { S.lostSlot = true; S.recover = 0; }
+  if (n >= RULES.strikes) { S.lostSlot = true; S.lostId = S.next.id; S.recover = 0; }
   return n;
+}
+
+/* ---------- the 4 problems (FigJam "Problemas a atacar en el proto") ---------- */
+const PROBS = [
+  ['p1', 'Empezar'], ['p2', 'Cambiar a tiempo'], ['p3', 'Cancelar tarde'], ['p4', 'Clase gratis'],
+];
+let P = { id: 'p1', v: 'a' };
+let pushTimer = null;
+const SAVED = {}; /* where each problem was left, so switching tabs doesn't lose it */
+function openProblem(id) {
+  if (id === P.id) return;
+  SAVED[P.id] = { S, v: P.v };
+  clearTimeout(pushTimer);
+  const saved = SAVED[id];
+  if (saved) { P = { id, v: saved.v }; S = saved.S; S.toast = null; render(); } else startProblem(id);
+}
+function startProblem(id, v = 'a') {
+  P = { id, v };
+  clearTimeout(pushTimer);
+  const brand = S.brand;
+  S = fresh(); /* new object, so the state saved for other problems isn't overwritten */
+  if (id === 'p2') {
+    onboarded({ clock: 'far' });
+    pushTimer = setTimeout(() => { if (P.id === 'p2' && S.screen === 'home' && !S.sheet && S.changesUsed === 0) set({ push: true }); }, 1500);
+  }
+  if (id === 'p3') onboarded(v === 'b' ? { clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800' } : { clock: 'near' });
+  if (id === 'p4') onboarded({ clock: 'near', monthAttended: RULES.monthTotal - 1 });
+  S.brand = brand;
+  render();
 }
 
 /* ---------- actions ---------- */
 const A = {
+  problem: id => openProblem(id),
+  restart: id => { if (id !== P.id) SAVED[P.id] = { S, v: P.v }; startProblem(id, id === P.id ? P.v : SAVED[id]?.v || 'a'); },
+  variant: v => startProblem('p3', v),
   login: () => set({ screen: 'pick' }),
   toggleSlot: id => {
     if (S.slots.includes(id)) return set({ slots: S.slots.filter(s => s !== id) });
+    if (S.slots.some(s => byId(s).day === byId(id).day)) return;
     if (S.slots.length >= RULES.plan) return toast(`Tu plan es de ${RULES.plan} clases por semana. Sacá una para elegir otra.`);
     set({ slots: [...S.slots, id] });
   },
@@ -469,7 +529,7 @@ const A = {
     release('canceló fuera de plazo');
     S.next.status = 'cancelada';
     const n = addFault('late');
-    set({ sheet: null, lateCancel: true, screen: n >= RULES.strikes - 1 ? 'noshow' : 'cancelled' });
+    set({ sheet: null, lateCancel: true, screen: n >= RULES.strikes ? 'noshow' : 'cancelled' });
   },
   reason: () => set({ sheet: 'reason', push: false }),
   justify: () => {
@@ -527,11 +587,6 @@ const A = {
     if (!S.next || !OPEN.includes(S.next.status)) return toast('No hay una clase reservada.');
     S.next.status = 'asistió';
     const base = { clock: 'past', sheet: null, push: false, monthAttended: Math.min(RULES.monthTotal, S.monthAttended + (S.next.kind === 'suelta' ? 0 : 1)) };
-    if (S.lostSlot) {
-      const r = S.recover + 1;
-      if (r >= RULES.recover) return set({ ...base, lostSlot: false, noShows: 0, recover: 0, screen: 'recovered' });
-      return set({ ...base, recover: r, screen: 'attended' });
-    }
     set({ ...base, screen: 'attended' });
   },
   noshow: () => {
@@ -622,7 +677,6 @@ function nextCard() {
   if (OPEN.includes(st)) {
     if (S.clock === 'past') actions = '<p class="a-p">Estamos registrando tu asistencia.</p>';
     else actions = `<div class="btn-row">
-        ${st === 'reservada' ? '<button class="btn primary" data-act="confirm">Confirmar que voy</button>' : ''}
         <button class="btn secondary" data-act="cantGo">No puedo ir</button></div>
         <div class="caption">${S.clock === 'far' ? `Tenés hasta ${deadlineLong(c)} para gestionarla` : `Ya pasó el plazo para cambiarla (era ${deadlineLong(c)})`}</div>`;
   } else if (st === 'off') {
@@ -664,12 +718,17 @@ function weekBlock() {
   const rows = S.slots.map(id => {
     const c = byId(id);
     const off = S.offDays.includes(c.day);
-    return `<div class="week-row ${S.lostSlot ? 'lost' : ''}"><span><b>${DAYS_FULL[c.day]}</b> ${c.time}</span><span class="class-meta">${off && !S.lostSlot ? 'En pausa · días off' : `${c.name} · ${c.coach}`}</span></div>`;
+    const lost = S.lostSlot && (!S.lostId || id === S.lostId);
+    return `<div class="week-row ${lost ? 'lost' : ''}"><span><b>${DAYS_FULL[c.day]}</b> ${c.time}</span><span class="class-meta">${lost ? `Hasta ${RULES.nextMonth}` : off ? 'En pausa · días off' : `${c.name} · ${c.coach}`}</span></div>`;
   }).join('');
   const cal = S.calendar ? `<div class="class-meta">En tu ${CALS[S.calendar]}</div>` : '';
   return `<div class="card"><span class="a-label">Tu horario fijo</span><div class="week">${rows}</div>${cal}</div>`;
 }
 
+function keptText() {
+  const kept = S.slots.filter(id => id !== S.lostId);
+  return kept.length ? kept.map(id => `el ${full(byId(id)).toLowerCase()}`).join(' y ') : 'ninguna clase fija';
+}
 function strikesBar(n) {
   return `<div class="strikes" aria-label="${n} de ${RULES.strikes} faltas">${Array.from({ length: RULES.strikes }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>`;
 }
@@ -680,7 +739,7 @@ function justifyLink() {
   return excusesLeft() > 0 ? `<button class="link" data-act="justifyNoShow">Tuve un motivo justificado</button>` : '';
 }
 function circLine() {
-  return S.circ.released && !S.circ.taken ? `<div class="card tint"><div><b>Le avisamos a la lista de espera</b></div><div class="class-meta">Tu lugar del Lun 08:00 se lo ofrecemos a la primera persona de la lista. La clase no queda con un lugar vacío.</div></div>` : '';
+  return '';
 }
 function bonusLostLine() {
   return S.lastFault?.wasBonusOk ? `<p class="a-p">Este mes ya no aplica la clase gratis de ${RULES.nextMonth}.</p>` : '';
@@ -689,17 +748,17 @@ function bonusLostLine() {
 const V = {
   login: () => `<div class="scr center">
       <div class="logo">LOGO</div>
-      <div><h1 class="a-h1">Entrá a tu estudio</h1><p class="a-p">Reservá tus clases y llevá tu horario fijo.</p></div>
-      <div class="field"><label for="em">Email</label><input id="em" value="sofi@mail.com"></div>
-      <div class="field"><label for="pw">Contraseña</label><input id="pw" type="password" value="demo1234"></div>
-      <button class="btn primary" data-act="login">Entrar</button>
+      <div><span class="a-label">Te invitó tu estudio</span><h1 class="a-h1">Creá tu contraseña</h1><p class="a-p">Con tu cuenta reservás tus clases y llevás tu horario fijo.</p></div>
+      <div class="card"><span class="a-label">Tu email</span><div>sofi@mail.com</div></div>
+      <div class="field"><label for="pw">Contraseña</label><input id="pw" type="password" value="demo1234" autocomplete="new-password"></div>
+      <button class="btn primary" data-act="login">Crear contraseña</button>
     </div>`,
 
   pick: () => {
     const groups = DAYS.map((d, i) => {
       const list = CLASSES.filter(c => c.day === i).map(c => {
         const on = S.slots.includes(c.id);
-        return `<button class="slot ${on ? 'on' : ''}" data-act="toggleSlot" data-arg="${c.id}" ${c.left === 0 && !on ? 'disabled' : ''}>
+        return `<button class="slot ${on ? 'on' : ''}" data-act="toggleSlot" data-arg="${c.id}" ${!on && (c.left === 0 || S.slots.some(s => byId(s).day === c.day)) ? 'disabled' : ''}>
           <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${c.left === 0 ? 'Completa' : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`}</small></span>
           <span class="check">${on ? '✓' : ''}</span></button>`;
       }).join('');
@@ -718,25 +777,15 @@ const V = {
       <div><h1 class="a-h1">Gestioná tus cambios con tiempo</h1>
       <p class="a-p">Tenés ${RULES.max} cambios para hacer en el mes. Te ayudamos a gestionar tu tiempo para no perder tu lugar.</p></div>
       <div class="card">
-        <span class="a-label">Reglas</span>
-        <div class="rlist">
-          <div class="rrow"><span class="rnum">1</span><div class="rt">Podés cambiar tus clases con anticipación.<small>Te avisamos cuando el plazo esté por vencer.</small></div></div>
-          <div class="rrow"><span class="rnum">2</span><div class="rt">Tenés hasta ${RULES.max} cambios para usar en el mes.</div></div>
-          <div class="rrow"><span class="rnum">3</span><div class="rt">Si cancelás sin anticipación o faltás sin avisar ${RULES.strikes} veces, perdés tu lugar en el mes.</div></div>
-          <div class="rrow"><span class="rnum">4</span><div class="rt">Si vas a todas tus clases del mes, ganás una clase gratis el mes siguiente.</div></div>
-          <div class="rrow cta"><span class="rnum">✓</span><div class="rt"><b>Para que nada de esto pase, activá los recordatorios.</b></div></div>
-        </div>
-      </div>
-      <div class="card tint">
-        <div class="a-h3">¿Por qué son importantes los recordatorios?</div>
-        <p class="a-p">Te avisamos antes de que venza el plazo. Si no podés ir, cambiás o cancelás a tiempo: no perdés tu lugar y otra persona puede aprovechar ese horario.</p>
-      </div>
-      <div class="card">
         <div class="toggle-row"><div class="txt">Avisarme antes del plazo<small>Con tiempo para cambiar de horario</small></div><button class="sw ${S.reminders ? '' : 'off'}" data-act="toggleRem" data-arg="reminders" aria-label="Avisarme antes del plazo"></button></div>
         <div class="toggle-row"><div class="txt">Pedirme que confirme<small>Un toque para decir "voy"</small></div><button class="sw ${S.confirmAsk ? '' : 'off'}" data-act="toggleRem" data-arg="confirmAsk" aria-label="Pedirme que confirme"></button></div>
       </div>
       <button class="btn primary" data-act="finishReminders" data-arg="1">Activar recordatorios</button>
       <button class="btn ghost" data-act="finishReminders" data-arg="0">Ahora no</button>
+      <div class="card tint">
+        <div class="a-h3">¿Por qué son importantes los recordatorios?</div>
+        <p class="a-p">Te avisamos antes de que venza el plazo. Si no podés ir, cambiás o cancelás a tiempo: no perdés tu lugar y otra persona puede aprovechar ese horario.</p>
+      </div>
     </div>`,
 
   calendar: () => {
@@ -758,7 +807,7 @@ const V = {
     const warn = !S.lostSlot && S.noShows === RULES.strikes - 1;
     return `<div class="scr">
       <div class="topbar"><div class="logo">LOGO</div><div class="who"><div class="a-h2">Hola, Sofi</div></div><button class="avatar" style="border:0" data-act="profile" aria-label="Mi perfil">SG</button></div>
-      ${S.lostSlot ? `<div class="banner warn"><div><b>Recuperá tu horario fijo</b>Andá a ${RULES.recover} clases sin faltar y te lo devolvemos. Vas ${S.recover} de ${RULES.recover}.</div>${recoverBar()}</div>` : ''}
+      ${S.lostSlot ? `<div class="banner warn"><div><b>Este mes te queda ${keptText()}</b>Perdiste tu horario del ${S.lostId ? full(byId(S.lostId)).toLowerCase() : 'mes'} por el resto de noviembre. En ${RULES.nextMonth} podés volver a elegirlo si sigue disponible.</div></div>` : ''}
       ${warn ? `<div class="banner"><b>Te queda 1 falta</b>Si faltás o cancelás sin anticipación una vez más este mes, perdés tu lugar. Si no podés ir, avisá antes del plazo.</div>` : ''}
       ${nextCard()}
       ${weekBlock()}
@@ -770,15 +819,13 @@ const V = {
     const cur = byId(S.next.id);
     const fixed = S.changeMode === 'fixed';
     const tabs = DAYS.map((d, i) => `<button class="day ${S.changeDay === i ? 'on' : ''}" data-act="changeDay" data-arg="${i}">${d}</button>`).join('');
-    /* The waitlist exists only when changing the fixed schedule: a full class can be picked to join its list. */
+    /* Only classes with free spots can be picked: there is no waitlist. */
     const list = CLASSES.filter(c => c.day === S.changeDay && c.id !== cur.id && !S.slots.includes(c.id)).map(c => {
       const full0 = c.left === 0;
-      const waiting = S.waitlist.includes(c.id);
-      const note = waiting ? 'Estás en la lista de espera' : full0 ? (fixed ? 'Completa · podés sumarte a la lista de espera' : 'Completa') : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`;
-      return `<button class="slot ${S.picked === c.id ? 'on' : ''}" data-act="pick" data-arg="${c.id}" ${full0 && (!fixed || waiting) ? 'disabled' : ''}>
+      const note = full0 ? 'Completa' : c.left === 1 ? 'Queda 1 lugar' : `Quedan ${c.left} lugares`;
+      return `<button class="slot ${S.picked === c.id ? 'on' : ''}" data-act="pick" data-arg="${c.id}" ${full0 ? 'disabled' : ''}>
         <span class="t">${c.time}</span><span class="n">${c.name}<small>${c.coach} · ${note}</small></span><span class="check">${S.picked === c.id ? '✓' : ''}</span></button>`;
     }).join('') || '<p class="a-p">No hay otros horarios este día.</p>';
-    const pickedFull = S.picked && byId(S.picked).left === 0;
     return `<div class="scr">
       <button class="back" data-act="home">← Volver</button>
       <div>${fixed ? '<span class="a-label">Cambiar tu horario fijo</span>' : `<span class="a-label">Te quedan ${changesLeft()} de ${RULES.max} cambios</span>`}
@@ -787,10 +834,7 @@ const V = {
       <div class="days">${tabs}</div>
       <div class="slots">${list}</div>
       <div class="spacer"></div>
-      ${pickedFull
-        ? `<button class="btn primary" data-act="joinWait">Sumarme a la lista de espera<small>Te avisamos si se libera un lugar en ${short(byId(S.picked))}</small></button>`
-        : `<button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>`}
-      ${fixed ? '' : '<button class="link" data-act="reason">Tengo un motivo (enfermedad o viaje)</button>'}
+      <button class="btn primary" data-act="confirmChange" ${S.picked ? '' : 'disabled'}>${S.picked ? `Cambiar al ${short(byId(S.picked))}` : 'Elegí un horario'}</button>
     </div>`;
   },
 
@@ -813,12 +857,9 @@ const V = {
     const n = S.noShows;
     return S.lateCancel ? `<div class="scr result">
       <div class="spacer"></div>
-      ${n === RULES.strikes - 1 ? '<span class="pill bad">Te queda 1 falta</span>' : `<div class="result-icon bad">${n}/${RULES.strikes}</div>`}
-      <div><h1 class="a-h1">Cancelaste tu clase del ${short(c)}</h1>
-      <p class="a-p">El plazo para cambiarla era hasta el ${deadline(c)}, así que cuenta como falta: llevás ${n} de ${RULES.strikes} este mes.</p></div>
-      ${strikesBar(n)}
-      ${bonusLostLine()}
-      <div class="card"><div><b>La próxima, avisá antes del plazo.</b></div><div class="class-meta">Así podés pasarla a otro horario sin perder nada.</div></div>
+      <div class="result-icon bad">${n}/${RULES.strikes}</div>
+      <div><h1 class="a-h1">Le avisamos a ${c.coach}</h1>
+      <p class="a-p">${RULES.strikes - n === 1 ? 'Te queda una cancelación disponible' : `Te quedan ${['', 'una', 'dos', 'tres'][RULES.strikes - n] || RULES.strikes - n} cancelaciones disponibles`}</p></div>
       <div class="spacer"></div>
       <button class="btn primary" data-act="nextClass">Ver mi próxima clase</button>
     </div>` : `<div class="scr result">
@@ -856,7 +897,6 @@ const V = {
       <div class="result-icon good">✓</div>
       <div><h1 class="a-h1">${won ? `¡Ganaste una clase gratis para ${RULES.nextMonth}!` : `Fuiste a ${c.name}`}</h1>
       <p class="a-p">${won ? 'Fuiste a todas tus clases del mes en tiempo y forma. La sumamos a tu plan del mes que viene.' : `${full(c)} con ${c.coach}.`}</p></div>
-      ${S.lostSlot ? `<div class="card"><div><b>Vas ${S.recover} de ${RULES.recover}</b> para recuperar tu horario fijo.</div>${recoverBar()}</div>` : ''}
       ${!S.lostSlot ? `<div class="card">${monthDots()}<div>${won ? `Fuiste a ${RULES.monthTotal} de ${RULES.monthTotal} clases.` : S.bonusOk ? `Vas ${S.monthAttended} de ${RULES.monthTotal}. Te ${left === 1 ? 'falta 1' : `faltan ${left}`} para la clase gratis.` : `Vas ${S.monthAttended} de ${RULES.monthTotal} clases este mes.`}</div></div>` : ''}
       <div class="spacer"></div>
       <button class="btn primary" data-act="${S.lostSlot ? 'dropin' : 'nextClass'}">${S.lostSlot ? 'Reservar otra clase' : 'Ver mi próxima clase'}</button>
@@ -882,12 +922,11 @@ const V = {
     if (n >= RULES.strikes) return `<div class="scr result">
       <div class="spacer"></div>
       <div class="result-icon warn">${n}/${RULES.strikes}</div>
-      <div><h1 class="a-h1">Perdiste tu lugar este mes</h1>
-      <p class="a-p">${S.lateCancel ? 'Cancelaste sin anticipación' : 'Faltaste sin avisar'} y sumaste ${n} faltas este mes. Tu ${S.slots.map(id => short(byId(id))).join(' y ')} queda libre para otra persona por ahora.</p></div>
-      <div class="card"><div><b>Cómo recuperarlo</b></div><div class="class-meta">Andá a ${RULES.recover} clases sueltas sin faltar y te devolvemos tu horario.</div>${recoverBar()}</div>
+      <div><h1 class="a-h1">Perdiste tu horario del ${full(c).toLowerCase()}</h1>
+      <p class="a-p">${S.lateCancel ? 'Cancelaste sin anticipación' : 'Faltaste sin avisar'} y es tu ${n}.ª falta del mes, así que perdés ese horario por el resto de noviembre.</p></div>
+      <div class="card"><div>Este mes te queda <b>${keptText()}</b>.</div><div class="class-meta">En ${RULES.nextMonth}, cuando se renueve tu suscripción, podés volver a elegir el ${full(c).toLowerCase()} si sigue disponible.</div></div>
       <div class="spacer"></div>
-      <button class="btn primary" data-act="dropin">Ver clases sueltas</button>
-      ${S.lateCancel ? '' : justifyLink()}
+      <button class="btn primary" data-act="nextClass">Ver mi app</button>
     </div>`;
     if (n === RULES.strikes - 1) return `<div class="scr result">
       <div class="spacer"></div>
@@ -911,7 +950,6 @@ const V = {
       <p class="a-p">Si no podés ir, avisá antes del plazo y cambiala sin perder nada.</p>
       <div class="spacer"></div>
       <button class="btn primary" data-act="nextClass">Entendido</button>
-      ${justifyLink()}
     </div>`;
   },
 
@@ -921,7 +959,7 @@ const V = {
       <button class="pill brand" style="border:0" data-act="reserve" data-arg="${c.id}">Reservar</button></div>`).join('');
     return `<div class="scr">
       <button class="back" data-act="home">← Volver</button>
-      <div><span class="a-label">Esta semana</span><h1 class="a-h1">Clases sueltas</h1><p class="a-p">Lugares que quedaron libres. Reservás de a una clase.${S.lostSlot ? ` Cada una que vayas suma para recuperar tu horario (${S.recover} de ${RULES.recover}).` : ''}</p></div>
+      <div><span class="a-label">Esta semana</span><h1 class="a-h1">Clases sueltas</h1><p class="a-p">Lugares que quedaron libres. Reservás de a una clase.</p></div>
       <div class="slots">${list}</div>
     </div>`;
   },
@@ -1036,7 +1074,6 @@ const V = {
       <div><h1 class="a-h1">Gestionar mis horarios</h1><p class="a-p">Cambiá tu horario fijo o avisá cuándo no vas a estar.</p></div>
       <button class="btn secondary left" data-act="seekBetter" ${canFixed ? '' : 'disabled'}>Cambiar mi horario fijo<small>${S.slots.map(id => short(byId(id))).join(' y ')}</small></button>
       <button class="btn secondary left" data-act="goOff" ${offLeft() ? '' : 'disabled'}>Avisar días off<small>Para viajes o vacaciones. Te quedan ${offLeft()} de ${RULES.off} este trimestre.</small></button>
-      ${S.waitlist.length ? `<div class="card"><span class="a-label">Tus listas de espera</span>${S.waitlist.map(id => `<div class="row-split"><div><b>${byId(id).name}</b> · ${short(byId(id))}</div><span class="pill">En espera</span></div>`).join('')}<div class="class-meta">Te avisamos apenas se libere un lugar.</div></div>` : ''}
     </div>`;
   },
 
@@ -1072,21 +1109,29 @@ const V = {
 function sheetView() {
   if (!S.sheet || !S.next) return '';
   const c = byId(S.next.id);
-  const reasonLink = '<button class="link" data-act="reason">Tengo un motivo (enfermedad o viaje)</button>';
+  const reasonLink = '';
   let body = '';
   if (S.sheet === 'cantgo' && S.clock === 'far' && changesLeft() > 0) {
     body = `<h2 class="a-h2">No puedo asistir a la clase del ${DAYS_FULL[c.day]} ${WEEK7[c.day][1]} a las ${c.time} hrs</h2>
       <button class="btn primary" data-act="goChange">Cambiar de horario<small>Te quedan ${changesLeft()} de ${RULES.max} cambios este mes</small></button>${reasonLink}`;
   } else if (S.sheet === 'cantgo' && S.clock === 'far') {
-    body = `<div><h2 class="a-h2">No podés ir el ${short(c)}</h2><p class="a-p">Ya usaste tus ${RULES.max} cambios de este mes. Como estás antes del plazo, podés cancelar sin que cuente como falta.</p></div>
-      <button class="btn primary" data-act="cancelFar">Cancelar la clase</button>
+    body = `<div><h2 class="a-h2">Ya usaste tus ${RULES.max} cambios de este mes</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
+      <button class="btn danger" data-act="cancelFar">Cancelar la clase</button>
       <button class="btn secondary" data-act="closeSheet">Mejor voy</button>${reasonLink}`;
   } else if (S.sheet === 'cantgo') {
-    body = `<div><h2 class="a-h2">Ya pasó el plazo para cambiar</h2><p class="a-p">Para esta clase era hasta el ${deadline(c)}. Si cancelás ahora, cuenta como falta (${S.noShows + 1} de ${RULES.strikes})${S.bonusOk ? ` y perdés la clase gratis de ${RULES.nextMonth}` : ''}.</p></div>
-      <button class="btn danger" data-act="cancelLate">Cancelar igual</button>
-      <button class="btn secondary" data-act="closeSheet">Mejor voy</button>${reasonLink}`;
+    const n = S.noShows + 1;
+    const left = RULES.monthTotal - S.monthAttended;
+    body = `<div><h2 class="a-h2">Ya pasó el plazo para cambiarla</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
+      <div class="card">
+        <div><b>${n >= RULES.strikes ? `Es tu ${n}.ª falta del mes` : `Cuenta como falta: ya vas ${n} de ${RULES.strikes}`}</b></div>
+        ${strikesBar(n)}
+        ${n >= RULES.strikes ? `<div class="class-meta">Perdés tu horario del ${full(c).toLowerCase()} por el resto de noviembre.</div>` : ''}
+        ${S.bonusOk ? `<div class="class-meta">Perdés la clase gratis de ${RULES.nextMonth}: te ${left === 1 ? 'faltaba 1 clase' : `faltaban ${left} clases`} para ganarla.</div>` : ''}
+      </div>
+      <button class="btn danger" data-act="cancelLate">Avisarle a ${c.coach} y cancelar</button>
+      <button class="btn secondary" data-act="closeSheet">Mejor voy</button>`;
   } else if (S.sheet === 'confirmFar') {
-    body = `<div><h2 class="a-h2">¿Cancelar tu clase del ${short(c)}?</h2><p class="a-p">No cuenta como falta. Tu lugar queda libre para otra persona.</p></div>
+    body = `<div><h2 class="a-h2">¿Cancelar tu clase del ${short(c)}?</h2><p class="a-p">Las cancelaciones son hasta 6 h antes de la clase.</p></div>
       <button class="btn primary" data-act="cancelFar">Sí, cancelar</button>
       <button class="btn secondary" data-act="goChange">Mejor la cambio</button>`;
   } else if (S.sheet === 'reason') {
@@ -1151,7 +1196,7 @@ function tags() {
   if (sc === 'home' && !S.push && !S.sheet && S.next?.status === 'confirmada' && S.clock !== 'past') t.add('f1-5');
   if (sc === 'home' && S.clock === 'past' && S.next && OPEN.includes(S.next.status)) { t.add('f1-6'); t.add('f4-0'); }
   if (sc === 'attended') { t.add('f1-6'); if (bonusWon()) t.add('f1-7'); if (S.lostSlot) t.add('f4-3'); }
-  if (sc === 'recovered' || (sc === 'home' && S.lostSlot) || (sc === 'dropin' && S.lostSlot)) t.add('f4-3');
+  if ((sc === 'home' && S.lostSlot) || (sc === 'dropin' && S.lostSlot)) t.add('f4-3');
   if (S.sheet === 'cantgo') t.add('f5-0');
   if (S.sheet === 'cantgo' && S.clock === 'far') { t.add('f2-0'); if (changesLeft() > 0) t.add('f2-1'); }
   if (S.sheet === 'cantgo' && S.clock === 'near') { t.add('f3-0'); t.add('f3-1'); }
@@ -1175,7 +1220,7 @@ function sideView() {
     const steps = f.steps.map((s, i) => `<li class="${t.has(`${f.id}-${i}`) ? 'on' : ''}">${s}</li>`).join('');
     let go = `<button class="flow-go" data-act="flow" data-arg="${f.id}">Arrancar este flujo</button>`;
     if (f.id === 'f1') go = `<div class="flow-sub"><button class="flow-go" data-act="flow" data-arg="f1">Empezar desde el login</button><button class="flow-go" data-act="winDemo">Ganar la clase gratis</button></div>`;
-    if (f.id === 'f4') go = `<div class="flow-sub"><button class="flow-go" data-act="strike" data-arg="1">1.ª falta</button><button class="flow-go" data-act="strike" data-arg="2">2.ª falta</button><button class="flow-go" data-act="strike" data-arg="3">3.ª falta</button><button class="flow-go" data-act="recoverDemo">Recuperar</button></div>`;
+    if (f.id === 'f4') go = `<div class="flow-sub"><button class="flow-go" data-act="strike" data-arg="1">1.ª falta</button><button class="flow-go" data-act="strike" data-arg="2">2.ª falta</button><button class="flow-go" data-act="strike" data-arg="3">3.ª falta</button></div>`;
     return `<div class="flow ${active ? 'active' : ''}"><div class="flow-head"><span class="flow-num">${fi + 1}</span><span class="flow-title">${f.title}</span></div><ol>${steps}</ol>${go}</div>`;
   }).join('');
   const seg = [['far', 'Antes del plazo'], ['near', 'Pasó el plazo'], ['past', 'Ya fue la clase']].map(([k, l]) => `<button class="${S.clock === k ? 'on' : ''}" data-act="clock" data-arg="${k}">${l}</button>`).join('');
@@ -1186,8 +1231,6 @@ function sideView() {
   const csteps = [
     ['socia', 'Recordatorio antes de que cierre el plazo', 'Sofi recibe el aviso para su clase del lunes 8:00.'],
     ['socia', 'Confirma o libera su lugar', 'Abre la app desde la notificación y toca "Confirmar que voy" o "No puedo ir".'],
-    ['espera', 'La lista de espera lo ocupa', 'Lu recibe el lugar y lo toma.'],
-    ['estudio', 'El estudio ve el lugar recuperado', 'La clase vuelve a estar llena en el panel.'],
   ].map(([p, title, sub], i) => `<button class="cstep ${ct.has(i) ? 'on' : cdone[i] ? 'done' : ''}" data-act="persona" data-arg="${p}"><b>${i + 1}</b><span>${title}</span>${sub}</button>`).join('');
   const rule = (txt, tag) => `<li><span class="r">${txt}</span><span class="tag ${tag === 'A definir' ? 'def' : tag === 'Feedback' ? 'fb' : ''}">${tag}</span></li>`;
   return `
@@ -1196,7 +1239,7 @@ function sideView() {
       <p>Tocá el teléfono como si fueras una socia, o saltá directo a un flujo. El paso en el que estás se marca en el mapa de abajo.</p></div>
     <div class="box">
       <div class="chead"><h2>Circuito de la demo</h2><button class="flow-go" data-act="circuit">Arrancar el circuito</button></div>
-      <p style="margin:0;color:var(--muted)">Un recorrido completo, para contar en 2 minutos. Usá las pestañas arriba del teléfono para ver la app como Sofi, como Lu o como el estudio.</p>
+      <p style="margin:0;color:var(--muted)">Un recorrido completo, para contar en 2 minutos.</p>
       <div class="csteps">${csteps}</div>
     </div>
     <div class="box"><h2>Todos los flujos</h2><div class="flows">${flows}</div></div>
@@ -1219,7 +1262,7 @@ function sideView() {
         ${rule(`${RULES.strikes} faltas en el mes (sin avisar o cancelando sin anticipación): pierde su lugar en el mes y puede reservar clases sueltas.`, 'Definido')}
         ${rule('Si va a todas sus clases del mes en tiempo y forma, gana una clase gratis el mes siguiente. No hay puntos.', 'Definido')}
         ${rule('Antes de empezar, conoce las reglas, activa recordatorios y agrega sus clases al calendario.', 'Definido')}
-        ${rule(`Camino para recuperar el horario: ir a ${RULES.recover} clases sin faltar.`, 'Feedback')}
+        ${rule(`Si pierde su horario fijo, puede volver a elegirlo al renovar la suscripción en ${RULES.nextMonth}, si sigue disponible.`, 'Feedback')}
         ${rule('Motivo justificado (enfermedad): no cuenta como falta. Se puede usar al avisar o después de faltar.', 'Feedback')}
         ${rule('Días off según la membresía, para viajes o vacaciones: las clases quedan en pausa y conserva su horario.', 'Feedback')}
         ${rule('Cambiar, cancelar antes del plazo, motivos justificados y días off no hacen perder la clase gratis.', 'A definir')}
@@ -1239,11 +1282,8 @@ function render() {
   const p = S.persona;
   const body = p === 'espera' ? V.lu() + luPush() : p === 'estudio' ? V.board() : V[S.screen]() + pushView() + sheetView();
   app.innerHTML = `<div class="statusbar"><span>${p === 'socia' ? '9:41' : '20:15'}</span><span class="dots"><i></i></span></div>${body}${S.toast ? `<div class="toast" role="status">${S.toast}</div>` : ''}`;
-  const tabs = [['socia', 'Sofi', 'socia'], ['espera', 'Lu', 'lista de espera'], ['estudio', 'Estudio', 'dueño']];
-  const badge = { espera: S.circ.released && !S.circ.taken && !S.circ.luSeen, estudio: !!S.circ.taken && !S.circ.boardSeen };
-  document.getElementById('personas').innerHTML = tabs.map(([k, n, r]) => `<button role="tab" aria-selected="${p === k}" class="${p === k ? 'on' : ''}" data-act="persona" data-arg="${k}">${n}<small>${r}</small>${badge[k] ? '<i class="badge" aria-label="Novedad"></i>' : ''}</button>`).join('');
   const ns = app.querySelector('.scr'); if (ns) ns.scrollTop = keep;
-  document.getElementById('side').innerHTML = sideView();
+  document.getElementById('tabs').innerHTML = PROBS.map(([k, t], i) => `<div class="prow"><button role="tab" aria-selected="${P.id === k}" class="pbtn-p ${P.id === k ? 'on' : ''}" data-act="problem" data-arg="${k}"><small>Problema 0${i + 1}</small><b>${t}</b></button><button class="preset" data-act="restart" data-arg="${k}" aria-label="Reiniciar problema ${i + 1}">Reset</button></div>${k === 'p3' && P.id === 'p3' ? `<div class="seg">${[['a', '1.ª cancelación'], ['b', '3.ª cancelación']].map(([v, l]) => `<button class="${P.v === v ? 'on' : ''}" data-act="variant" data-arg="${v}">${l}</button>`).join('')}</div>` : ''}`).join('');
 }
 function applyBrand() { document.documentElement.style.setProperty('--brand', BRANDS[S.brand][0]); }
 
@@ -1255,6 +1295,59 @@ document.addEventListener('click', e => {
   A[el.dataset.act]?.(el.dataset.arg);
 });
 
+/* ---------- storyboard (pasos.html) ---------- */
+const CANC = { id: 'lun-0800', status: 'cancelada', kind: 'fijo' };
+const STORY = [
+  ['Problema 1', 'Empezar con horario fijo', 'Se registra, elige sus clases y deja todo listo para no olvidarse.', [[
+    [{ screen: 'login', slots: [], next: null, calendar: null }, 'Llega por una invitación por mail y crea su contraseña.'],
+    [{ screen: 'pick', slots: ['lun-0800', 'mie-0800'], next: null, calendar: null }, 'Elige sus 2 clases por semana.'],
+    [{ screen: 'reminders', calendar: null }, 'Activa las notificaciones.', true],
+    [{ screen: 'calendar', calendar: null }, 'Sincroniza sus clases con su calendario.', true],
+    [{}, 'Ve sus horarios fijos.'],
+  ]]],
+  ['Problema 2', 'Cambiar una clase a tiempo', 'Le llega el recordatorio antes del plazo y cambia la clase sin problemas.', [[
+    [{ clock: 'far' }, 'Tiene sus horarios fijos.'],
+    [{ clock: 'far', push: true }, 'Le llega una notificación antes del plazo.'],
+    [{ clock: 'far', screen: 'change', changeMode: 'once', changeDay: 0, picked: 'lun-1900' }, 'Entra y elige otro horario.'],
+    [{ screen: 'changed', changesUsed: 1, next: { id: 'lun-1900', status: 'reservada', kind: 'cambio' } }, 'La cambia sin problemas.', true],
+  ]]],
+  ['Problema 3', 'Cancelar fuera de plazo', 'Ya no puede cambiarla. Le mostramos las consecuencias y la empujamos a avisar en vez de faltar.', [
+    ['1.ª cancelación', [
+      [{ clock: 'near' }, 'Entra para cambiarla, pero se le pasó el plazo.'],
+      [{ clock: 'near', sheet: 'cantgo' }, 'Le mostramos las consecuencias y la empujamos a avisarle a Vicky.', true],
+      [{ clock: 'near', noShows: 1, bonusOk: false, bonusLostAt: 'lun-0800', lastFault: { wasBonusOk: true }, lateCancel: true, screen: 'cancelled', next: CANC }, 'Pierde 1 de sus 3 cancelaciones.'],
+    ]],
+    ['3.ª cancelación', [
+      [{ clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800' }, 'Entra para cambiarla: ya tiene 2 faltas.'],
+      [{ clock: 'near', noShows: 2, bonusOk: false, bonusLostAt: 'mie-0800', sheet: 'cantgo' }, 'Es la 3.ª vez: le avisamos que pierde ese horario.', true],
+      [{ noShows: 3, bonusOk: false, lostSlot: true, lostId: 'lun-0800', lateCancel: true, screen: 'noshow', next: CANC }, 'Pierde su horario fijo por el resto del mes.'],
+      [{ noShows: 3, bonusOk: false, lostSlot: true, lostId: 'lun-0800', next: { id: 'mie-0800', status: 'reservada', kind: 'fijo' } }, 'En su app ve que le queda 1 día el resto del mes.'],
+    ]],
+  ]],
+  ['Problema 4', 'Cuidar la clase gratis', 'Está por ganar la clase gratis. Si cancela, le mostramos lo que pierde.', [[
+    [{ clock: 'near', monthAttended: RULES.monthTotal - 1 }, 'Entra y ve que, si va a todas, gana una clase gratis.'],
+    [{ clock: 'near', monthAttended: RULES.monthTotal - 1, sheet: 'cantgo' }, 'Quiere cancelar: le avisamos que pierde la clase gratis.', true],
+    [{ monthAttended: RULES.monthTotal - 1, noShows: 1, bonusOk: false, bonusLostAt: 'lun-0800', lastFault: { wasBonusOk: true }, lateCancel: true, screen: 'cancelled', next: CANC }, 'Pierde 1 de sus 3 cancelaciones y la clase gratis.'],
+  ]]],
+];
+function frameHTML([state, caption, key], i) {
+  onboarded(state);
+  const screen = `<div class="statusbar"><span>9:41</span><span class="dots"><i></i></span></div>${V[S.screen]()}${pushView()}${sheetView()}`;
+  return `${i ? '<span class="step-arrow" aria-hidden="true">→</span>' : ''}<div class="frame">
+    <div class="miniwrap"><div class="phone"><div class="screen">${screen}</div></div></div>
+    <div class="cap ${key ? 'key' : ''}"><b>${i + 1}</b><span>${caption}</span></div>
+  </div>`;
+}
+function renderStory() {
+  document.getElementById('story').innerHTML = `<div class="sb-head"><h1>Los 4 problemas, pantalla por pantalla</h1></div>` +
+    STORY.map(([num, title, sub, rows], pi) => `<section class="flowrow"><h2><span>Problema 0${pi + 1}</span> · ${title}</h2>
+      ${rows.map(row => {
+        const labeled = typeof row[0] === 'string'; /* ['1.ª cancelación', frames] or just frames */
+        const frames = labeled ? row[1] : row;
+        return `${labeled ? `<h3>${row[0]}</h3>` : ''}<div class="frames">${frames.map(frameHTML).join('')}</div>`;
+      }).join('')}</section>`).join('');
+}
+
 applyBrand();
-A.circuit();
+if (document.getElementById('story')) renderStory(); else startProblem('p1');
 </script>

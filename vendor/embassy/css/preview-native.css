@@ -1,0 +1,331 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   preview-native.css — ver una pantalla nativa en un navegador
+
+   Uso:
+     <link rel="stylesheet" href="css/preview-native.css">
+
+     <div class="phone-row">
+       <figure class="phone" data-platform="native" data-targets>
+         <div class="phone-status"></div>
+         <header class="phone-nav">…</header>
+         <div class="phone-screen">…  ← la pantalla, con las clases normales …</div>
+         <nav class="phone-tabbar">…</nav>
+       </figure>
+     </div>
+
+   POR QUÉ ESTO NO ES UN MOCKUP. Adentro del marco van los componentes de
+   Embassy sin cambios: los mismos `btn-primary`, `chip`, `field-input`. Lo único
+   que cambia es que `data-platform="native"` hace que los tokens resuelvan a los
+   valores de teléfono —cuerpo 16, target 48— definidos en variables.css. Si el
+   preview se ve bien, la app se va a ver así, porque lee los mismos números.
+
+   Lo que el preview NO puede mostrar, y hay que tener presente al aprobar:
+   la sombra de Android (elevation), el ripple, el rebote del scroll, el teclado
+   del sistema y las fuentes reales del dispositivo. Para eso hace falta el
+   simulador. Ver MOBILE.md §7.
+
+   Dos capas, separadas a propósito:
+
+     1. DENSIDAD — hace que los controles crezcan a `--control-height` cuando el
+        contexto es nativo. Existe porque las alturas de los componentes todavía
+        están literales en su propio CSS (`min-height: 32px`, `height: 36px`…),
+        así que el eje de plataforma solo no las mueve. Está scopeada a
+        [data-platform="native"]: en web no cambia ni un píxel. La deuda —que los
+        componentes lean los tokens de densidad— está registrada en
+        GOVERNANCE.md §12.
+
+     2. MARCO — el cromo del teléfono. Es una herramienta de revisión, no parte
+        del producto: nada de `.phone*` sale en una entrega.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ─────────────────────────────────────────────────────────────
+   1 · DENSIDAD — los controles llegan al piso táctil
+   ───────────────────────────────────────────────────────────── */
+
+/* Botones. El default no declara altura: sale del padding, así que con la
+   escala nativa llega a ~38 y no a 48. */
+[data-platform="native"] .btn-primary,
+[data-platform="native"] .btn-elevated,
+[data-platform="native"] .btn-secondary,
+[data-platform="native"] .btn-tertiary,
+[data-platform="native"] .btn-text,
+[data-platform="native"] .btn-link,
+[data-platform="native"] .btn-ghost,
+[data-platform="native"] .btn-next,
+[data-platform="native"] .btn-xs,
+[data-platform="native"] .btn-sm,
+[data-platform="native"] .btn-lg,
+[data-platform="native"] .btn-xl {
+  min-height: var(--control-height);
+  padding-inline: var(--space-6);
+  font-size: var(--font-size-body-md);
+}
+[data-platform="native"] .btn-lg,
+[data-platform="native"] .btn-xl { font-size: var(--font-size-body-lg); }
+
+/* Un control de ícono es cuadrado y también tiene piso. */
+[data-platform="native"] .toolbar-btn,
+[data-platform="native"] .search-icon-btn,
+[data-platform="native"] .shell-menu-btn {
+  width:  var(--target-min);
+  height: var(--target-min);
+}
+
+/* Campos y disparadores. En un teléfono no hay control chico. */
+[data-platform="native"] .field-input,
+[data-platform="native"] .field-textarea,
+[data-platform="native"] .select-trigger,
+[data-platform="native"] .search-field,
+[data-platform="native"] .search-bar,
+[data-platform="native"] .search-input,
+[data-platform="native"] .date-picker-trigger,
+[data-platform="native"] .combobox-trigger,
+[data-platform="native"] .input-group,
+[data-platform="native"] .otp-slot {
+  min-height: var(--control-height);
+  font-size: var(--font-size-body-md);
+}
+
+/* Navegación y conmutadores: acá el control ES la caja, así que se dibuja al
+   piso completo. */
+[data-platform="native"] .seg-btn,
+[data-platform="native"] .tab,
+[data-platform="native"] .nav-item,
+[data-platform="native"] .pagination-item {
+  min-height: var(--control-height);
+  font-size: var(--font-size-body-md);
+}
+
+/* ── La superficie tocable no es la caja dibujada ──────────────
+   Un chip, un toggle o un botón de ícono a 48 de alto se ven enormes y pesan
+   en la jerarquía como si fueran la acción principal, que no lo son. Material
+   lo resuelve al revés y tiene razón: el chip se dibuja chico y el target de
+   48 se consigue con un área invisible alrededor. Es lo mismo que hace hitSlop
+   en React Native, y es la regla que MOBILE.md §3 ya pedía.
+
+   El ::after es esa área. No se ve, no ocupa layout, y con data-targets se
+   dibuja — así se puede ver la diferencia entre lo que se toca y lo que se
+   mira. */
+[data-platform="native"] .chip,
+[data-platform="native"] .toggle,
+[data-platform="native"] .icon-btn {
+  position: relative;
+  min-height: 0;
+}
+[data-platform="native"] .chip::after,
+[data-platform="native"] .toggle::after,
+[data-platform="native"] .icon-btn::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: var(--target-min);
+  transform: translateY(-50%);
+}
+
+/* El chip se dibuja a 40 con la etiqueta en su tamaño, no en el del cuerpo:
+   es un clasificador, no una acción. */
+[data-platform="native"] .chip {
+  height: 40px;
+  font-size: var(--font-size-label);
+}
+[data-platform="native"] .toggle  { height: 40px; min-width: 40px; }
+[data-platform="native"] .icon-btn { width: 44px; height: 44px; }
+
+/* Filas: lista, tabla e ítem comparten el piso de fila. */
+[data-platform="native"] .list-item,
+[data-platform="native"] .item,
+[data-platform="native"] .table td,
+[data-platform="native"] .table th {
+  min-height: var(--row-height);
+}
+
+/* Casillas y radios crecen su área, no su dibujo: el cuadrado sigue midiendo
+   lo mismo y lo que se agranda es la etiqueta que lo envuelve. */
+[data-platform="native"] .checkbox-label,
+[data-platform="native"] .radio-label,
+[data-platform="native"] .switch-label {
+  min-height: var(--target-min);
+  display: flex; align-items: center; gap: var(--space-3);
+}
+
+
+/* ── 1b · La densidad, también para los componentes de Material ───────────
+   El preview de Flutter usa @material/web, que trae SUS alturas: el botón sale
+   a 40 y el chip a 32. Nuestro piso táctil es 48, y si el preview no lo aplica
+   muestra una pantalla que no cumple M2 — o sea, miente en la dirección
+   peligrosa.
+
+   Material expone sus alturas como custom properties por componente, así que
+   se apuntan a los mismos tokens que todo lo demás. Solo bajo
+   [data-platform="native"]: en web no cambia nada. */
+[data-platform="native"] md-filled-button,
+[data-platform="native"] md-outlined-button,
+[data-platform="native"] md-text-button,
+[data-platform="native"] md-elevated-button,
+[data-platform="native"] md-filled-tonal-button {
+  --md-filled-button-container-height:       var(--control-height);
+  --md-outlined-button-container-height:     var(--control-height);
+  --md-text-button-container-height:         var(--control-height);
+  --md-elevated-button-container-height:     var(--control-height);
+  --md-filled-tonal-button-container-height: var(--control-height);
+  --md-filled-button-label-text-size:        var(--font-size-body-md);
+  --md-outlined-button-label-text-size:      var(--font-size-body-md);
+  --md-text-button-label-text-size:          var(--font-size-body-md);
+}
+
+/* El chip se dibuja a 40 y llega a 48 por el target, igual que el nuestro. */
+[data-platform="native"] md-filter-chip,
+[data-platform="native"] md-assist-chip,
+[data-platform="native"] md-input-chip,
+[data-platform="native"] md-suggestion-chip {
+  --md-filter-chip-container-height:     40px;
+  --md-assist-chip-container-height:     40px;
+  --md-input-chip-container-height:      40px;
+  --md-suggestion-chip-container-height: 40px;
+  --md-filter-chip-label-text-size:      var(--font-size-label);
+  --md-assist-chip-label-text-size:      var(--font-size-label);
+}
+
+[data-platform="native"] md-outlined-text-field,
+[data-platform="native"] md-filled-text-field {
+  --md-outlined-field-container-height: var(--control-height);
+  --md-filled-field-container-height:   var(--control-height);
+  --md-outlined-text-field-label-text-size: var(--font-size-body-md);
+  --md-filled-text-field-label-text-size:   var(--font-size-body-md);
+  --md-outlined-text-field-input-text-size: var(--font-size-body-md);
+  --md-filled-text-field-input-text-size:   var(--font-size-body-md);
+}
+
+[data-platform="native"] md-list-item {
+  --md-list-item-one-line-container-height: var(--row-height);
+  --md-list-item-two-line-container-height: var(--row-height);
+  --md-list-item-label-text-size:           var(--font-size-body-md);
+  --md-list-item-supporting-text-size:      var(--font-size-body-sm);
+}
+
+[data-platform="native"] md-primary-tab,
+[data-platform="native"] md-secondary-tab {
+  --md-primary-tab-container-height:   var(--control-height);
+  --md-secondary-tab-container-height: var(--control-height);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   2 · MARCO — el cromo del teléfono (herramienta, no producto)
+   ───────────────────────────────────────────────────────────── */
+
+.phone-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: flex-start;
+  margin: 0;
+}
+
+.phone {
+  /* 390 es el ancho real del iPhone de referencia. No se cambia para que algo
+     entre: si no entra en 390, no entra en un teléfono. */
+  --phone-width:  390px;
+  --phone-height: 760px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: var(--phone-width);
+  max-width: 100%;
+  flex: 0 0 auto;
+  height: var(--phone-height);
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: 26px;
+  box-shadow: var(--shadow-lg, 0 8px 28px color-mix(in srgb, var(--on-surface) 14%, transparent));
+}
+
+/* Alto libre: para una pantalla que se mide entera, sin recortar. */
+.phone-auto { height: auto; }
+
+/* La barra de estado del sistema. No es decoración: es el espacio que en la app
+   se lee con useSafeAreaInsets() y que no se puede escribir a mano. */
+.phone-status {
+  flex: 0 0 auto;
+  height: 30px;
+  background: transparent;
+}
+
+.phone-nav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--target-min);
+  padding-inline: var(--screen-gutter, var(--space-5));
+  padding-block: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.phone-screen {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-inline: var(--screen-gutter, var(--space-5));
+  padding-block: var(--space-2) var(--space-6);
+}
+
+.phone-tabbar {
+  flex: 0 0 auto;
+  display: flex;
+  border-top: 1px solid var(--border);
+  padding-bottom: var(--space-4);   /* la safe area de abajo */
+}
+.phone-tab {
+  flex: 1;
+  min-height: var(--target-min);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  font-size: var(--font-size-badge);
+  color: var(--on-surface-variant);
+  background: none; border: 0; cursor: pointer;
+}
+.phone-tab[aria-current] { color: var(--primary); font-weight: 600; }
+
+.phone-caption {
+  margin: 0 0 var(--space-2-5);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-badge);
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+.phone-caption strong { color: var(--on-surface); font-weight: 500; }
+
+/* Vista de targets: marca cada superficie tocable para poder contar a ojo lo
+   que M2 cuenta en el chequeo. Se activa con data-targets en el marco. */
+[data-targets] :is(
+  button, a[href], [role="button"], [role="tab"], [role="switch"],
+  input, select, textarea, .chip, .list-item, .item, .nav-item, .phone-tab
+) {
+  outline: 1px dashed color-mix(in srgb, var(--error) 55%, transparent);
+  outline-offset: 0;
+}
+/* El área invisible también se dibuja: es la diferencia entre lo que se toca y
+   lo que se mira, y es lo que hace visible por qué el chip puede ser chico. */
+[data-targets] :is(.chip, .toggle, .icon-btn)::after {
+  outline: 1px dashed color-mix(in srgb, var(--error) 35%, transparent);
+}
+
+/* En una ventana angosta el marco se achica solo por el max-width de arriba.
+   Recién por debajo de un teléfono real conviene que ocupe todo, y el
+   breakpoint tiene que ser MENOR a 390: con 900px el marco se estiraba a
+   pantalla completa dentro de la doc, que es de escritorio. */
+@media (max-width: 420px) {
+  .phone { --phone-width: 100%; height: auto; border: 0; border-radius: 0; box-shadow: none; }
+}
+
+.phone-row figure { margin: 0; }

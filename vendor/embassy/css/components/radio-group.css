@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Radio Group
+   Selección única entre un conjunto de opciones mutuamente excluyentes,
+   todas visibles al mismo tiempo.
+
+   Cuándo usar: 2-6 opciones mutuamente excluyentes, todas visibles a la vez.
+   Cuándo no: selección múltiple independiente (usar Checkbox); muchas opciones
+   o espacio limitado (usar Select); on/off inmediato (usar Switch).
+   Reemplaza a: radio buttons HTML sin estilizar, pill-buttons custom usados
+   como selección única (ese patrón es Segmented Button, no Radio Group).
+
+   Dependencia: variables.css (Color Roles)
+   Consume EXCLUSIVAMENTE roles semánticos de color → funciona en light y dark
+   sin overrides por tema.
+
+   Implementación: <input type="radio" name="..."> real agrupado por `name` —
+   el navegador provee roving-tabindex (Flechas mueven la selección dentro del
+   grupo, Tab sale del grupo) sin reimplementar ARIA a mano.
+
+   Uso:
+   <div class="radio-group" role="radiogroup" aria-label="Tipo de contrato">
+     <label class="radio-label"><input type="radio" name="contract" class="radio" checked> Full-time</label>
+     <label class="radio-label"><input type="radio" name="contract" class="radio"> Part-time</label>
+   </div>
+═══════════════════════════════════════ */
+
+.radio-group {
+  display: grid;
+  gap: var(--space-2-5);
+}
+
+.radio {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--outline);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  transition: border-color var(--duration-fast) var(--ease-default);
+}
+
+.radio:hover {
+  border-color: var(--on-surface);
+}
+
+.radio:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.radio:checked {
+  border-color: var(--primary);
+}
+.radio:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* Error/invalid — red border via the shared error token (set aria-invalid on the item) */
+.radio[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.radio:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* ── Label wrapper ── */
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--on-surface);
+  font: var(--font-weight-regular) var(--font-size-body-md)/1.4 var(--font-body);
+  cursor: pointer;
+}
+.radio-label:has(.radio:disabled) {
+  cursor: not-allowed;
+  color: var(--on-disabled);
+}
+
+/* ── Card composition ── tarjeta seleccionable con borde (par shadcn radio card).
+   El estado seleccionado se resuelve con :has(input:checked) — sin JS. */
+/* Entidad seleccionable (§4b). */
+.radio-card {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-default),
+              background-color var(--duration-fast) var(--ease-default);
+}
+.radio-card:hover { border-color: var(--outline); }
+.radio-card:has(input:checked) {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+.radio-card:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+.radio-card-content { display: flex; flex-direction: column; gap: var(--space-0-5); min-width: 0; }
+.radio-card-title {
+  font-size: var(--font-size-body-md);
+  line-height: var(--line-height-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--on-surface);
+}
+.radio-card-desc { font-size: var(--font-size-body-sm); color: var(--on-surface-variant); line-height: var(--line-height-body-sm); }

@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Card
+   Contenedor basico con borde y fondo blanco.
+
+   Cuándo usar: contenedor genérico de contenido agrupado sobre superficie.
+   Cuándo no: métricas (stat-card), personas (person-card), vacantes (vacancy-card).
+   Reemplaza a: paneles/boxes legacy con borde o sombra.
+
+   MD3 tiene tres variantes, todas expresadas con roles Embassy:
+     .card           (outlined, predeterminado) · superficie + borde 1px, sin elevación
+     .card-elevated  · surface-container-low + sombra sm, sin borde
+     .card-filled    · surface-container-highest, sin borde ni sombra
+
+   Dependencia: variables.css
+   Requiere: (ninguno)
+
+   Uso:
+   <div class="card">
+     <div class="card-header">
+       <div class="card-title">Título</div>
+       <p class="card-desc">Descripción breve.</p>
+     </div>
+     <div class="card-content">Contenido de la tarjeta</div>
+     <div class="card-footer"><button class="btn-text">Acción</button></div>
+   </div>
+═══════════════════════════════════════ */
+
+.card {
+  background: var(--surface-container);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* Panel = escalon estandar. COMPOSICION.md §4b + guidelines/visual-hierarchy.md.
+     Hasta sep 2026 eran 16/20: el escalon compacto en vertical y un valor que no
+     era escalon en horizontal, sin que nadie lo hubiera decidido. */
+  padding: var(--space-6);
+}
+
+/* ── Variantes MD3 ── */
+.card-elevated {
+  background: var(--surface-container-low);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+.card-filled {
+  background: var(--surface-container-highest);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+
+/* ── Sub-partes (Basic Card) ── */
+/* Header como grid (par shadcn CardHeader): título + descripción apilados en la
+   columna izquierda; si hay una .card-action, reserva una columna derecha para
+   ella (col-start-2, abarca ambas filas), p.ej. un icon-btn "⋮" o un Switch. */
+.card-header {
+  margin-bottom: var(--space-3);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+}
+.card-header:has(.card-action) {
+  grid-template-columns: 1fr auto;
+}
+.card-action {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  justify-self: end;
+}
+.card-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-heading-xs);
+  line-height: var(--line-height-heading-xs);
+  letter-spacing: var(--letter-spacing-normal);
+  font-weight: var(--font-weight-semibold);
+  color: var(--on-surface);
+}
+.card-desc {
+  font-size: var(--font-size-body-sm);
+  color: var(--on-surface-variant);
+  line-height: var(--line-height-body-sm);
+}
+
+/* El titular de la tarjeta que ABRE una sección — la que
+   `guidelines/visual-hierarchy.md` manda a --space-8 porque lleva título, bajada
+   y lista. El padding ya tenía tres pasos y el titular uno solo: una tarjeta con
+   32px de aire y un titular de 15px queda desbalanceada, el aire la agranda y el
+   título no la acompaña.
+   Va un escalón arriba en la MISMA escala, con su par de interlineado y su
+   tracking. No es "más grande": es el paso que le corresponde a esa tarjeta.
+   Nota: GOVERNANCE §8.2 decía que --font-size-heading-md era «titular de tarjeta»
+   mientras .card-title usaba heading-xs. Las dos cosas eran ciertas para tarjetas
+   distintas y ninguna lo aclaraba; ahora la tabla distingue las dos clases. */
+.card-title-lg {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-heading-md);
+  line-height: var(--line-height-heading-md);
+  letter-spacing: var(--letter-spacing-heading-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--on-surface);
+}
+.card-content {
+  font-size: var(--font-size-body-md);
+  color: var(--on-surface);
+}
+.card-footer {
+  margin-top: var(--space-4);
+  display: flex; align-items: center; gap: var(--space-2);
+}
+
+/* ── Contexto de superficie ──────────────────────────────────────────────────
+   Una tarjeta pinta su propio fondo, asi que declara el contexto para lo que
+   vaya adentro. Sin esto, un `list` adentro de una card pintaba el gris de la
+   pagina sobre el blanco de la card y habia que escribirle `background:
+   transparent` a mano — un override de clase publica por cada uso. */
+.card                { --ctx-surface: var(--surface-container);                            --ctx-surface-raised: var(--surface-container-high); }
+.card-elevated       { --ctx-surface: var(--surface-container-low);        --ctx-surface-raised: var(--surface-container-high); }
+.card-filled         { --ctx-surface: var(--surface-container-highest);    --ctx-surface-raised: var(--surface-container); }
+
+/* La valvula para un panel que NO es una card del DS — un rail, un sheet, una
+   region propia del proyecto. Se declara en el contenedor y los componentes de
+   adentro se acomodan solos. */
+[data-surface="surface"]           { --ctx-surface: var(--surface);                        --ctx-surface-raised: var(--surface-container); }
+[data-surface="container-low"]     { --ctx-surface: var(--surface-container-low);          --ctx-surface-raised: var(--surface-container); }
+[data-surface="container"]         { --ctx-surface: var(--surface-container);              --ctx-surface-raised: var(--surface-container-high); }
+[data-surface="container-high"]    { --ctx-surface: var(--surface-container-high);         --ctx-surface-raised: var(--surface-container-highest); }

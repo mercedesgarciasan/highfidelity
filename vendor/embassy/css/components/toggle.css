@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════
+   Embassy DS — Toggle
+   Botón de dos estados (presionado / no presionado) para alternar un ajuste.
+
+   Cuándo usar: alternar un solo estado on/off que se aplica de inmediato
+     (negrita en un editor, "mostrar solo favoritos").
+   Cuándo no: elegir 1 de N (usar Segmented Button); filtros tipo tag (usar
+     Chip); acción sin estado (usar Button).
+   Reemplaza a: botones on/off ad-hoc con aria-pressed manejado a mano.
+
+   Dependencia: variables.css (Color Roles)
+   El estado presionado usa el mismo lenguaje de selección que Chip/nav-active
+   (--secondary-container), NUNCA --primary (que se invierte a
+   blanco en dark mode y se leería como "sin color").
+
+   Uso:
+   <button class="toggle" aria-pressed="false" onclick="togglePress(this)">
+     <svg>…</svg>
+   </button>
+   <button class="toggle toggle-outline toggle-lg" aria-pressed="true">B</button>
+═══════════════════════════════════════ */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  min-width: 36px;
+  padding: 0 var(--space-2-5);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-md);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+}
+.toggle svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.toggle:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--on-surface) 8%, transparent);
+}
+.toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.toggle[aria-pressed="true"] {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+.toggle[aria-pressed="true"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--on-secondary-container) 8%, var(--secondary-container));
+}
+.toggle:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Error / inválido (par shadcn aria-invalid) — poco frecuente en Toggle, pero
+   disponible para consistencia con el resto de los controles. */
+.toggle[aria-invalid="true"] {
+  border: 1px solid var(--error);
+}
+
+/* ── Variante Outline ── */
+.toggle-outline {
+  border: 1px solid var(--outline-variant);
+  background: transparent;
+}
+.toggle-outline[aria-pressed="true"] {
+  border-color: transparent;
+}
+
+/* ── Tamaños ── */
+.toggle-sm { height: 32px; min-width: 32px; padding: 0 var(--space-2); }
+.toggle-lg { height: 40px; min-width: 40px; padding: 0 var(--space-3); }

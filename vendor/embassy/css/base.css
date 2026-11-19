@@ -1,0 +1,122 @@
+/* ═══════════════════════════════════════
+   Base — Reset, Typography, Animations
+═══════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--on-surface);
+  font-size: var(--font-size-body-lg);
+  line-height: var(--line-height-body-lg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings — ligados al type scale de variables.css (h1 → display … h6 → heading-xs).
+   Regla del DS: todo font-size fluye por tokens --font-size-*; nunca px sueltos. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-heading-lg);
+}
+
+h1 { font-size: var(--font-size-display);    line-height: var(--line-height-display);    letter-spacing: var(--letter-spacing-display); }
+h2 { font-size: var(--font-size-heading-xl); line-height: var(--line-height-heading-xl); letter-spacing: var(--letter-spacing-heading-xl); }
+h3 { font-size: var(--font-size-heading-lg); line-height: var(--line-height-heading-lg); letter-spacing: var(--letter-spacing-heading-lg); }
+h4 { font-size: var(--font-size-heading-md); line-height: var(--line-height-heading-md); letter-spacing: var(--letter-spacing-heading-md); }
+h5 { font-size: var(--font-size-heading-sm); line-height: var(--line-height-heading-sm); }
+h6 { font-size: var(--font-size-heading-xs); line-height: var(--line-height-heading-xs); }
+
+a { color: var(--secondary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img, svg { display: block; max-width: 100%; }
+
+/* Un solo grosor de trazo para todos los íconos. Gana sobre el atributo
+   stroke-width del SVG (CSS > atributo de presentación), así que no hace falta
+   tocar cada ícono. Los logos quedan afuera: su trazo es parte de la marca. */
+svg:not(.logo):not(.logo *) { stroke-width: var(--icon-stroke); }
+
+button { font-family: inherit; cursor: pointer; }
+
+input, select, textarea { font-family: inherit; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 4px; }
+
+/* ── Animations ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Utility classes ── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+.text-muted { color: var(--on-surface-variant); }
+.text-secondary { color: var(--on-surface-variant); }
+/* Los alias legacy --interactive / --green / --red apuntan a los tonos de SEÑAL
+   (--secondary, --success, --error). Como fondo o como borde
+   estan bien; como TEXTO chico ninguno llega a AA: daban 3.58:1, 2.38:1 y 3.58:1.
+   La familia *-text existe justamente para el caso de leerlos. */
+.text-accent { color: var(--secondary-text); }
+.text-success { color: var(--success-text); }
+.text-error { color: var(--error-text); }
+
+.font-mono { font-family: var(--font-mono); }
+.font-heading { font-family: var(--font-heading); }
+
+/* ============================================================================
+   Reduced motion — shared, DS-wide (a11y).
+   Honors prefers-reduced-motion: reduce by neutralizing transitions and
+   entrance/exit animations across EVERY Embassy component at once, so
+   product screens (and generated screens) get accessible motion for free —
+   no per-component opt-in needed. Near-zero (0.01ms) rather than `none` so
+   JS that waits for transitionend/animationend still fires. Essential loaders
+   (spinner, indeterminate progress, skeleton) become static; their role/
+   aria-label still convey status. Any component that MUST keep a reduced
+   looping motion opts back in with its own `@media (prefers-reduced-motion:
+   reduce) { … !important }` rule (see component-rules <id>.md → motion.reducedMotion).
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

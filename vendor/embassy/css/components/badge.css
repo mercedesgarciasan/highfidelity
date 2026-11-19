@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════
+   Amalgama DS — Badge
+   Indicadores de estado y etiquetas de categoría.
+
+   Cuándo usar: estado o categoría de SOLO LECTURA de un ítem (tablas, cards, listas). Todo label categórico debe ser badge — nunca texto plano coloreado.
+   Cuándo no: si es interactivo/filtrable usar Chip; si es una acción usar Button.
+   Reemplaza a: labels de texto plano con color, pills custom, tags legacy.
+
+   Dependencia: variables.css
+   Requiere: (ninguno)
+
+   Variantes semánticas de estado:
+   <span class="badge badge-open">Abierta</span>
+   <span class="badge badge-active">Activa</span>
+   <span class="badge badge-closed">Cerrada</span>
+   <span class="badge badge-draft">Borrador</span>
+   <span class="badge badge-archived">Archivada</span>
+   <span class="badge badge-warning">Urgente</span>
+   <span class="badge badge-tertiary">Nuevo</span>
+   <span class="badge badge-info">Informativo</span>
+
+   Modificador Label (monoespaciado / categoría):
+   <span class="badge badge-info badge-label">Styles · Color</span>
+
+   Uso:
+   <span class="badge badge-open">Abierta</span>
+═══════════════════════════════════════ */
+
+/* ── Base ── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: var(--font-size-badge); font-weight: 600;
+  padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* ── Variantes de color ── */
+/* La variacion de una Stat Card es el mismo objeto que un badge: la misma
+   pildora, el mismo par container/on-container y el mismo tratamiento de
+   oscuro. Los modificadores de tendencia se listan ACA y no en stat-card.css
+   para que la forma y el tinte de dark tengan una sola fuente (GOVERNANCE
+   §22): una copia parafraseada del color-mix de abajo no fallaria cuando el
+   porcentaje cambie — mentiria. El markup compone `badge stat-change
+   stat-change-positive`. */
+.badge-open, .stat-change-positive   { background: var(--success-container); color: var(--on-success-container); }
+/* Activa = proceso en curso: color distinto de open (secondary-container), para que
+   "abierta" (verde) y "activa" (en curso) no se lean idénticas. */
+/* «En proceso» comparte registro con «informativo»: los dos son el azul neutro que
+   no afirma ni exito ni error. Hasta sep 2026 `active` usaba --secondary-container,
+   que es el token de SELECCION (chip, segmented, calendar, pagination, menu activo):
+   un badge de estado y un estado de seleccion quedaban indistinguibles en la misma
+   pantalla. La seleccion es transversal a toda la UI y el badge es de una familia,
+   asi que cede el badge. Queda como alias de la variante info — se mantiene la clase
+   para no romper los usos existentes. */
+.badge-active { background: var(--info-container); color: var(--on-info-container); }
+.badge-closed, .stat-change-negative { background: var(--error-container);   color: var(--on-error-container); }
+/* Tendencia plana: la misma superficie tonal que .badge-draft, sin el borde
+   (draft usa el borde para decir "todavia no publicado"; una variacion de cero
+   no dice nada de eso). En oscuro el par surface-variant/on-surface-variant ya
+   es tonal, asi que no necesita la excepcion de abajo. */
+.stat-change-neutral { background: var(--surface-variant); color: var(--on-surface-variant); }
+.badge-draft  { background: var(--surface-variant);   color: var(--on-surface-variant); border: 1px solid var(--outline); }
+/* Archivada = la misma superficie tonal que draft, SIN su borde. Hasta sep 2026
+   llevaba `opacity: .75` para verse "apagada": medido, eso bajaba el contraste real
+   de 4.64:1 a 2.91:1 en claro —por debajo de AA— porque la opacidad mezcla el texto
+   Y el fondo contra la pagina. El chequeo [15] no lo veia: compara tokens, y los
+   tokens estaban bien; lo que fallaba era el pixel. Lo apagado ahora lo dice la
+   ausencia de borde, que no toca el contraste. */
+.badge-archived { background: var(--surface-variant); color: var(--on-surface-variant); }
+.badge-warning  { background: var(--warning-container); color: var(--on-warning-container); }
+.badge-tertiary { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.badge-info     { background: var(--info-container);    color: var(--on-info-container); }
+
+/* ── Modificador Label: etiqueta de categoría/sección (tipografía monoespaciada) ── */
+.badge-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-overline-sm); font-weight: 500;
+  text-transform: uppercase; letter-spacing: var(--letter-spacing-label);
+}
+
+
+/* ── Ícono / spinner líder ── el badge admite un SVG o un spinner al inicio
+   (par shadcn "with icon" / "with spinner"). El gap no afecta a los badges de
+   solo texto. */
+.badge { gap: var(--space-1); }
+.badge > svg { width: 12px; height: 12px; flex-shrink: 0; }
+/* El spinner dentro de un badge hereda el color del texto para contrastar sobre
+   cualquier variante (en vez de los tokens fijos primary/outline). */
+.badge .spinner {
+  width: 12px; height: 12px; border-width: 2px;
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+  vertical-align: baseline;
+}
+
+/* ── Link ── badge navegable. Como <a class="badge …"> (asChild) hereda su
+   variante y agrega hover; la variante .badge-link es el estilo de enlace de
+   texto de shadcn (sin relleno, color de acento, subrayado en hover). */
+a.badge { text-decoration: none; cursor: pointer; transition: opacity var(--duration-fast) var(--ease-default); }
+a.badge:hover { opacity: .85; }
+a.badge:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+.badge-link { background: transparent; color: var(--primary); padding-left: var(--space-0-5); padding-right: var(--space-0-5); }
+a.badge-link:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Dark: tratamiento tonal suave ── en dark, en vez del relleno saturado
+   profundo (que además dejaba texto claro sobre color medio por debajo de AA),
+   el badge usa un TINTE sutil del color sobre la superficie + el texto claro
+   on-container. Es el mismo lenguaje que light, invertido: pill tenue + texto
+   vívido → contraste AA holgado y vividez pareja entre variantes.
+   Excepción documentada al "sin bloque por-tema" (aprobada; scope = badge). */
+[data-theme="dark"] .badge-open,
+[data-theme="dark"] .stat-change-positive { background: color-mix(in srgb, var(--success-container)   42%, var(--surface)); }
+[data-theme="dark"] .badge-active  { background: color-mix(in srgb, var(--secondary-container) 55%, var(--surface)); }
+[data-theme="dark"] .badge-closed,
+[data-theme="dark"] .stat-change-negative { background: color-mix(in srgb, var(--error-container)     42%, var(--surface)); }
+[data-theme="dark"] .badge-warning { background: color-mix(in srgb, var(--warning-container)   42%, var(--surface)); }
+[data-theme="dark"] .badge-tertiary{ background: color-mix(in srgb, var(--tertiary-container)  42%, var(--surface)); }
+[data-theme="dark"] .badge-info    { background: color-mix(in srgb, var(--info-container)      42%, var(--surface)); }
