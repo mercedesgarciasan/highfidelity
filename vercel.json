@@ -1,0 +1,6 @@
+{
+  "buildCommand": "sh scripts/vercel-build.sh",
+  "outputDirectory": "dist",
+  "installCommand": "",
+  "framework": null
+}
