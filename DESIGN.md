@@ -51,6 +51,7 @@
 
 ## Registro de pantallas
 - Onboarding (splash · 3 láminas con login · bienvenida · nombre · horario fijo · reglas y avisos · calendario) → `design/onboarding.md` · preview `mockups/onboarding.preview.html`
+- Inicio / directorio del proyecto (web) → `design/inicio.md` · `index.html`
 - Migración del prototipo (plan, sin ejecutar) → `design/prototipo-migracion.md`
 
 ## Pendientes

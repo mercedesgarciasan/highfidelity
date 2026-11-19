@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>High Fidelity · Inicio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- variables → MARCA → base → composition → components -->
+<link rel="stylesheet" href="vendor/embassy/css/variables.css">
+<link rel="stylesheet" href="brand/calma.css">
+<link rel="stylesheet" href="vendor/embassy/css/base.css">
+<link rel="stylesheet" href="vendor/embassy/css/composition.css">
+<link rel="stylesheet" href="vendor/embassy/css/components.css">
+<style>
+  /* Directorio: tres grupos de filas-enlace. Solo tokens. */
+  .dir-group { gap: var(--space-3); }
+  .dir-section + .dir-section { margin-top: var(--space-10); }
+  .dir-heading { margin: 0 0 var(--space-3); }
+  .dir-title { font-family: var(--font-heading); font-weight: var(--font-weight-regular); font-size: var(--font-size-display); line-height: var(--line-height-display); margin: 0; }
+  .dir-lead { color: var(--on-surface-variant); margin: var(--space-3) 0 var(--space-10); }
+  .item-actions svg { width: 18px; height: 18px; color: var(--on-surface-variant); }
+</style>
+</head>
+<body>
+<main data-ds-screen data-density="comfortable" class="column column-read section">
+  <p class="overline">Hackathon High Fidelity · Amalgama</p>
+  <h1 class="page-title dir-title">Menos faltas, más clases llenas</h1>
+  <p class="dir-lead measure">Todo lo que armamos para reducir los no-shows en clases grupales. Elegí por dónde entrar.</p>
+
+  <div data-ds-dominant>
+  <section class="dir-section" aria-labelledby="g-producto">
+    <h2 id="g-producto" class="overline dir-heading">Producto</h2>
+    <div class="item-group dir-group" role="list">
+      <a class="item item-outline" role="listitem" href="prototipo/">
+        <div class="item-media item-media-icon"><i data-lucide="smartphone"></i></div>
+        <div class="item-content">
+          <div class="item-title">App de socios</div>
+          <div class="item-description">Reservar, cambiar horario y avisar que no vas, desde el celular.</div>
+        </div>
+        <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+      </a>
+      <a class="item item-outline" role="listitem" href="admin/">
+        <div class="item-media item-media-icon"><i data-lucide="layout-dashboard"></i></div>
+        <div class="item-content">
+          <div class="item-title">Admin del estudio</div>
+          <div class="item-description">Tablero del dueño y los coaches: lugares recuperados.</div>
+        </div>
+        <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="dir-section" aria-labelledby="g-flujos">
+  <h2 id="g-flujos" class="overline dir-heading">Flujos y reglas</h2>
+  <div class="item-group dir-group" role="list">
+    <a class="item item-outline" role="listitem" href="prototipo/flujos.html">
+      <div class="item-media item-media-icon"><i data-lucide="git-branch"></i></div>
+      <div class="item-content">
+        <div class="item-title">Flujos de faltas</div>
+        <div class="item-description">Qué pasa cuando alguien no viene, avisa tarde o cancela.</div>
+      </div>
+      <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+    </a>
+    <a class="item item-outline" role="listitem" href="prototipo/pasos.html">
+      <div class="item-media item-media-icon"><i data-lucide="list-ordered"></i></div>
+      <div class="item-content">
+        <div class="item-title">Problemas paso a paso</div>
+        <div class="item-description">Cada problema del estudio y cómo lo resuelve la app.</div>
+      </div>
+      <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+    </a>
+  </div>
+  </section>
+
+  <section class="dir-section" aria-labelledby="g-diseno">
+  <h2 id="g-diseno" class="overline dir-heading">Diseño</h2>
+  <div class="item-group dir-group" role="list">
+    <a class="item item-outline" role="listitem" href="mockups/onboarding.preview.html">
+      <div class="item-media item-media-icon"><i data-lucide="sparkles"></i></div>
+      <div class="item-content">
+        <div class="item-title">Onboarding</div>
+        <div class="item-description">Las pantallas de bienvenida en teléfono, con la marca aplicada.</div>
+      </div>
+      <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+    </a>
+    <a class="item item-outline" role="listitem" href="theme-preview.html">
+      <div class="item-media item-media-icon"><i data-lucide="palette"></i></div>
+      <div class="item-content">
+        <div class="item-title">Tema de marca</div>
+        <div class="item-description">Colores, tipografía y componentes de Calma, en claro y oscuro.</div>
+      </div>
+      <div class="item-actions" aria-hidden="true"><i data-lucide="chevron-right"></i></div>
+    </a>
+  </div>
+  </section>
+  </div>
+</main>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script>window.lucide && lucide.createIcons();</script>
+</body>
+</html>
